@@ -1,0 +1,28 @@
+# Run WebGenAI locally from docker container (created by Manager)
+
+# cd webgenai
+
+# docker compose up
+# for local machines, browse to: localhost:8282
+# docker compose down
+
+name: webgenai
+services:
+    web_genai:
+        stdin_open: true
+        tty: true
+        container_name: webgenai
+        ports:
+            - 8282:80
+        volumes:
+            - ./webg_temp:/tmp
+            - ./webg_config:/config
+            - ./webg_projects:/opt/projects
+        image: apilogicserver/web_genai 
+        user: root
+        environment:
+            - APILOGICPROJECT_EXTERNAL_PORT=8282
+            - APILOGICPROJECT_PORT=5657
+            - APILOGICPROJECT_EXTERNAL_HOST=localhost
+            - GENAI_LOGIC_APIKEY=<paste license here from registration email>
+            - APILOGICSERVER_CHATGPT_APIKEY=<sk-proj-your-openai-key-here>    

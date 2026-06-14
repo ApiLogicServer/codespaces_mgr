@@ -1,0 +1,11 @@
+Use SQLAlchemy to create a sqlite database named system/genai/temp/create_db_models.sqlite for the following requirements. These requirements are very important!
+Requirements:
+<Requirements>
+{{prompt}}.
+</Requirements>
+
+{{% include 'sqlite_inserts_model_test_hints.prompt' % }}
+
+{{% include 'graphics.prompt' % }}
+
+{{% include 'response_format.prompt' % }}

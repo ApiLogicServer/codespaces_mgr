@@ -1,0 +1,204 @@
+{
+    "tool_type": "json-api",
+    "schema_version": "1.0",
+    "base_url": "http://localhost:5656/api",
+    "description": "API Logic Project: demo_customs_surtax",
+    "resources": [
+        {
+            "name": "CountryOrigin",
+            "path": "/CountryOrigin",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "country_code",
+                "country_name",
+                "trade_agreement",
+                "surtax_rate"
+            ],
+            "filterable": [
+                "id",
+                "country_code",
+                "country_name",
+                "trade_agreement",
+                "surtax_rate"
+            ]
+        },
+        {
+            "name": "CustomsEntry",
+            "path": "/CustomsEntry",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "entry_number",
+                "importer_name",
+                "ship_date",
+                "country_origin_id",
+                "province_id",
+                "sys_config_id",
+                "effective_date",
+                "program_code",
+                "pc_number",
+                "country_surtax_rate",
+                "province_tax_rate",
+                "surtax_applicable",
+                "total_customs_value",
+                "total_duty_amount",
+                "total_surtax_amount",
+                "duty_paid_value",
+                "sales_tax_amount",
+                "total_tax_due",
+                "notes"
+            ],
+            "filterable": [
+                "id",
+                "entry_number",
+                "importer_name",
+                "ship_date",
+                "country_origin_id",
+                "province_id",
+                "sys_config_id",
+                "effective_date",
+                "program_code",
+                "pc_number",
+                "country_surtax_rate",
+                "province_tax_rate",
+                "surtax_applicable",
+                "total_customs_value",
+                "total_duty_amount",
+                "total_surtax_amount",
+                "duty_paid_value",
+                "sales_tax_amount",
+                "total_tax_due",
+                "notes"
+            ]
+        },
+        {
+            "name": "Province",
+            "path": "/Province",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "province_code",
+                "province_name",
+                "tax_rate"
+            ],
+            "filterable": [
+                "id",
+                "province_code",
+                "province_name",
+                "tax_rate"
+            ]
+        },
+        {
+            "name": "SysConfig",
+            "path": "/SysConfig",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "discount_rate",
+                "tax_rate",
+                "notes",
+                "pc_number",
+                "program_code",
+                "order_title",
+                "order_date",
+                "legal_authority",
+                "effective_date"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "discount_rate",
+                "tax_rate",
+                "notes",
+                "pc_number",
+                "program_code",
+                "order_title",
+                "order_date",
+                "legal_authority",
+                "effective_date"
+            ]
+        },
+        {
+            "name": "HsCodeRate",
+            "path": "/HsCodeRate",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "hs_code",
+                "description",
+                "base_duty_rate",
+                "is_steel_derivative"
+            ],
+            "filterable": [
+                "id",
+                "hs_code",
+                "description",
+                "base_duty_rate",
+                "is_steel_derivative"
+            ]
+        },
+        {
+            "name": "SurtaxLineItem",
+            "path": "/SurtaxLineItem",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "customs_entry_id",
+                "hs_code_id",
+                "line_number",
+                "description",
+                "customs_value",
+                "base_duty_rate",
+                "is_steel_derivative",
+                "surtax_applicable",
+                "base_duty_amount",
+                "surtax_amount"
+            ],
+            "filterable": [
+                "id",
+                "customs_entry_id",
+                "hs_code_id",
+                "line_number",
+                "description",
+                "customs_value",
+                "base_duty_rate",
+                "is_steel_derivative",
+                "surtax_applicable",
+                "base_duty_amount",
+                "surtax_amount"
+            ]
+        }
+    ]
+}

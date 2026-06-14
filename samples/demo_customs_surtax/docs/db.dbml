@@ -1,0 +1,86 @@
+// Copy this text, paste to https://dbdiagram.io/d
+// Or, https://databasediagram.com/app
+// Or, view in VSCode with extension: "DBML Live Preview"
+
+Table CountryOrigin {
+    id INTEGER [primary key]
+    country_code VARCHAR(2) 
+    country_name VARCHAR(100) 
+    trade_agreement VARCHAR(20) 
+    surtax_rate NUMERIC(8, 6) 
+    }
+
+Table CustomsEntry {
+    id INTEGER [primary key]
+    entry_number VARCHAR(30) 
+    importer_name VARCHAR(100) 
+    ship_date DATE 
+    country_origin_id INTEGER 
+    province_id INTEGER 
+    sys_config_id INTEGER 
+    effective_date DATE 
+    program_code VARCHAR(20) 
+    pc_number VARCHAR(20) 
+    country_surtax_rate NUMERIC(8, 6) 
+    province_tax_rate NUMERIC(8, 4) 
+    surtax_applicable INTEGER 
+    total_customs_value NUMERIC(15, 2) 
+    total_duty_amount NUMERIC(15, 2) 
+    total_surtax_amount NUMERIC(15, 2) 
+    duty_paid_value NUMERIC(15, 2) 
+    sales_tax_amount NUMERIC(15, 2) 
+    total_tax_due NUMERIC(15, 2) 
+    notes VARCHAR(200) 
+    }
+
+Table Province {
+    id INTEGER [primary key]
+    province_code VARCHAR(2) 
+    province_name VARCHAR(100) 
+    tax_rate NUMERIC(8, 4) 
+    }
+
+Table SysConfig {
+    id INTEGER [primary key]
+    name TEXT 
+    discount_rate FLOAT 
+    tax_rate FLOAT 
+    notes TEXT 
+    pc_number TEXT 
+    program_code TEXT 
+    order_title TEXT 
+    order_date DATE 
+    legal_authority TEXT 
+    effective_date DATE 
+    }
+
+Table HsCodeRate {
+    id INTEGER [primary key]
+    hs_code VARCHAR(10) 
+    description VARCHAR(200) 
+    base_duty_rate NUMERIC(8, 6) 
+    is_steel_derivative INTEGER 
+    }
+
+Table SurtaxLineItem {
+    id INTEGER [primary key]
+    customs_entry_id INTEGER 
+    hs_code_id INTEGER 
+    line_number INTEGER 
+    description VARCHAR(200) 
+    customs_value NUMERIC(15, 2) 
+    base_duty_rate NUMERIC(8, 6) 
+    is_steel_derivative INTEGER 
+    surtax_applicable INTEGER 
+    base_duty_amount NUMERIC(15, 2) 
+    surtax_amount NUMERIC(15, 2) 
+    }
+
+
+
+// Relationships
+    Ref: CustomsEntry.(country_origin_id) > CountryOrigin.(id)
+    Ref: CustomsEntry.(province_id) > Province.(id)
+    Ref: CustomsEntry.(sys_config_id) > SysConfig.(id)
+    Ref: SurtaxLineItem.(customs_entry_id) > CustomsEntry.(id)
+    Ref: SurtaxLineItem.(hs_code_id) > HsCodeRate.(id)

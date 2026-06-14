@@ -1,0 +1,46 @@
+<o-form #CustomerForm attr="Customer_form_insert" service="Customer" entity="Customer"
+keys="Id" fxLayout="column" show-header="yes" header-actions="I"
+horizontal-scroll="yes"
+after-insert-mode="new" class="standalone-form-container" >
+
+<o-row attr="row1" layout-align="start stretch">
+  <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
+    
+        <o-text-input #CompanyName attr="CompanyName" label=" Company Name" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #ContactName attr="ContactName" label="ContactName" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #ContactTitle attr="ContactTitle" label="ContactTitle" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #Address attr="Address" label="Address" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #City attr="City" label="City" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #Region attr="Region" label="Region" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #PostalCode attr="PostalCode" label="PostalCode" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #Country attr="Country" label="Country" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #Phone attr="Phone" label="Phone" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-text-input #Fax attr="Fax" label="Fax" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-currency-input #Balance attr="Balance" title="Balance" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator="," decimal-separator="."></o-currency-input>
+      
+        <o-currency-input #CreditLimit attr="CreditLimit" title="CreditLimit" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator="," decimal-separator="."></o-currency-input>
+      
+        <o-integer-input #OrderCount attr="OrderCount" label="OrderCount" type="integer" editable="no" required="no" ></o-integer-input>
+      
+        <o-integer-input #UnpaidOrderCount attr="UnpaidOrderCount" label="UnpaidOrderCount" type="integer" editable="no" required="no" ></o-integer-input>
+      
+        <o-text-input #Id attr="Id" label="Id" enabled="yes" required="yes" fxFlex="20%" class="form-field"></o-text-input>
+      
+        <o-integer-input #Client_id attr="Client_id" label="Client_id" type="integer" editable="no" required="no" ></o-integer-input>
+      
+</div>
+</o-row>
+
+<div layout-padding></div>
+
+</o-form>

@@ -1,0 +1,33 @@
+<o-form-layout-manager attr="CustomerDemographic" mode="dialog" title="CUSTOMERDEMOGRAPHIC">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="CustomerDemographicTable" 
+            service="CustomerDemographic" 
+            entity="CustomerDemographic" 
+            title="CUSTOMERDEMOGRAPHIC"
+            keys="Id"
+            columns="Id;CustomerDesc" 
+            header-actions="R;D"
+            visible-columns="Id;CustomerDesc"  
+            sort-columns="Id" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #Id attr="Id" title=" Id" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #CustomerDesc attr="CustomerDesc" title="CustomerDesc" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>
