@@ -26,8 +26,7 @@
                 "ms-python.black-formatter",
                 "ms-python.flake8",
                 "ms-python.isort",
-				// "ms-python.debugpy",
-				"atariq11700.debugpy-old"
+				"ms-python.debugpy"
             ],
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python"
