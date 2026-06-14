@@ -1,5 +1,18 @@
 # Manager Workspace — Claude Code Instructions
 
+## ⚠️ Codespaces: ApiLogicServer is pre-installed globally — no venv
+This devcontainer is built `FROM apilogicserver/api_logic_server`, which already has
+`ApiLogicServer` (and `als`, `genai-logic`, `logicbank`, `safrs`, `Flask`, etc.) installed
+at `/usr/local/bin/python`.
+
+- Do NOT create a `venv/`, do NOT `pip install ApiLogicServer` — it's already there.
+- Just run `als` / `genai-logic` / `python` directly — they resolve to the global install.
+- If a command appears "not found," the issue is PATH/shell state, not a missing install —
+  check `which als` / `which python` (should be `/usr/local/bin/...`) before assuming
+  anything needs installing.
+
+---
+
 ## ⚠️ NEVER run `genai-logic genai`
 Not the preferred approach. Do not run it, even for prompt files.
 
