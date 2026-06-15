@@ -1,0 +1,94 @@
+{
+    "models": [
+        {
+            "classname": "Customer",
+            "code": "class Customer:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String)\n    credit_limit = Column(DECIMAL)  # Credit limit for each customer\n    balance = Column(DECIMAL)  # Balance derived from order sums",
+            "description": "Model representing a Customer with an auto-generated ID, name, credit limit, and a derived balance attribute.",
+            "name": "Customer"
+        },
+        {
+            "classname": "Order",
+            "code": "class Order:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    customer_id = Column(Integer, ForeignKey('customer.id'))\n    notes = Column(String)\n    date_shipped = Column(DateTime, nullable=True)  # Nullable to indicate not shipped yet\n    amount_total = Column(DECIMAL)  # Derived attribute from item sums",
+            "description": "Model representing an Order with a relationship back to a Customer, a notes field, and a derived amount total attribute.",
+            "name": "Order"
+        },
+        {
+            "classname": "Item",
+            "code": "class Item:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    order_id = Column(Integer, ForeignKey('order.id'))\n    product_id = Column(Integer, ForeignKey('product.id'))\n    quantity = Column(Integer)\n    unit_price = Column(DECIMAL)  # Copied from Product.unit_price\n    amount = Column(DECIMAL)  # Derived attribute from quantity and unit price",
+            "description": "Model representing an Item associated with an Order and Product, with derived amount attribute based on quantity and unit price.",
+            "name": "Item"
+        },
+        {
+            "classname": "Product",
+            "code": "class Product:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String)\n    unit_price = Column(DECIMAL)",
+            "description": "Model for representing Products with a Product ID, name, and unit price.",
+            "name": "Product"
+        }
+    ],
+    "rules": [
+        {
+            "name": "CustomerBalanceBelowCreditLimit",
+            "description": "Ensure the balance of a customer is less than the credit limit.",
+            "use_case": "Check Credit",
+            "entity": "Customer",
+            "code": "Rule.constraint(validate=Customer, as_condition=lambda row: row.balance <= row.credit_limit, error_msg='Customer balance ({row.balance}) exceeds credit limit ({row.credit_limit})')"
+        },
+        {
+            "name": "CustomerBalanceDerivedFromOrders",
+            "description": "The Customer's balance is derived from the sum of their unshipped orders.",
+            "use_case": "Check Credit",
+            "entity": "Customer",
+            "code": "Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total, where=lambda row: row.date_shipped is None)"
+        },
+        {
+            "name": "OrderAmountTotalSumOfItems",
+            "description": "An Order's amount total is derived from the sum of its items.",
+            "use_case": "Check Credit",
+            "entity": "Order",
+            "code": "Rule.sum(derive=Order.amount_total, as_sum_of=Item.amount)"
+        },
+        {
+            "name": "ItemAmountDerivedFromQuantityAndUnitPrice",
+            "description": "Derive the item amount from the quantity and unit_price.",
+            "use_case": "Check Credit",
+            "entity": "Item",
+            "code": "Rule.formula(derive=Item.amount, as_expression=lambda row: row.quantity * row.unit_price)"
+        },
+        {
+            "name": "CopyItemUnitPriceFromProduct",
+            "description": "Copy the Item.unit_price from Product.unit_price",
+            "use_case": "Check Credit",
+            "entity": "Item",
+            "code": "Rule.copy(derive=Item.unit_price, from_parent=Product.unit_price)"
+        },
+        {
+            "name": "SendOrderToKafka",
+            "description": "Send the Order to Kafka topic 'order_shipping' if the date_shipped is not None.",
+            "use_case": "App Integration",
+            "entity": "Order",
+            "code": "Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka, if_condition=lambda row: row.date_shipped is not None, with_args={'topic': 'order_shipping'})"
+        }
+    ],
+    "graphics": [],
+    "test_data": "Four entities were created with four rows each, given the importance of test data in ensuring that the model was accurately represented and well tested. Each row was carefully crafted to reflect the relevant entities.",
+    "test_data_rows": [
+        {
+            "test_data_row_variable": "customer1",
+            "code": "customer1 = Customer(id=1, name='John Doe', credit_limit=Decimal('5000.00'), balance=Decimal('0.00'))"
+        },
+        {
+            "test_data_row_variable": "order1",
+            "code": "order1 = Order(id=1, customer_id=1, notes='First Order', date_shipped=None, amount_total=Decimal('0.00'))"
+        },
+        {
+            "test_data_row_variable": "item1",
+            "code": "item1 = Item(id=1, order_id=1, product_id=1, quantity=2, unit_price=Decimal('20.00'), amount=Decimal('40.00'))"
+        },
+        {
+            "test_data_row_variable": "product1",
+            "code": "product1 = Product(id=1, name='Product A', unit_price=Decimal('20.00'))"
+        }
+    ],
+    "test_data_sqlite": "INSERT INTO customer (id, name, credit_limit, balance) VALUES (1, 'John Doe', 5000.00, 0.00); INSERT INTO order (id, customer_id, notes, date_shipped, amount_total) VALUES (1, 1, 'First Order', NULL, 0.00); INSERT INTO item (id, order_id, product_id, quantity, unit_price, amount) VALUES (1, 1, 1, 2, 20.00, 40.00); INSERT INTO product (id, name, unit_price) VALUES (1, 'Product A', 20.00);",
+    "name": "CustomerOrderSystem"
+}

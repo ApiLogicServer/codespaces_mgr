@@ -58,19 +58,28 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 
 ## 🚀 First Time Here?
 
-<details markdown>
-<summary>🔨 Do it — 30 min hands-on tour</summary>
+<details markdown open>
+<summary>⚡ See it work — 5 minute shock & awe</summary>
 
 &nbsp;
 
-**Create basic_demo** (auto-opens with guided tour option):
-```bash
-genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basic_demo.sqlite
+**Create a system from a short natural-language spec** — say to your AI assistant:
+
+```
+implement project genai_demo from samples/prompts/genai_demo.prompt
 ```
 
-**Inside the project:** Say to your AI assistant: *"Guide me through basic_demo"* (30-45 min hands-on tour).
+This builds a full system (customers, orders, items, products — API + Admin App + declarative rules) in seconds, with **zero code written**.
 
-> Teaches API creation, declarative rules, security, and Python customization. Fail-safe — scripts ensure no coding errors.
+**Run it (F5)** using "API Logic Server Run (run project from manager)", and open the Admin App.
+
+**Now break it on purpose:** create a new Order and add Items until the order total exceeds the customer's credit limit. Save — it fails ("Eeeks!").
+
+**Ask your AI assistant:** *"Why did that fail?"* — it explains the credit-limit rule enforcing it, and shows you where it lives in `logic/declare_logic.py`.
+
+**Iterate:** try asking for a new rule, e.g. *"Customers should not be able to create new orders if they have unresolved past due letters."* — watch the AI add and explain the new rule.
+
+> The key beat: you didn't *read about* rules, you *triggered* one, got surprised by an error, and the AI explained *your own system* back to you. That's the GenAI-Logic story in one sitting.
 
 </details>
 
@@ -82,6 +91,24 @@ genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basi
 &nbsp;
 
 Open `samples/basic_demo_logic_gov` and read the `readme` — a working system (API, rules, governance reports) with a side-by-side comparison of 5 declarative rules vs. 200 lines of AI-generated procedural code, including the 2 bugs the procedural version missed.
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>🔨 Go deeper — 30-45 min guided tour</summary>
+
+&nbsp;
+
+**Create basic_demo** (auto-opens with guided tour option):
+```bash
+genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basic_demo.sqlite
+```
+
+**Inside the project:** Say to your AI assistant: *"Guide me through basic_demo"* (30-45 min hands-on tour).
+
+> Teaches API creation, declarative rules, security, and Python customization. Fail-safe — scripts ensure no coding errors.
 
 </details>
 
