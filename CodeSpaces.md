@@ -85,6 +85,19 @@ So, do preceding 2 issues mean we want a tweaked readme
   - Flags Kafka/Keycloak demos as out-of-scope for the Codespaces quick path (issue 4)
   - Skips/abbreviates the existing "Setup Codespaces" section (README.md:766), which explains *how to get into* Codespaces — moot once you're already there.
 
+### 5.1 User Path
+
+I have partially verified these 'shock and awe' steps I am considering:
+
+1. `implement basic_demo from samples/prompts/genai_demo.prompt`
+2. Run it (F5), open the Admin UI — fully working API + UI, zero code written.
+3. Then **deliberately try to exceed credit limit** on an order — it fails ("Eeeks!").
+4. Tell the AI it failed. The AI explains the rule that's enforcing it (and where it lives in `logic/declare_logic.py`).
+5. User explores from there — other rules, other FAQs.
+6. Iterate: *"Customers should not be able to create new orders if they have unresolved past due letters."*
+
+The key beat is step 4: the user doesn't *read about* rules, they *trigger* one, get surprised by an error, and the AI walks them through what just enforced it. That's more convincing than a guided "watch this work" demo — the user caused the failure themselves and the AI explains *their own* system back to them.
+
 ## 6. Reliability
 
 Both tries, I had to: Cmd+Shift+P → type "Reload Window" → Enter.
@@ -116,6 +129,51 @@ Is < Claude Sonnet 4.6.... up to the task??
 3. **Shock & awe pre-build + tweaked Codespaces README** (#3 + #5) — content/UX exercise, depends on #1 being solid.
 4. **Kafka/Keycloak scoping note** (#4) — simple documentation change, can ride along with #5.
 5. **AI Model** (#7) — no action needed; already documented.
+
+---
+
+## Internal Procedures — local-mgr vs codespaces-mgr
+
+**Terminology:**
+- **local-mgr** — the Seminal Manager at `~/dev/ApiLogicServer/ApiLogicServer-dev/` (root of this repo's parent). Owns a shared `venv/` per `dev-architecture.md`; used for framework development and BLT.
+- **codespaces-mgr** — this repo (`ApiLogicServer/codespaces_mgr`), a separate GitHub repo for the Codespaces/cloud trial experience. No `venv/` — relies on the globally pre-installed ApiLogicServer in the devcontainer image (`/usr/local/bin/python`).
+
+### Goal: recreate codespaces-mgr as close to "copy local-mgr" as possible
+
+codespaces-mgr is **not** part of the BLT propagation flow (Seminal Manager → BLT Manager → ApiLogicServer-src). It's a snapshot of local-mgr's *content* (samples, prompts, CE/training docs, README) with a small, fixed set of **environment-specific overrides** for the no-venv/global-Python container.
+
+Pattern: same idea as per-project `.devcontainer-option/` (user renames to `.devcontainer` to opt in to Codespaces config). Apply it at the Manager level too — codespaces-mgr keeps a `.devcontainer-option/` folder containing everything Codespaces-only, including a conversion script.
+
+### Shared improvements — adopt in BOTH mgrs (not Codespaces-specific)
+
+These came out of Codespaces testing but are general improvements. Push them to **local-mgr** too, so a future "copy local-mgr → codespaces-mgr" inherits them automatically and the conversion script doesn't need to touch them:
+
+- **`.vscode/launch.json`** — "API Logic Server Run (run project from manager)" as the **default F5 target** (move to top of `configurations`). Already done in codespaces-mgr (`cd8e91f`).
+- **OBX "First Time Here?" rework** — new shock-and-awe path (section 5.1 above: create from `genai_demo.prompt` → run → hit credit-limit rule → AI explains → explore → iterate with a new rule), replacing/reordering the current "Do it" 30-45 min tour as the *first* step. Sequence becomes: **shock & awe → understand it → deep-dive tutorial**. This is a README change, and per `dev-architecture.md` the gold source for README content is the Docs repo (`org_git/Docs/docs/Manager-readme.md` or equivalent) — edit there, not in either mgr's `README.md` directly, so both mgrs pick it up via `copy_md()`/normal propagation.
+
+### Codespaces-only overrides — keep in `.devcontainer-option/` + conversion script
+
+These are structurally required by the no-venv/global-Python container and should **not** be pushed to local-mgr (local-mgr's `venv/`-based settings are correct for itself):
+
+- **`.vscode/settings.json`** — `python.defaultInterpreterPath` → `/usr/local/bin/python` (not `${workspaceFolder}/venv/bin/python`); review `python.terminal.activateEnvironment`/`activateEnvInCurrentTerminal`.
+- **`.devcontainer/devcontainer.json`** — root devcontainer (renamed from `.devcontainer-option/` on setup, same pattern as per-project samples). Uses `ms-python.debugpy` (not the unofficial fork), `/usr/local/bin/python` as interpreter, port 5656 forwarded for AdminApp.
+- **`.devcontainer/setup.sh`** — Codespaces port-visibility script.
+- **`.gitignore`** — exclude `venv/` and `.venv/` (codespaces-mgr has neither; guards against an agent mistakenly creating one).
+- **`CLAUDE.md`** — Codespaces-specific notes: ApiLogicServer is pre-installed globally, do not create `venv/`/`.venv/` or `pip install ApiLogicServer`, how to recognize/fix a stray `.venv` shadowing the global interpreter.
+- **README** — Codespaces-specific framing per issue 5 (leads with shock & awe, flags Kafka/Keycloak as local-only, abbreviates "Setup Codespaces" since you're already there). Layered on top of the shared OBX rework above, not a replacement for it.
+
+### Recreation procedure (sketch)
+
+1. `rsync` copy local-mgr → codespaces-mgr, excluding `venv/`, `__pycache__/`, `logs/`, `.git/`.
+2. Run a conversion script (lives in `.devcontainer-option/`, or a `setup-codespaces-mgr.sh` alongside it) that:
+   - Renames `.devcontainer-option/` → `.devcontainer/` (root level).
+   - Overwrites `.vscode/settings.json` with the codespaces-mgr interpreter path.
+   - Merges/appends the Codespaces-specific block into `CLAUDE.md`.
+   - Adds `venv/`, `.venv/` to `.gitignore` if not already present.
+3. `git init` (or re-point remote), commit, push to `ApiLogicServer/codespaces_mgr`.
+4. Open in Codespaces, verify per issue 6 (no manual "Reload Window" needed).
+
+**Not yet built:** the conversion script itself. The list above is the spec for it — build once the shared-improvements items (launch.json default, OBX rework) have landed in local-mgr, so the script's job stays minimal (just the genuinely environment-specific files).
 
 ---
 
