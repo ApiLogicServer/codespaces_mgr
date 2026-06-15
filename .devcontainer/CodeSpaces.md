@@ -7,11 +7,19 @@ I believe making the *Manager* available will:
 
 Here are issues to work:
 
-## 1. venv
+## 1. venv ✅ DONE
 
 Needs to work without fiddling.  It should - it's the global Python.
 
-**Findings:**
+**Findings (superseded):** The original plan below assumed codespaces-mgr would have its own `venv/` (like local-mgr). The actual architecture is the opposite: codespaces-mgr has **no `venv/`** — ApiLogicServer is pre-installed globally in the devcontainer image (`apilogicserver/api_logic_server`, `/usr/local/bin/python`). `als` works fine from the terminal.
+
+**Real bug found in live testing (2026-06-14):** F5 ("API Logic Server Run") failed because `.vscode/settings.json`'s `python.defaultInterpreterPath` was `${workspaceFolder}/venv/bin/python` (correct for local-mgr, but codespaces-mgr has no `venv/` — this path never existed). `.devcontainer/devcontainer.json` separately sets `/usr/local/bin/python`, but `.vscode/settings.json` overrides it.
+
+**Fix:** `create_codespaces_mgr.sh` step 2 now rewrites `.vscode/settings.json`'s `python.defaultInterpreterPath` from `${workspaceFolder}/venv/bin/python` → `/usr/local/bin/python` after the scoped sync (since `.vscode/` is otherwise synced verbatim from local-mgr, where the venv-based path is correct). Applied directly to `org_git/codespaces_mgr` and pushed.
+
+<details markdown>
+<summary>Original (superseded) plan</summary>
+
 - `.vscode/settings.json` already points to `${workspaceFolder}/venv/bin/python` — correct.
 - But every `.devcontainer-option/devcontainer.json` (basic_demo, scaffold, samples/*, tests/*) hardcodes `"python.defaultInterpreterPath": "/usr/local/bin/python"` — leftover from when each sample was a standalone project with its own venv. Wrong for the Manager layout.
 - No `.devcontainer` exists at the Manager root at all, so Codespaces falls back to a default Python, requiring manual interpreter selection.
@@ -26,6 +34,8 @@ pip install ApiLogicServer
 ```
 - Current Manager venv: Python 3.13.5, `ApiLogicServer==17.0.34` (pulls in `logicbank`, `safrs`, `Flask`, etc. as transitive deps — no `requirements.txt` at Manager root).
 - `postCreateCommand` for the new devcontainer: `python3 -m venv venv && venv/bin/pip install --upgrade pip && venv/bin/pip install ApiLogicServer`
+
+</details>
 
 ---
 
@@ -108,6 +118,8 @@ Can we allow for this?
 
 **Recommendation:** Same fix as issue 1 — root-level `.devcontainer/devcontainer.json` with correct interpreter path + `postCreateCommand` that primes the venv before first interpreter scan. Verify venv creation timing relative to VS Code startup.
 
+**Update (2026-06-14), F5 live test:** Hit "F5 timed out waiting for launcher to connect" on first try after pulling the synced repo (`05393cb`). Root cause was a stale extension host from before `.vscode/settings.json`'s `python.defaultInterpreterPath` fix (`ba2ca5a` — was `${workspaceFolder}/venv/bin/python`, a path that doesn't exist in codespaces-mgr; now `/usr/local/bin/python`). **Cmd+Shift+P → "Developer: Reload Window"** picked up the corrected interpreter (3.12.8 at `/usr/local/bin/python`, marked "Recommended"), and F5 ("API Logic Server Run") then worked against `samples/basic_demo_sample`. Confirms this issue's root cause: interpreter/settings changes need a reload to take effect — same fix direction as above (get the interpreter path right *before* first scan, via `.devcontainer/devcontainer.json`'s `postCreateCommand` or `settings`, so no reload is needed at all).
+
 ## 7. AI Model
 
 Is < Claude Sonnet 4.6.... up to the task??
@@ -159,7 +171,7 @@ These are structurally required by the no-venv/global-Python container and shoul
 - **`.devcontainer/setup.sh`** — Codespaces port-visibility script.
 - **`.gitignore`** — exclude `venv/` and `.venv/` (codespaces-mgr has neither; guards against an agent mistakenly creating one).
 - **`CLAUDE.md`** — Codespaces-specific notes: ApiLogicServer is pre-installed globally, do not create `venv/`/`.venv/` or `pip install ApiLogicServer`, how to recognize/fix a stray `.venv` shadowing the global interpreter.
-- **README** — Codespaces-specific framing per issue 5 (leads with shock & awe, flags Kafka/Keycloak as local-only, abbreviates "Setup Codespaces" since you're already there). Layered on top of the shared OBX rework above, not a replacement for it.
+- **README** — Codespaces-specific framing per issue 5 (leads with shock & awe, flags Kafka/Keycloak as local-only, abbreviates "Setup Codespaces" since you're already there). Layered on top of the shared OBX rework above, not a replacement for it. Also: a one-line "🤖 AI Assistance" note that the Chat panel may default to a non-Claude model in Codespaces and the user must pick Claude Sonnet 4.6 manually each session — **`README.md` is in `SYNC_PATHS`, so re-add this note (and re-check the `demo_customs_surtax` frontmatter line) after each `create_codespaces_mgr.sh` run** until this is automated.
 
 ### Recreation procedure — `create_codespaces_mgr.sh` (built, validated)
 
