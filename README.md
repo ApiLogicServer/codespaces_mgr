@@ -59,7 +59,7 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 ## 🚀 First Time Here?
 
 <details markdown open>
-<summary>⚡ See it work — 5 minute shock & awe</summary>
+<summary>⚡ See it work — 5 minute first look</summary>
 
 &nbsp;
 
@@ -80,6 +80,8 @@ This builds a full system (customers, orders, items, products — API + Admin Ap
 **Iterate:** try asking for a new rule, e.g. *"Customers should not be able to create new orders if they have unresolved past due letters."* — watch the AI add and explain the new rule.
 
 > The key beat: you didn't *read about* rules, you *triggered* one, got surprised by an error, and the AI explained *your own system* back to you. That's the GenAI-Logic story in one sitting.
+
+**Going further — Enterprise Integration (EAI):** this demo's `Use case: App Integration` already publishes shipped orders to Kafka (outbound). For the inbound side — accepting B2B orders from partner systems via a Custom API or Kafka subscriber, with field-mapping by example (so partners send `"Account": "Alice"` and `"Items": [{"Name": "Widget", ...}]`, not internal IDs) — see `samples/basic_demo_eai`. It's a fully working, AI-generated example of the same pattern, ready to run.
 
 </details>
 
