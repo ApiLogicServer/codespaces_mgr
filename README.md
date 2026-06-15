@@ -48,6 +48,8 @@ Please load `.github/.copilot-instructions.md`.
 
 We get consistently good results with Claude Sonnet 4.6 (GitHub Copilot or Claude Code extension). "Ask" mode will not work — use Agent mode.
 
+**In Codespaces:** the Chat panel may default to a different model (e.g. GPT). Click the model name at the bottom of the Chat panel and select **Claude Sonnet 4.6** before starting — this is a per-session choice and isn't currently configurable as a workspace default.
+
 For more information, see [AI-Enabled Projects](https://apilogicserver.github.io/Docs/Project-AI-Enabled/) or [click here](https://apilogicserver.github.io/Docs/Manager-readme/).
 
 </details>

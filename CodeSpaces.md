@@ -116,3 +116,24 @@ Is < Claude Sonnet 4.6.... up to the task??
 3. **Shock & awe pre-build + tweaked Codespaces README** (#3 + #5) — content/UX exercise, depends on #1 being solid.
 4. **Kafka/Keycloak scoping note** (#4) — simple documentation change, can ride along with #5.
 5. **AI Model** (#7) — no action needed; already documented.
+
+---
+
+## Repo / README changes log (from live Codespaces testing)
+
+Tracking edits made to the repo as issues are found during real Codespaces sessions
+(repo: `ApiLogicServer/codespaces_mgr`).
+
+- `.devcontainer/devcontainer.json` — replaced unofficial `atariq11700.debugpy-old` with
+  official `ms-python.debugpy`; fixed a total VS Code window hang on first file open.
+- `.vscode/settings.json` — removed `workbench.editorAssociations` forcing `*.md` into
+  the markdown-preview webview (was hanging on open). `.md` now opens as text; Preview
+  button itself still doesn't render — **deferred** (UX issue, not session-blocking).
+- `.vscode/launch.json` — moved "API Logic Server Run (run project from manager)" config
+  to the top of the `configurations` array, so it's the default F5 target.
+- `CLAUDE.md` — added note that ApiLogicServer is pre-installed globally in the
+  Codespaces container (`/usr/local/bin/python`); agents should not create a `venv/` or
+  `pip install ApiLogicServer`.
+- `README.md` (AI Assistance section) — added note that the Chat panel may default to a
+  non-Claude model in Codespaces; user must manually pick Claude Sonnet 4.6 via the model
+  picker each session (no workspace-default setting exists for this in VS Code).
