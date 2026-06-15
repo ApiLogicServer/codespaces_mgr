@@ -66,7 +66,7 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 **Create a system from a short natural-language spec** — say to your AI assistant:
 
 ```
-implement project genai_demo from samples/prompts/genai_demo.prompt
+implement project basic_demo from samples/prompts/genai_demo.prompt
 ```
 
 This builds a full system (customers, orders, items, products — API + Admin App + declarative rules) in seconds, with **zero code written**.
