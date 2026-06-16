@@ -63,7 +63,7 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 
 &nbsp;
 
-**Create a system from a short natural-language spec** — say to your AI assistant:
+Most code generators produce code you then have to own. This one produces *models* — executable, maintainable. Say to your AI assistant:
 
 ```
 implement project basic_demo from samples/prompts/genai_demo.prompt
@@ -73,13 +73,19 @@ This builds a full system (customers, orders, items, products — API + Admin Ap
 
 **Run it (F5)** using "API Logic Server Run (run project from manager)", and open the Admin App.
 
-**Now break it on purpose:** create a new Order and add Items until the order total exceeds the customer's credit limit. Save — it fails ("Eeeks!").
+**What did it actually create?** Not pages of code to maintain — a data model (`database/models.py`), and from it: a full JSONAPI with Swagger, pagination, optimistic locking, and relationship traversal (`api/expose_api_models.py` — 52 lines, zero per-table code), plus an admin app (`ui/admin/admin.yaml`). Each small, readable, yours. Think of it as *model-driven generation*. The project is plain Python — add custom APIs, vibe-code a UI, or integrate whatever you'd normally reach for. Nothing locks you in.
 
-**Ask your AI assistant:** *"Why did that fail?"* — it explains the credit-limit rule enforcing it, and shows you where it lives in `logic/declare_logic.py`.
+**Now trigger the logic:** open Order 1 / Alice in the Admin App, edit the Widget item, and change the quantity to a very large number. Save — it fails.
+
+**Ask your AI assistant:** *"Why did that fail?"* — it explains the credit-limit rule and shows where it lives.
+
+**Then look at the logic:** open `basic_demo/logic/logic_discovery/` — that chain (item → order → customer) is 5 rules. 5 rules replace ~200 lines of procedural code, and catch 2 bugs the procedural version misses.
+
+⚠️ Rules are automatically invoked, reused, and ordered — breaking every assumption you have about how logic works. That's what *declarative* means: you describe the logic, the engine handles invocation, ordering, and reuse. It's the same principle behind the models above — and it's what makes 5 rules replace 200 lines. You just witnessed automatic reuse: the spec said *add*, the logic fired on *update*, and nobody called it. The other two are just as surprising. To use this effectively, your assistant has a short summary — ask: *"What are rules?"*
 
 **Iterate:** try asking for a new rule, e.g. *"Customers should not be able to create new orders if they have unresolved past due letters."* — watch the AI add and explain the new rule.
 
-> The key beat: you didn't *read about* rules, you *triggered* one, got surprised by an error, and the AI explained *your own system* back to you. That's the GenAI-Logic story in one sitting.
+> The key beat: you didn't *read about* rules — you triggered one, saw the chain fire across three tables, found 5 lines of logic, and asked why. That's the GenAI-Logic story in one sitting.
 
 **Going further — Enterprise Integration (EAI):** this demo's `Use case: App Integration` already publishes shipped orders to Kafka (outbound). For the inbound side — accepting B2B orders from partner systems via a Custom API or Kafka subscriber, with field-mapping by example (so partners send `"Account": "Alice"` and `"Items": [{"Name": "Widget", ...}]`, not internal IDs) — see `samples/basic_demo_eai`. It's a fully working, AI-generated example of the same pattern, ready to run.
 
