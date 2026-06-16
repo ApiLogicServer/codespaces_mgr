@@ -58,6 +58,8 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 
 ## 🚀 First Time Here?
 
+> **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.
+
 <details markdown open>
 <summary>⚡ See it work — 5 minute first look</summary>
 

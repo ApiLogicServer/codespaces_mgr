@@ -130,6 +130,21 @@ else
     echo "  (no interpreter path found, skipped)"
 fi
 
+# README.md - inject Codespaces-only browser note after the OBX heading (idempotent)
+# Gold Manager-readme.md is shared; we don't fork it — inject here instead.
+# Sentinel: "## 🚀 First Time Here?" — if that heading changes, update this grep too.
+echo "Applying README.md browser note injection..."
+BROWSER_NOTE="> **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser."
+if ! grep -q "Use Chrome or Edge" "$TARGET/README.md"; then
+    sed -i.bak "/## 🚀 First Time Here?/a\\
+\\
+$BROWSER_NOTE" "$TARGET/README.md"
+    rm -f "$TARGET/README.md.bak"
+    echo "  ✅ Browser note injected"
+else
+    echo "  (already present, skipped)"
+fi
+
 # .vscode/launch.json - replace with Codespaces-trimmed version (2 configs only)
 # local-mgr launch.json has 40+ dev/internal configs; rsync would copy all of them
 echo "Applying .vscode/launch.json override (Codespaces-trimmed version)..."
