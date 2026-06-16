@@ -130,6 +130,12 @@ else
     echo "  (no interpreter path found, skipped)"
 fi
 
+# .vscode/launch.json - replace with Codespaces-trimmed version (2 configs only)
+# local-mgr launch.json has 40+ dev/internal configs; rsync would copy all of them
+echo "Applying .vscode/launch.json override (Codespaces-trimmed version)..."
+cp "$OVERRIDES/launch.json" "$TARGET/.vscode/launch.json"
+echo "  ✅ launch.json replaced with Codespaces-trimmed version"
+
 # samples/*/. vscode/settings.json - same fix for all sample projects
 # (samples have ../../venv/bin/python or baked local paths - none exist in the container)
 echo "Applying .vscode/settings.json override (all samples)..."
