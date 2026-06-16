@@ -1,4 +1,3 @@
-
 # Welcome to GenAI-Logic
 
 What is GenAI-Logic:
