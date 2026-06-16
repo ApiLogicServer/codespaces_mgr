@@ -133,14 +133,25 @@ fi
 # README.md - inject Codespaces-only browser note after the OBX heading (idempotent)
 # Gold Manager-readme.md is shared; we don't fork it — inject here instead.
 # Sentinel: "## 🚀 First Time Here?" — if that heading changes, update this grep too.
-echo "Applying README.md browser note injection..."
-BROWSER_NOTE="> **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser."
+echo "Applying README.md Codespaces notes injection..."
 if ! grep -q "Use Chrome or Edge" "$TARGET/README.md"; then
-    sed -i.bak "/## 🚀 First Time Here?/a\\
-\\
-$BROWSER_NOTE" "$TARGET/README.md"
-    rm -f "$TARGET/README.md.bak"
-    echo "  ✅ Browser note injected"
+    # Insert two-line blockquote block after the OBX heading
+    python3 - "$TARGET/README.md" <<'PYEOF'
+import sys, re
+path = sys.argv[1]
+text = open(path).read()
+insert = (
+    "\n"
+    "> **Codespaces:** This workspace runs in GitHub Codespaces — a cloud VS Code environment, "
+    "no local install needed. New to Codespaces? See "
+    "[GitHub Codespaces docs](https://docs.github.com/en/codespaces).\n"
+    ">\n"
+    "> **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.\n"
+)
+text = text.replace("## 🚀 First Time Here?\n", "## 🚀 First Time Here?\n" + insert, 1)
+open(path, "w").write(text)
+PYEOF
+    echo "  ✅ Codespaces + browser notes injected"
 else
     echo "  (already present, skipped)"
 fi

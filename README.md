@@ -58,6 +58,8 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 
 ## 🚀 First Time Here?
 
+> **Codespaces:** This workspace runs in GitHub Codespaces — a cloud VS Code environment, no local install needed. New to Codespaces? See [GitHub Codespaces docs](https://docs.github.com/en/codespaces).
+>
 > **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.
 
 <details markdown open>
