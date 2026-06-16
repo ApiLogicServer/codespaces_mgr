@@ -130,6 +130,21 @@ else
     echo "  (no interpreter path found, skipped)"
 fi
 
+# README.md - strip front matter (---...---) and <style>...</style> block
+# These are mkdocs artifacts; copy_md() strips them for local-mgr but rsync copies them raw.
+echo "Stripping README.md front matter and style block..."
+python3 - "$TARGET/README.md" <<'PYEOF'
+import sys, re
+path = sys.argv[1]
+text = open(path).read()
+# Strip YAML front matter
+text = re.sub(r'^---\n.*?\n---\n', '', text, count=1, flags=re.DOTALL)
+# Strip <style>...</style> block
+text = re.sub(r'<style>.*?</style>\n?', '', text, count=1, flags=re.DOTALL)
+open(path, "w").write(text)
+PYEOF
+echo "  ✅ Front matter and style block stripped"
+
 # README.md - inject Codespaces-only browser note after the OBX heading (idempotent)
 # Gold Manager-readme.md is shared; we don't fork it — inject here instead.
 # Sentinel: "## 🚀 First Time Here?" — if that heading changes, update this grep too.

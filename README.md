@@ -1,27 +1,3 @@
----
-title: Welcome - see end for instructions to hide this
-Description: Instant mcp-enabled microservices, standard projects, declarative business logic
-Source: docs/Manager-readme
-version info: 17.00.07 (04/30/2026)
-do_process_code_block_titles: True
-Used: Manager Readme (via copy_md())
-demo_customs: Customs-readme
-demo_customs_surtax: Customs-readme-surtax
-demo_kafka: Sample-Integration
-demo_allo: Sample_Allo_Dept_GL_readme
-demo_ai_rules: Sample-ai-rules
-demo_mcp_send: Sample-Basic-Demo-MCP-Send-Email
-demo_eai: Sample-Basic-EAI
-demo_vibe: Sample-Basic-Demo-Vibe
-demo_copilot_mcp_discovery: Sample-ai-mcp
-basic_demo: Sample-Basic-Demo
----
-<style>
-  -typeset h1,
-  -content__button {
-    display: none;
-  }
-</style>
 
 # Welcome to GenAI-Logic
 
