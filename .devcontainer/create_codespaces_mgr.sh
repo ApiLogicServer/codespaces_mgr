@@ -18,6 +18,9 @@
 #        (overwriting any .devcontainer copied from local-mgr)
 #      - CLAUDE.md.append     -> prepended to <target>/CLAUDE.md (if not already present)
 #      - gitignore.append     -> appended to <target>/.gitignore (if not already present)
+#      - .vscode/settings.json -> python.defaultInterpreterPath rewritten from
+#        local-mgr's "${workspaceFolder}/venv/bin/python" to "/usr/local/bin/python"
+#        (codespaces-mgr has no venv/ - ApiLogicServer is installed globally)
 #   3. Leaves <target> staged for review/commit (does NOT commit or push)
 
 set -euo pipefail
@@ -116,6 +119,27 @@ if ! grep -qx ".venv/" "$TARGET/.gitignore"; then
 else
     echo "  (already present, skipped)"
 fi
+
+# .vscode/settings.json - no venv/ in codespaces-mgr; use the global interpreter
+echo "Applying .vscode/settings.json override (Manager root)..."
+if grep -q '"python.defaultInterpreterPath"' "$TARGET/.vscode/settings.json"; then
+    sed -i.bak 's|"python.defaultInterpreterPath": ".*"|"python.defaultInterpreterPath": "/usr/local/bin/python"|' "$TARGET/.vscode/settings.json"
+    rm -f "$TARGET/.vscode/settings.json.bak"
+    echo "  ✅ Manager root settings.json patched"
+else
+    echo "  (no interpreter path found, skipped)"
+fi
+
+# samples/*/. vscode/settings.json - same fix for all sample projects
+# (samples have ../../venv/bin/python or baked local paths - none exist in the container)
+echo "Applying .vscode/settings.json override (all samples)..."
+find "$TARGET/samples" -name "settings.json" -path "*/.vscode/*" | while read f; do
+    if grep -q '"python.defaultInterpreterPath"' "$f"; then
+        sed -i.bak 's|"python.defaultInterpreterPath": ".*"|"python.defaultInterpreterPath": "/usr/local/bin/python"|' "$f"
+        rm -f "${f}.bak"
+        echo "  ✅ $(basename $(dirname $(dirname $f)))"
+    fi
+done
 
 echo
 echo "Done. Review changes in $TARGET, then commit and push:"
