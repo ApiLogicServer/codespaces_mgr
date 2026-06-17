@@ -44,7 +44,7 @@ Open the Claude Code terminal in the Manager.
 **C. Implement the project from the prompt**
 
 ```text title='🤖 Paste this into the Claude Code chat (Agent mode, Claude Sonnet 4.6 recommended)'
-implement project demo_customs_surtax from samples/prompts/customs_cbsa.prompt.md
+implement project demo_customs_surtax from samples/prompts/customs_cbsa.prompt
 ```
 
 This single instruction drives Method 4 (System Creation Services) end-to-end:
@@ -53,7 +53,7 @@ This single instruction drives Method 4 (System Creation Services) end-to-end:
 2. Creates the project (`genai-logic create --project_name=demo_customs_surtax ...`), generating the database, models, API, and Admin App from the prompt
 3. Translates the prompt's business rules into declarative `logic/logic_discovery` rules (not procedural FrankenCode)
 4. Generates seed test data and runs the test suite
-5. Writes `docs/requirements/readme.md` (provenance) and `docs/requirements/ad-libs.md` (every assumption made beyond the prompt spec)
+5. Writes `docs/requirements/readme` (provenance) and `docs/requirements/ad-libs` (every assumption made beyond the prompt spec)
 
 </details>
 
@@ -61,7 +61,7 @@ This single instruction drives Method 4 (System Creation Services) end-to-end:
 
 ## The Prompt
 
-```text title='Prompt: samples/prompts/customs_cbsa.prompt.md'
+```text title='Prompt: samples/prompts/customs_cbsa.prompt'
 Create a fully functional application and database
  for CBSA Steel Derivative Goods Surtax Order PC Number: 2025-0917 
  on 2025-12-11 and annexed Steel Derivative Goods Surtax Order 
