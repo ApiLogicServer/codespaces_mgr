@@ -21,9 +21,9 @@ Please load `.github/.copilot-instructions.md`.
 
 &nbsp;
 
-We get consistently good results with Claude Sonnet 4.6 (GitHub Copilot or Claude Code extension). "Ask" mode will not work — use Agent mode.
+We get consistently good results with **Claude Sonnet 4.6** (GitHub Copilot or Claude Code extension). "Ask" mode will not work — use **Agent mode**.
 
-**In Codespaces:** the Chat panel may default to a different model (e.g. GPT). Click the model name at the bottom of the Chat panel and select **Claude Sonnet 4.6** before starting — this is a per-session choice and isn't currently configurable as a workspace default.
+To select Sonnet 4.6 in the Copilot chat panel: click **Agent** → the **gear icon** → choose **Claude Sonnet 4.6**.
 
 For more information, see [AI-Enabled Projects](https://apilogicserver.github.io/Docs/Project-AI-Enabled/) or [click here](https://apilogicserver.github.io/Docs/Manager-readme/).
 
@@ -32,41 +32,115 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 &nbsp;
 
 ## 🚀 First Time Here?
+<!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.sh injects browser note here — do not rename this heading -->
 
 > **Codespaces:** This workspace runs in GitHub Codespaces — a cloud VS Code environment, no local install needed. [Open a codespace](https://codespaces.new/ApiLogicServer/codespaces_mgr) or see the [GitHub Codespaces docs](https://docs.github.com/en/codespaces).
 >
 > **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.
 
-<details markdown open>
+<details>
 <summary>⚡ See it work — 5 minute first look</summary>
 
 &nbsp;
 
-Most code generators produce code you then have to own. This one produces *models* — executable, maintainable. Say to your AI assistant:
+<details markdown>
+<summary>1. Create — database, API, Admin App and business logic from a prompt</summary>
+
+<br>Say this to your AI assistant (allow 5-10 mins):
 
 ```
-implement project basic_demo from samples/prompts/genai_demo.prompt
+Create basic_demo, with customers, orders, items and products.
+
+Include a notes field for orders.
+
+On Placing Orders, Check Credit    
+    1. The Customer's balance is less than the credit limit
+    2. The Customer's balance is the sum of the Order amount_total where date_shipped is null
+    3. The Order's amount_total is the sum of the Item amount
+    4. The Item amount is the quantity * unit_price
+    5. The Item unit_price is copied from the Product unit_price
+
+Use case: App Integration
+    1. Publish the Order to Kafka topic 'order_shipping' if the date_shipped is not None.
 ```
 
-This builds a full system (customers, orders, items, products — API + Admin App + declarative rules) in seconds, with **zero code written**.
+Most code generators produce code you then have to own. This one produces *models* — executable, maintainable:
 
-**Run it (F5)** using "API Logic Server Run (run project from manager)", and open the Admin App.
+1. **Data model** — `database/models.py`
+2. **Full JSONAPI** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
+3. **Admin App** — `ui/admin/admin.yaml`
 
-**What did it actually create?** Not pages of code to maintain — a data model (`database/models.py`), and from it: a full JSONAPI with Swagger, pagination, optimistic locking, and relationship traversal (`api/expose_api_models.py` — 52 lines, zero per-table code), plus an admin app (`ui/admin/admin.yaml`). Each small, readable, yours. Think of it as *model-driven generation*. The project is plain Python — add custom APIs, vibe-code a UI, or integrate whatever you'd normally reach for. Nothing locks you in.
+Each small, readable, yours. Plain Python — nothing locks you in.
 
-**Now trigger the logic:** open Order 1 / Alice in the Admin App, edit the Widget item, and change the quantity to a very large number. Save — it fails.
+</details>
 
-**Ask your AI assistant:** *"Why did that fail?"* — it explains the credit-limit rule and shows where it lives.
+<br>
 
-**Then look at the logic:** open `basic_demo/logic/logic_discovery/` — that chain (item → order → customer) is 5 rules. 5 rules replace ~200 lines of procedural code, and catch 2 bugs the procedural version misses.
+<details markdown>
+<summary>2. Run it — F5, then open the Admin App</summary>
 
-⚠️ Rules are automatically invoked, reused, and ordered — breaking every assumption you have about how logic works. That's what *declarative* means: you describe the logic, the engine handles invocation, ordering, and reuse. It's the same principle behind the models above — and it's what makes 5 rules replace 200 lines. You just witnessed automatic reuse: the spec said *add*, the logic fired on *update*, and nobody called it. The other two are just as surprising. To use this effectively, your assistant has a short summary — ask: *"What are rules?"*
+<br>Press F5 using "API Logic Server Run (run project from manager)", and open the Admin App. Explore the API via Swagger, browse the data, and follow the relationships — all auto-generated from the data model.
 
-**Iterate:** try asking for a new rule, e.g. *"Customers should not be able to create new orders if they have unresolved past due letters."* — watch the AI add and explain the new rule.
+</details>
+
+<br>
+
+<details markdown>
+<summary>3. Trigger the logic — save a very large quantity</summary>
+
+<br>Open Order 1 / Alice in the Admin App, edit the Widget item, and change the quantity to a very large number. Save — it fails.
+
+</details>
+
+<br>
+
+<details markdown>
+<summary>4. Ask your AI assistant — "Eeks, why did that save fail?"</summary>
+
+<br>Your AI explains the credit-limit rule and shows where it lives.
+
+</details>
+
+<br>
+
+<details markdown>
+<summary>5. Look at the logic — 5 rules replace 200 lines of code</summary>
+
+<br>Open `basic_demo/logic/logic_discovery/` — that chain (item → order → customer) is just 5 rules.
+
+- **5 rules** replace ~200 lines of procedural code
+- **2 bugs caught** that the procedural version misses
+- **Auto-invoked** — you describe the logic, the engine handles invocation
+- **Auto-ordered** — add rules anywhere, they run in the right order
+- **Auto-reused** — the spec said *add*, the logic fired on *update*, nobody called it
+
+⚠️ *Auto-invoked, auto-ordered, auto-reused — this violates everything you know about programming. That's because it's **declarative**. Your AI can provide critical background and answer your questions:*
+
+```
+Ask your AI: "What are rules?"
+```
+
+</details>
+
+<br>
+
+<details markdown>
+<summary>6. Iterate — ask for a new rule in plain English</summary>
+
+<br>Try: *"Customers should not be able to create new orders if they have unresolved past due letters."* — watch the AI add and explain the new rule.
 
 > The key beat: you didn't *read about* rules — you triggered one, saw the chain fire across three tables, found 5 lines of logic, and asked why. That's the GenAI-Logic story in one sitting.
 
-**Going further — Enterprise Integration (EAI):** this demo's `Use case: App Integration` already publishes shipped orders to Kafka (outbound). For the inbound side — accepting B2B orders from partner systems via a Custom API or Kafka subscriber, with field-mapping by example (so partners send `"Account": "Alice"` and `"Items": [{"Name": "Widget", ...}]`, not internal IDs) — see `samples/basic_demo_eai`. It's a fully working, AI-generated example of the same pattern, ready to run.
+</details>
+
+<br>
+
+<details markdown>
+<summary>Going further — Enterprise Integration (EAI)</summary>
+
+<br>This demo's `Use case: App Integration` already publishes shipped orders to Kafka (outbound). For the inbound side — accepting B2B orders from partner systems via a Custom API or Kafka subscriber, with field-mapping by example (so partners send `"Account": "Alice"` and `"Items": [{"Name": "Widget", ...}]`, not internal IDs) — see `samples/basic_demo_eai`. It's a fully working, AI-generated example of the same pattern, ready to run.
+
+</details>
 
 </details>
 
