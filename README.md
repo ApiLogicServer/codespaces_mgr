@@ -240,7 +240,7 @@ genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basi
 Explore the key use cases from our home page:
 
 
-| Use Case | Command | What You'll Learn |
+| Use Case | Say to your AI / Run | What You'll Learn |
 |----------|---------|-------------------|
 | **[Allocation with AI Rules](https://www.genai-logic.com)** <br> demo_allo_dept_gl | create demo_allo_dept_gl from samples/prompts/allocation.prompt <br> or genai-logic create --project_name=demo_allo_dept_gl --db_url=sqlite:///samples/dbs/starter.sqlite | - [Cascade Allocation (Costs to Depts/GL)](https://apilogicserver.github.io/Docs/Sample_Allo_Dept_GL_full) <br> - AI Rules for fuzzy match to project |
 | **[Use Case 1: AI Rules](https://www.genai-logic.com/#h.ussov6phwsja)**<br> demo_ai_rules_supplier | genai-logic create --project_name=demo_ai_rules_supplier --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Use AI Rules (req pattern) to choose Optimal Supplier, per world conditions |
@@ -261,7 +261,7 @@ Explore the key use cases from our home page:
 
 Advanced examples and specialized patterns:
 
-| Demo | Command | What You'll Learn |
+| Demo | Say to your AI / Run | What You'll Learn |
 |------|---------|-------------------|
 | **Executable Requirements** | See [samples/requirements/readme.md](samples/requirements/readme.md) | Create from Gherkin requirements <br>implement reqs <path> |
 | **New system from prompt** | genai-logic genai --using=samples/prompts/genai_demo.prompt | Create systems from prompt<br>Like WebGenAI, but from IDE |
@@ -279,7 +279,9 @@ python -m venv venv            # may require python3 -m venv venv
 &nbsp;
 
 
-# Appendix: GenAI CLI (requires an OpenAI key)
+# Appendices
+
+## GenAI CLI (requires an OpenAI key)
 
 Everything above — the walkthrough, the samples, Demo Catalog — runs through your AI assistant (Copilot/Claude), no separate signup. The `genai-logic genai` CLI commands below predate that: they call OpenAI's API directly, which means you need your own OpenAI account and key (see *Get an OpenAI Key*, below) and pay for usage.
 
@@ -733,11 +735,7 @@ Please see [this doc](https://apilogicserver.github.io/Docs/Sample-AI-ChatGPT/)
 
 <br>
 
-<br>
-
-# Appendices
-
-### Procedures
+## Procedures
 
 <details markdown>
 
