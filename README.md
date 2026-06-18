@@ -40,7 +40,7 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 &nbsp;
 
 <details markdown>
-<summary>1. Create — database, API, Admin App and business logic from a prompt</summary>
+<summary>&emsp;&emsp;1. Create — database, API, Admin App and business logic from a prompt</summary>
 
 <br>Say this to your AI assistant (allow 8-10 mins):
 
@@ -73,7 +73,7 @@ Each small, readable, yours. Plain Python — nothing locks you in.
 <br>
 
 <details markdown>
-<summary>2. Run it — F5, then open the Admin App</summary>
+<summary>&emsp;&emsp;2. Run it — F5, then open the Admin App</summary>
 
 <br>Press F5 using "API Logic Server Run (run project from manager)", and open the Admin App. Explore the API via Swagger, browse the data, and follow the relationships — all auto-generated from the data model.
 
@@ -82,7 +82,7 @@ Each small, readable, yours. Plain Python — nothing locks you in.
 <br>
 
 <details markdown>
-<summary>3. Trigger the logic</summary>
+<summary>&emsp;&emsp;3. Trigger the logic</summary>
 
 <br>In the Admin App, open Order 1 / Alice, edit the Widget item:
 
@@ -90,14 +90,14 @@ Each small, readable, yours. Plain Python — nothing locks you in.
 Change the quantity to a very large number. Save.
 ```
 
-The save fails - note the dialog box.
+The save fails - note the dialog box.  But, *why...?*
 
 </details>
 
 <br>
 
 <details markdown>
-<summary>4. Your AI assistant can explain the dialog</summary>
+<summary>&emsp;&emsp;4. Your AI assistant can explain the dialog</summary>
 
 <br>
 
@@ -114,11 +114,11 @@ Notice: you didn't *place* an order, you *edited* one — and the rule still cau
 <br>
 
 <details markdown>
-<summary>5. Now let's see... what's really going on with the logic?</summary>
+<summary>&emsp;&emsp;5. Now let's see... what's really going on with the logic?</summary>
 
 <br>Open [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — real, AI-generated code for the credit-check requirement.
 
-Then open [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — same requirement, 5 rules. No bugs.
+Then open [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — same requirement, same AI.  5 rules. No bugs.
 
 Well, *that's* different... what's up with that? Ask your AI:
 
@@ -127,7 +127,7 @@ What are rules?
 ```
 
 <details markdown>
-<summary>No AI handy?</summary>
+<summary>&emsp;&emsp;&emsp;&emsp;No AI handy?</summary>
 
 <br>Rules enforce business policy — multi-table derivations, constraints, and actions like messaging. They're Python functions in `logic/logic_discovery/` — readable, version-controlled, owned like any other source file.
 
@@ -150,13 +150,13 @@ Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic
 <br>
 
 <details markdown>
-<summary>6. Iterate — ask for a new rule in plain English</summary>
+<summary>&emsp;&emsp;6. Iterate — ask for a new rule in plain English</summary>
 
 <br>Try: *"Customers should not be able to create new orders if they have unresolved past due letters."* — watch the AI add and explain the new rule.
 
-> The key beat: you didn't *read about* rules — you triggered one, saw the chain fire across three tables, found 5 lines of logic, and asked why. That's the GenAI-Logic story in one sitting.
-
 </details>
+
+> Quick recap: you triggered a rule, watched it chain across three tables, found the fix in 5 lines of code, then asked your AI to add a new one — in plain English.
 
 </details>
 
@@ -199,11 +199,11 @@ These are less features than consequences of teaming AI with Logic Automation �
 It didn't figure that out on its own. It was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
 
 - **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
-- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*.md`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material, no canned pitch.
+- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*.md`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
 
 **The "can't be bypassed" claim, named:** rules aren't called from your code — they're wired into a single SQLAlchemy `before_flush` listener, installed once at server start. Every write, from any path — API, custom endpoint, Kafka consumer, agent — passes through that one listener before it commits. There's no second door.
 
-This is why the same prompt produces a governed system instead of a working-but-ungoverned demo — see the [3-Legged Stool](https://apilogicserver.github.io/Docs/Customs-readme-full/#3-legged-stool) for the case made in full.
+This is why the same prompt produces a governed system, not a working-but-ungoverned demo. Details: [3-Legged Stool](https://apilogicserver.github.io/Docs/Customs-readme-full/#3-legged-stool).
 
 </details>
 
