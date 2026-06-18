@@ -28,14 +28,14 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 &nbsp;
 
 ## 🚀 First Time Here?
-
-> **Codespaces:** This workspace runs in GitHub Codespaces — a cloud VS Code environment, no local install needed. [Open a codespace](https://codespaces.new/ApiLogicServer/codespaces_mgr) or see the [GitHub Codespaces docs](https://docs.github.com/en/codespaces).
->
-> **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.
 <!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.sh injects browser note here — do not rename this heading -->
 
 <details>
-<summary>⚡ See it work — 5 minute first look</summary>
+<summary>⚡ See it work — 5 minutes, no install</summary>
+
+&nbsp;
+
+You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
 
 &nbsp;
 
@@ -156,8 +156,6 @@ Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic
 
 </details>
 
-> Quick recap: you triggered a rule, watched it chain across three tables, found the fix in 5 lines of code, then asked your AI to add a new one — in plain English.
-
 </details>
 
 &nbsp;
@@ -167,7 +165,7 @@ Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic
 
 <br>
 
-Once logic stops being something AI has to re-derive by hand for every transaction path, AI is free to spend its effort one level up — composing that logic into real services instead of policing 9 ways an `Order` can change.
+Quick recap: you triggered a rule, watched it chain across three tables, found the fix in 5 lines of code, then asked your AI to add a new one — in plain English. That's only possible because logic isn't something AI has to re-derive by hand for every transaction path. Once it's off AI's plate, AI is free to spend its effort one level up — composing that logic into real services instead of policing 9 ways an `Order` can change.
 
 **That shows up as two service categories, both built on the same rule engine.** Each is a complete, runnable sample in `samples/`, with its own readme:
 
