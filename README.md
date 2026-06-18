@@ -120,9 +120,9 @@ Notice: you didn't *place* an order, you *edited* one — and the rule still cau
 <details markdown>
 <summary>5. Now let's see... what's really going on with the logic?</summary>
 
-<br>Open `basic_demo/logic/procedural/credit_service.py` — real, AI-generated code for the credit-check requirement.
+<br>Open [samples/basic_demo_logic_gov/logic/procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — real, AI-generated code for the credit-check requirement.
 
-Then open `basic_demo/logic/logic_discovery/place_order/check_credit.py` — same requirement, 5 rules. No bugs.
+Then open [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — same requirement, 5 rules. No bugs.
 
 Well, *that's* different... what's up with that? Ask your AI:
 
@@ -161,7 +161,7 @@ What are rules?
 
 &nbsp;
 
-Open `samples/basic_demo_logic_gov` and read the `readme` — a working system (API, rules, governance reports) with a side-by-side comparison of 5 declarative rules vs. 200 lines of AI-generated procedural code, including the 2 bugs the procedural version missed.
+Open [samples/basic_demo_logic_gov/readme.md](samples/basic_demo_logic_gov/readme.md) — a working system (API, rules, governance reports) with a side-by-side comparison of 5 declarative rules vs. 200 lines of AI-generated procedural code, including the 2 bugs the procedural version missed.
 
 </details>
 
