@@ -32,11 +32,11 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 &nbsp;
 
 ## 🚀 First Time Here?
-<!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.sh injects browser note here — do not rename this heading -->
 
 > **Codespaces:** This workspace runs in GitHub Codespaces — a cloud VS Code environment, no local install needed. [Open a codespace](https://codespaces.new/ApiLogicServer/codespaces_mgr) or see the [GitHub Codespaces docs](https://docs.github.com/en/codespaces).
 >
 > **Browser:** Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.
+<!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.sh injects browser note here — do not rename this heading -->
 
 <details>
 <summary>⚡ See it work — 5 minute first look</summary>
@@ -46,7 +46,7 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 <details markdown>
 <summary>1. Create — database, API, Admin App and business logic from a prompt</summary>
 
-<br>Say this to your AI assistant (allow 5-10 mins):
+<br>Say this to your AI assistant (allow 8-10 mins):
 
 ```
 Create basic_demo, with customers, orders, items and products.
@@ -86,38 +86,48 @@ Each small, readable, yours. Plain Python — nothing locks you in.
 <br>
 
 <details markdown>
-<summary>3. Trigger the logic — save a very large quantity</summary>
+<summary>3. Trigger the logic</summary>
 
-<br>Open Order 1 / Alice in the Admin App, edit the Widget item, and change the quantity to a very large number. Save — it fails.
-
-</details>
-
-<br>
-
-<details markdown>
-<summary>4. Ask your AI assistant — "Eeks, why did that save fail?"</summary>
-
-<br>Your AI explains the credit-limit rule and shows where it lives.
-
-</details>
-
-<br>
-
-<details markdown>
-<summary>5. Look at the logic — 5 rules replace 200 lines of code</summary>
-
-<br>Open `basic_demo/logic/logic_discovery/` — that chain (item → order → customer) is just 5 rules.
-
-- **5 rules** replace ~200 lines of procedural code
-- **2 bugs caught** that the procedural version misses
-- **Auto-invoked** — you describe the logic, the engine handles invocation
-- **Auto-ordered** — add rules anywhere, they run in the right order
-- **Auto-reused** — the spec said *add*, the logic fired on *update*, nobody called it
-
-⚠️ *Auto-invoked, auto-ordered, auto-reused — this violates everything you know about programming. That's because it's **declarative**. Your AI can provide critical background and answer your questions:*
+<br>In the Admin App, open Order 1 / Alice, edit the Widget item:
 
 ```
-Ask your AI: "What are rules?"
+Change the quantity to a very large number. Save.
+```
+
+The save fails - note the dialog box.
+
+</details>
+
+<br>
+
+<details markdown>
+<summary>4. Your AI assistant can explain the dialog</summary>
+
+<br>
+
+```
+Eeks, why did that save fail?
+```
+
+Your AI explains the credit-limit rule and shows where it lives.
+
+Notice: you didn't *place* an order, you *edited* one — and the rule still caught it. Hmm....
+
+</details>
+
+<br>
+
+<details markdown>
+<summary>5. Now let's see... what's really going on with the logic?</summary>
+
+<br>Open `basic_demo/logic/procedural/credit_service.py` — real, AI-generated code for the credit-check requirement.
+
+Then open `basic_demo/logic/logic_discovery/place_order/check_credit.py` — same requirement, 5 rules. No bugs.
+
+Well, *that's* different... what's up with that? Ask your AI:
+
+```
+What are rules?
 ```
 
 </details>

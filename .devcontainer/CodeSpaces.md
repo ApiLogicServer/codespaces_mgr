@@ -15,7 +15,9 @@ Needs to work without fiddling.  It should - it's the global Python.
 
 **Real bug found in live testing (2026-06-14):** F5 ("API Logic Server Run") failed because `.vscode/settings.json`'s `python.defaultInterpreterPath` was `${workspaceFolder}/venv/bin/python` (correct for local-mgr, but codespaces-mgr has no `venv/` — this path never existed). `.devcontainer/devcontainer.json` separately sets `/usr/local/bin/python`, but `.vscode/settings.json` overrides it.
 
-**Fix:** `create_codespaces_mgr.sh` step 2 now rewrites `.vscode/settings.json`'s `python.defaultInterpreterPath` from `${workspaceFolder}/venv/bin/python` → `/usr/local/bin/python` after the scoped sync (since `.vscode/` is otherwise synced verbatim from local-mgr, where the venv-based path is correct). Applied directly to `org_git/codespaces_mgr` and pushed.
+**Fix (Manager root):** `create_codespaces_mgr.sh` step 2 rewrites Manager root `.vscode/settings.json`'s `python.defaultInterpreterPath` → `/usr/local/bin/python`. Applied directly to `org_git/codespaces_mgr` and pushed.
+
+**Fix (samples — 2026-06-15):** All 9 `samples/*/. vscode/settings.json` had broken paths too (`../../venv/bin/python` or baked absolute local paths). Patched all directly in `org_git/codespaces_mgr` and pushed. `create_codespaces_mgr.sh` now includes a loop (after the Manager root patch) that applies the same sed replacement to all `samples/*/. vscode/settings.json` automatically on every future run.
 
 <details markdown>
 <summary>Original (superseded) plan</summary>
@@ -41,12 +43,14 @@ pip install ApiLogicServer
 
 ## ⏯️ Pick up here (next session)
 
-**Status (2026-06-14):** Superseded by the `org_git/codespaces_mgr` repo (pushed to `ApiLogicServer/codespaces_mgr`) — "basics of cs are working" per live testing. Maintenance is now via `.devcontainer-codespaces/create_codespaces_mgr.sh` (see "Internal Procedures" below), validated with `--dry-run`.
+**Status (2026-06-15):** F5 working in Codespaces after settings fix. OBX reworked. Joel path wired in CE.
 
 **Remaining:**
-1. Run `create_codespaces_mgr.sh` for real (no `--dry-run`) against `org_git/codespaces_mgr`, review the diff, commit/push.
-2. Push `.devcontainer-codespaces/` to gold (`org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager`).
-3. OBX "First Time Here?" shock-and-awe rework (section 5.1) — not yet started.
+1. ~~Push `.devcontainer-codespaces/` to gold~~ — ✅ confirmed done (2026-06-17): local-mgr, venv install, and gold (`org_git/ApiLogicServer-src/.../prototypes/manager/.devcontainer-codespaces/`) are byte-identical across all 9 files; gold has its own commit history (`5c20e100`, `5236be2c`, `662fb4a9`) showing active maintenance, not a stale copy.
+2. Issue 2 — samples/debugger launch configs (run samples with debug from Manager root window).
+3. Issue 4 — Kafka/Keycloak scoping note in README.
+4. Issue 6 — Reload Window reliability (get interpreter path right before first scan via devcontainer settings).
+5. Test F5 in live Codespaces session to confirm yaml import error is gone.
 
 ## 2. samples / debugger
 
@@ -71,7 +75,9 @@ Manager readme says start here.  I have a sense that is proper for downloaders (
 
 **Recommendation:** For Codespaces, pre-build a demo during container creation (`postCreateCommand` runs `genai-logic create` against genai_demo.prompt or basic_demo) so a working Admin UI/API is *already running* when the browser VS Code loads — tire-kicker sees a live system within seconds. Tutorial/OBX remains the "go deeper" path for motivated users — keep both, just sequence shock-and-awe first for Codespaces.
 
-**Done (2026-06-14):** Reworked "🚀 First Time Here?" in the gold source `org_git/Docs/docs/Manager-readme.md`, and mirrored into local-mgr `README.md` and codespaces-mgr `README.md`. New sequence: "⚡ See it work — 5 minute shock & awe" (the section 5.1 user path below) → "📖 Understand it" → "🔨 Go deeper — 30-45 min guided tour" (was "Do it"). The `postCreateCommand` pre-build (running it automatically during container creation) is a separate follow-up, not yet done.
+**Done (2026-06-14):** Reworked "🚀 First Time Here?" in the gold source `org_git/Docs/docs/Manager-readme.md`, and mirrored into local-mgr `README.md` and codespaces-mgr `README.md`. New sequence: "⚡ See it work — 5 minute shock & awe" → "📖 Understand it" → "🔨 Go deeper — 30-45 min guided tour".
+
+**Further reworked (2026-06-15):** "⚡ See it work" block substantially rewritten — see section 5.1 below for current state. The `postCreateCommand` pre-build (running automatically during container creation) is a separate follow-up, not yet done.
 
 ## 4. Kafka and Keycloak
 
@@ -93,18 +99,19 @@ So, do preceding 2 issues mean we want a tweaked readme
   - Flags Kafka/Keycloak demos as out-of-scope for the Codespaces quick path (issue 4) — not yet done.
   - Skips/abbreviates the existing "Setup Codespaces" section (README.md:766), which explains *how to get into* Codespaces — moot once you're already there — not yet done.
 
-### 5.1 User Path
+### 5.1 User Path (current — 2026-06-15)
 
-I have partially verified these 'shock and awe' steps I am considering:
+Reworked in gold (`org_git/Docs/docs/Manager-readme.md`) and all three READMEs:
 
-1. `implement basic_demo from samples/prompts/genai_demo.prompt`
-2. Run it (F5), open the Admin UI — fully working API + UI, zero code written.
-3. Then **deliberately try to exceed credit limit** on an order — it fails ("Eeeks!").
-4. Tell the AI it failed. The AI explains the rule that's enforcing it (and where it lives in `logic/declare_logic.py`).
-5. User explores from there — other rules, other FAQs.
-6. Iterate: *"Customers should not be able to create new orders if they have unresolved past due letters."*
-
-The key beat is step 4: the user doesn't *read about* rules, they *trigger* one, get surprised by an error, and the AI walks them through what just enforced it. That's more convincing than a guided "watch this work" demo — the user caused the failure themselves and the AI explains *their own* system back to them.
+1. **Lead:** "Most code generators produce code you then have to own. This one produces *models* — executable, maintainable." → `implement project basic_demo from samples/prompts/genai_demo.prompt`
+2. **What did it create?** Data model (`database/models.py`), full JSONAPI with Swagger/pagination/opt-locking (`api/expose_api_models.py` — 52 lines, zero per-table code), admin app (`ui/admin/admin.yaml`). *Model-driven generation.* Plain Python — nothing locks you in.
+3. **Run it (F5)**, open Admin App.
+4. **Trigger the logic:** open Order 1 / Alice, edit Widget item, change quantity to a very large number. Save — it fails.
+5. **Ask AI:** *"Why did that fail?"* — explains the credit-limit rule and shows where it lives.
+6. **Look at the logic:** `basic_demo/logic/logic_discovery/` — 5 rules replace ~200 lines of procedural code, catch 2 bugs the procedural version misses.
+7. **⚠️ Declarative warning:** Rules are auto-invoked, reused, ordered — breaking every assumption about how logic works. Spec said *add*, logic fired on *update*, nobody called it. Ask AI: *"What are rules?"*
+8. **Iterate:** new rule via natural language.
+9. **Joel tease** (in CE "what are rules" close): *"Convinced? Or thinking 'AI will just generate the logic anyway'? Ask: 'Why not just let AI write the code?'"* → new CE section with governance/audibility argument + link to [Why GenAI-Logic](https://www.genai-logic.com/#h.yo3meupszav4).
 
 ## 6. Reliability
 
@@ -152,7 +159,7 @@ Is < Claude Sonnet 4.6.... up to the task??
 
 codespaces-mgr is **not** part of the BLT propagation flow (Seminal Manager → BLT Manager → ApiLogicServer-src). It's a snapshot of local-mgr's *content* (samples, prompts, CE/training docs, README) with a small, fixed set of **environment-specific overrides** for the no-venv/global-Python container.
 
-Pattern: same idea as per-project `.devcontainer-option/` (user renames to `.devcontainer` to opt in to Codespaces config). Applied at the Manager level too — this directory, `.devcontainer-codespaces/`, is a self-contained override bundle (devcontainer files + CLAUDE.md/.gitignore append-fragments + `CodeSpaces.md` itself + `create_codespaces_mgr.sh`), renamed to `.devcontainer/` at the codespaces-mgr target.
+Pattern: same idea as per-project `.devcontainer-option/` (user renames to `.devcontainer` to opt in to Codespaces config). Applied at the Manager level too — this directory, `.devcontainer-codespaces/`, is a self-contained override bundle (devcontainer files + CLAUDE.md/.gitignore append-fragments + `CodeSpaces.md` itself + `create_codespaces_mgr.py`), renamed to `.devcontainer/` at the codespaces-mgr target.
 
 ### Shared improvements — adopt in BOTH mgrs (not Codespaces-specific)
 
@@ -171,11 +178,13 @@ These are structurally required by the no-venv/global-Python container and shoul
 - **`.devcontainer/setup.sh`** — Codespaces port-visibility script.
 - **`.gitignore`** — exclude `venv/` and `.venv/` (codespaces-mgr has neither; guards against an agent mistakenly creating one).
 - **`CLAUDE.md`** — Codespaces-specific notes: ApiLogicServer is pre-installed globally, do not create `venv/`/`.venv/` or `pip install ApiLogicServer`, how to recognize/fix a stray `.venv` shadowing the global interpreter.
-- **README** — Codespaces-specific framing per issue 5 (leads with shock & awe, flags Kafka/Keycloak as local-only, abbreviates "Setup Codespaces" since you're already there). Layered on top of the shared OBX rework above, not a replacement for it. Also: a one-line "🤖 AI Assistance" note that the Chat panel may default to a non-Claude model in Codespaces and the user must pick Claude Sonnet 4.6 manually each session — **`README.md` is in `SYNC_PATHS`, so re-add this note (and re-check the `demo_customs_surtax` frontmatter line) after each `create_codespaces_mgr.sh` run** until this is automated.
+- **README** — Codespaces-specific framing per issue 5 (leads with shock & awe, flags Kafka/Keycloak as local-only, abbreviates "Setup Codespaces" since you're already there). Layered on top of the shared OBX rework above, not a replacement for it. Also: a one-line "🤖 AI Assistance" note that the Chat panel may default to a non-Claude model in Codespaces and the user must pick Claude Sonnet 4.6 manually each session — **`README.md` is in `SYNC_PATHS`, so re-add this note (and re-check the `demo_customs_surtax` frontmatter line) after each `create_codespaces_mgr.py` run** until this is automated.
 
-### Recreation procedure — `create_codespaces_mgr.sh` (built, validated)
+### Recreation procedure — `create_codespaces_mgr.py` (built, validated)
 
-`.devcontainer-codespaces/create_codespaces_mgr.sh /path/to/org_git/codespaces_mgr [--dry-run]`
+`python3 .devcontainer-codespaces/create_codespaces_mgr.py /path/to/org_git/codespaces_mgr [--dry-run]`
+
+(Rewritten from the original `create_codespaces_mgr.sh` on 2026-06-16 — gold commit `662fb4a9`. The `.sh` version has been removed from gold; `.py` is canonical. Historical entries above dated 2026-06-14/15 refer to the `.sh` version that was current at the time.)
 
 codespaces-mgr is a **deliberately curated subset** of local-mgr, not a full mirror — confirmed by `git ls-tree HEAD` on codespaces-mgr (commit `5b360cc`). It has never included `basic_demo/`, `demo_customs/`, `demo_eai/`, `dockers/`, `scaffold/`, `tests/`, `venv/` (all dev/test infra, ~208M combined). The script:
 
@@ -186,7 +195,9 @@ codespaces-mgr is a **deliberately curated subset** of local-mgr, not a full mir
 
 **Validated** (2026-06-14) with `--dry-run` against the clean codespaces-mgr checkout (commit `5b360cc`): diff is just the `requirements/readme_reqmts.md` rename, 7 generated `*_governance_report.md` files, and a handful of `system/genai/temp/*` scratch artifacts — i.e. essentially a no-op. `.vscode/launch.json` and `.vscode/settings.json` are now identical across local-mgr, codespaces-mgr, and gold (see shared improvements above), so the sync no longer risks reverting those live-tested fixes.
 
-**Not yet done:** an actual (non-dry-run) execution against `org_git/codespaces_mgr`, and pushing `.devcontainer-codespaces/` to gold (`org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager`).
+**Done (2026-06-15):** Non-dry-run executed, all 9 sample settings patched, committed and pushed. Script updated with samples loop.
+
+**Still pending:** pushing `.devcontainer-codespaces/` to gold (`org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager`).
 
 ---
 
@@ -208,3 +219,16 @@ Tracking edits made to the repo as issues are found during real Codespaces sessi
 - `README.md` (AI Assistance section) — added note that the Chat panel may default to a
   non-Claude model in Codespaces; user must manually pick Claude Sonnet 4.6 via the model
   picker each session (no workspace-default setting exists for this in VS Code).
+- `prototypes/manager/.github/.copilot-instructions.md` (gold, propagates to both mgrs) —
+  added two guards prompted by a live Codespaces session where the AI edited
+  `samples/basic_demo_sample/` in place instead of creating a new sibling project:
+  1. **🎯 Active Project Context** (new section before "Creating Projects") — AI must
+     track/announce the active project directory and re-confirm before acting on
+     ambiguous requests. Needed because Codespaces is a SINGLE persistent workspace
+     (no per-project VS Code windows like local-mgr), so multiple project directories
+     stay simultaneously "in view."
+  2. **NAME-COLLISION GUARD** (Method 4 STEP 1/2) — before naming/creating a new project,
+     check for collisions with existing `<name>/` or `samples/<name>*` dirs (e.g. user
+     says "basic_demo", `samples/basic_demo_sample/` already exists); `samples/` is
+     read-only reference content, never a `genai-logic create`/`rebuild-from-database`
+     target.

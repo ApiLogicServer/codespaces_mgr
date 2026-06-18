@@ -1,20 +1,19 @@
 # 🩺 nw_sample — Project Governance Report
-**Date:** 2026-06-11
-**Scoring:** Coverage Score (weighted rules / domain tables) + Integrity Score (100 - demerits) + Effective LOC
+**Date:** 2026-05-10  
+**Scoring:** Coverage Score (weighted rules / domain tables) + Integrity Score (100 - demerits)  
 **Reference:** `docs/training/health_check.md`
 
 ---
 
 ## Summary
 
-| Project | Tables | Wtd Rules | Coverage | Integrity | Red Flag | Effective LOC | Profile |
-|---|---|---|---|---|---|---|---|
-| nw_sample | 9 | 34 | **3.8** | **83** | — | **782** | 🟠 Rules in declare_logic.py — needs migration; FK indexes missing schema-wide |
+| Project | Tables | Wtd Rules | Coverage | Integrity | Red Flag | Profile |
+|---|---|---|---|---|---|---|
+| nw_sample | 9 | 34 | **3.8** | **96** | — | 🟠 Rules in declare_logic.py — needs migration |
 
-> **Coverage** = weighted rules / domain tables (sum/count=3, formula/copy=2, constraint=1). Target ≥ 3.0 for mature projects.
-> **Integrity** = 100 minus demerits for anti-patterns: broken dependency tracking, procedural aggregates replacing rules, events that should be rules. Target ≥ 95.
-> **Red Flag** = 🚨 if ≥ 10 FK tables and zero sum/count rules — team has evidently not adopted aggregation rules.
-> **Effective LOC** = code added beyond the generated scaffold, vs hardcoded baseline LOC per file (see `docs/training/health_check.md` v1.7).
+> **Coverage** = weighted rules / domain tables (sum/count=3, formula/copy=2, constraint=1). Target ≥ 3.0 for mature projects.  
+> **Integrity** = 100 minus demerits for anti-patterns: broken dependency tracking, procedural aggregates replacing rules, events that should be rules. Target ≥ 95.  
+> **Red Flag** = 🚨 if ≥ 10 FK tables and zero sum/count rules — team has evidently not adopted aggregation rules.  
 > See `docs/training/governance.md` for full scoring guide.
 
 ---
@@ -24,8 +23,7 @@
 | Metric | Value | Grade |
 |---|---|---|
 | **Coverage Score** | **3.8** (34 pts / 9 domain tables) | 🟡 Moderate |
-| **Integrity Score** | **83** (17 points deducted) | 🟠 Poor |
-| **Effective LOC** | **782** | — |
+| **Integrity Score** | **96** (4 points deducted) | ✅ Good |
 
 ---
 
@@ -33,8 +31,8 @@
 
 **Domain tables (9):** CategoryTableNameTest, Customer, Department, Employee, EmployeeAudit, Order, OrderDetail, Product, Supplier
 
-**Excluded — system (2):** SampleDBVersion (version table), sqlite_sequence (internal)
-**Excluded — lookup/junction (7):** CustomerDemographic (1 col), Location (1 col), Region (1 col), Union (1 col), EmployeeTerritory (2 cols), Shipper (2 cols), Territory (2 cols)
+**Excluded — system (2):** SampleDBVersion (version table), sqlite_sequence (internal)  
+**Excluded — lookup/junction (7):** CustomerDemographic (1 col), Location (1 col), Region (1 col), Union (1 col), EmployeeTerritory (2 cols), Shipper (2 cols), Territory (2 cols)  
 *(lookup threshold: ≤ 2 non-PK columns)*
 
 **Rule inventory:**
@@ -61,7 +59,7 @@
 | Events (8 — after_flush, commit, early, row) | declare_logic.py | various | event | 0 |
 | Integration events (2 — Kafka, n8n) | integration.py | 97–98 | event | 0 |
 
-**Weighted total:** 3×sum(3) + 3×count(3) + 4×formula(2) + 1×copy(2) + 6×constraint(1) = 9+9+8+2+6 = **34**
+**Weighted total:** 3×sum(3) + 3×count(3) + 4×formula(2) + 1×copy(2) + 6×constraint(1) = 9+9+8+2+6 = **34**  
 **Coverage:** 34 / 9 = **3.8**
 
 ---
@@ -73,25 +71,8 @@
 | 🔴 | logic/declare_logic.py | 106–355 | Rules in declare_logic.py instead of logic_discovery/ files | **-2** |
 | 🟡 | declare_logic.py, integration.py | 7, 5 | Wildcard import `from database.models import *` (×2 files) | **-1** |
 | 🟡 | logic/logic_discovery/ | — | Missing `__init__.py` | **-1** |
-| 🟡 | database/db.sqlite | — | EmployeeTerritory.TerritoryId → Territory — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | EmployeeTerritory.EmployeeId → Employee — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Order.Country → Location — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Order.City → Location — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Order.CloneFromOrder → Order — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Department.DepartmentId → Department — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | OrderDetail.ProductId → Product — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | OrderDetail.OrderId → Order — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Employee.UnionId → Union — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Employee.OnLoanDepartmentId → Department — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Employee.WorksForDepartmentId → Department — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | Product.CategoryId → CategoryTableNameTest — no covering index | **-1** |
-| 🟡 | database/db.sqlite | — | EmployeeAudit.EmployeeId → Employee — no covering index | **-1** |
 
-**Integrity:** 100 - 2 - 1 - 1 - (13 × 1) = **83**
-
-### Schema Check — Primary Keys
-
-All 17 mapped tables have a primary key. **No findings.**
+**Integrity:** 100 - 2 - 1 - 1 = **96**
 
 ### Hall Passes Applied
 
@@ -118,7 +99,6 @@ All 17 mapped tables have a primary key. **No findings.**
 | 🔴 -2 | Rules in declare_logic.py | Migrate into logic_discovery/ files by use case — see suggested structure below |
 | 🟡 -1 | Wildcard imports (×2) | Replace with explicit: `from database.models import Customer, Order, OrderDetail, Product, Employee` |
 | 🟡 -1 | Missing `__init__.py` | `touch logic/logic_discovery/__init__.py` |
-| 🟡 -13 | 13 unindexed FK columns | `CREATE INDEX` on each FK column listed above (Order, OrderDetail, Employee, EmployeeTerritory, EmployeeAudit, Department, Product) |
 
 ### Suggested Migration Structure
 
@@ -135,41 +115,13 @@ logic/logic_discovery/
   simple_constraints.py   ← already correct ✅
 ```
 
-This migration would raise the Integrity Score from 83 → 85 and make the rules self-documenting by use case.
-The remaining -13 (FK indexes) is a schema-wide pattern across all sample projects — see governance.md for portfolio context.
-
----
-
-## Effective LOC Detail
-
-Total Effective LOC: **782** (vs hardcoded scaffold baselines; `database/models.py` excluded)
-
-| Bucket | LOC | Detail |
-|---|---|---|
-| declare_logic.py growth | 270 | 361 lines vs baseline 91 |
-| logic_discovery (new files) | 138 | integration.py=100, simple_constraints.py=38 (auto_discovery.py and use_case.py match baseline exactly → 0) |
-| api_discovery (new files) | 243 | authentication_expose_api_models.py=52, sales_by_category.py=49, dashboard_services.py=142 |
-| integration (new files) | 131 | row_dict_maps: Customer_Orders.py=31, OrderById.py=30, OrderB2B.py=36, OrderShipping.py=34 |
-
-> Note: `security/declare_security.py` is 99 lines in both `nw_sample` and the unmodified
-> `nw_sample_nocust` baseline — no growth, 0 effective lines. `api/api_discovery/openapi.py`
-> (130 lines, present in nocust but not in nw_sample) is a removed scaffold file — does not
-> count against Effective LOC (only additions are counted per v1.7).
-
-**Per-table (logic_discovery LOC referencing each table — overlapping by design):**
-
-> Note: nw_sample's rules are concentrated in `declare_logic.py` (270 effective lines, not yet
-> migrated to `logic_discovery/`), so per-table attribution is not meaningful until the
-> migration in Action Items is complete. The 138 new logic_discovery lines (integration.py,
-> simple_constraints.py) are EAI/integration scaffolding and simple field-level constraints
-> rather than per-table aggregation rules.
+This migration would raise the Integrity Score from 96 → 98 and make the rules self-documenting by use case.
 
 ---
 
 ## Summary
 
-nw_sample has **solid business logic** — 14 weighted rules across the core order/customer/inventory domain, well-structured and correctly implemented. The main organizational issue is that the rules predate the discovery pattern and live in `declare_logic.py` (270 effective lines beyond baseline). The logic itself is clean (no dependency-tracking bugs, no procedural aggregates replacing rules). Schema-check found 13 FK columns with no covering index — typical of `rebuild-from-database` scaffolding on a 17-table schema, which does not auto-create FK indexes.
+nw_sample has **solid business logic** — 14 weighted rules across the core order/customer/inventory domain, well-structured and correctly implemented. The main issue is organizational: the rules predate the discovery pattern and live in `declare_logic.py`. The logic itself is clean (no dependency-tracking bugs, no procedural aggregates replacing rules). A migration to discovery files would complete the picture without changing any rule logic.
 
-**Coverage 3.8** — moderate-to-strong; the 16-table Northwind schema has several tables with no rules (Region, Territory, Shipper, Supplier, etc.) which is appropriate for a reference/demo project.
-**Integrity 83** — poor, driven primarily by the 13 unindexed FK columns (a schema-wide pattern, not specific to this project's logic) plus the pre-existing organizational findings.
-**Effective LOC 782** — substantial "beyond-scaffold" effort: 270 lines of business rules (declare_logic.py), 138 lines of logic_discovery integration/constraints, 243 lines of new custom API endpoints, and 131 lines of B2B/row-dict mappers.
+**Coverage 2.1** — moderate; the 16-table Northwind schema has several tables with no rules (Region, Territory, Shipper, Supplier, etc.) which is appropriate for a reference/demo project.  
+**Integrity 96** — good; three minor organizational findings, no bugs.
