@@ -1,12 +1,8 @@
 # Welcome to GenAI-Logic
 
-What is GenAI-Logic:
+One prompt builds a working API, Admin App, and database — then you declare business logic in 5 rules instead of writing 200 lines of code to enforce it. Same engine, same project, no separate tooling.
 
-1. ***Instant mcp-enabled microservices*** (APIs and Admin Apps), from a database or **GenAI prompt** -- one command and you are ready for MCP, Vibe and Business User Collaboration.
-
-2. ***Customize*** with **Declarative Rules** and Python in your IDE, standard container deployment
-
-This is the start page for the [GenAI-Logic Manager](https://apilogicserver.github.io/Docs/Manager).  The Manager is a good place to manage projects, create notes and resources, etc.  
+This is the start page for the [GenAI-Logic Manager](https://apilogicserver.github.io/Docs/Manager) — where you manage projects, create notes and resources, etc.
 
 &nbsp;
 
