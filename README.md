@@ -130,7 +130,12 @@ Well, *that's* different... what's up with that? Ask your AI:
 What are rules?
 ```
 
-No AI handy? Read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same answer.
+<details markdown>
+<summary>No AI handy?</summary>
+
+<br>Rules are declarative — declared once, auto-invoked at every commit, auto-ordered by the engine. You don't call them, so they can't be forgotten or bypassed. That's the 40x: 5 rules instead of 200 lines, with no missed paths. Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md).
+
+</details>
 
 </details>
 
