@@ -120,7 +120,7 @@ Notice: you didn't *place* an order, you *edited* one — and the rule still cau
 <details markdown>
 <summary>5. Now let's see... what's really going on with the logic?</summary>
 
-<br>Open [samples/basic_demo_logic_gov/logic/procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — real, AI-generated code for the credit-check requirement.
+<br>Open [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — real, AI-generated code for the credit-check requirement.
 
 Then open [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — same requirement, 5 rules. No bugs.
 
@@ -133,7 +133,19 @@ What are rules?
 <details markdown>
 <summary>No AI handy?</summary>
 
-<br>Rules are declarative — declared once, auto-invoked at every commit, auto-ordered by the engine. You don't call them, so they can't be forgotten or bypassed. That's the 40x: 5 rules instead of 200 lines, with no missed paths. Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md).
+<br>Rules enforce business policy — multi-table derivations, constraints, and actions like messaging. They're Python functions in `logic/logic_discovery/` — readable, version-controlled, owned like any other source file.
+
+But unlike procedural code, they're **declarative**:
+
+| Property | What it means | Why it matters |
+|---|---|---|
+| **Auto-reused** | `Customer.balance = sum of unpaid orders` — declared once, enforced over every change path | No per-path handlers to write or miss |
+| **Auto-invoked** | Rules fire at every commit, from every caller — you never call them | Can't be forgotten, can't be bypassed |
+| **Auto-ordered** | The engine computes dependency order at startup | Add a rule anywhere, it finds its place |
+
+Think of a spreadsheet: `B10 = SUM(B1:B9)`, and every recalculation just happens. Rules work the same way for database transactions — that's what makes 5 declarative rules replace 200 lines of procedural code with zero missed paths, as you just saw above.
+
+Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md).
 
 </details>
 
@@ -150,8 +162,6 @@ What are rules?
 
 </details>
 
-<br>
-
 </details>
 
 &nbsp;
@@ -163,19 +173,19 @@ What are rules?
 
 Once logic stops being something AI has to re-derive by hand for every transaction path, AI is free to spend its effort one level up — composing that logic into real services instead of policing 9 ways an `Order` can change.
 
-**That shows up as two service categories, both built on the same rule engine:**
+**That shows up as two service categories, both built on the same rule engine.** Each is a complete, runnable sample in `samples/`, with its own readme:
 
-- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already publishes shipped orders to Kafka (outbound). For the inbound side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see `samples/basic_demo_eai`. Same rules, same engine, no extra logic written.
-- **AI-Enhanced Logic** — two flavors, both governed by the same deterministic rules:
-    - **MCP** — natural-language queries and orchestration against your API, no custom code — see `samples/demo_copilot_mcp_discovery`
-    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see `samples/basic_demo_ai_rules-supplier`
+- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already *publishes* shipped orders to Kafka (outbound). For the *subscribe* side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md). Same rules, same engine, no extra logic written.
+- **AI-Enhanced Logic** — two flavors, both governed by the same deterministic rules, both in the same sample:
+    - **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
+    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
 **Put those together and these services have what it takes for Executable Requirements** — AI building real systems straight from a spec in a format you already trust, not a hand-off document that drifts from what got built:
 
-- Gherkin-style scenarios — `samples/demo_customs_clvs`
-- An actual government tariff regulation (Canada, CBSA) — `samples/demo_customs_surtax`
+- **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
+- An **actual government tariff regulation** (Canada, CBSA) — [samples/demo_customs_surtax/readme.md](samples/demo_customs_surtax/readme.md)
 
-None of this is a separate feature set. It's what the same 5-rule foundation does once it's actually carrying the weight.
+These are less features than consequences of teaming AI with Logic Automation — integration, AI-governed judgment calls, whole systems built from a regulation document — all falling out of the same one decision: let the engine carry correctness, so AI doesn't have to.
 
 </details>
 
