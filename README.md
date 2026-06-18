@@ -130,6 +130,8 @@ Well, *that's* different... what's up with that? Ask your AI:
 What are rules?
 ```
 
+No AI handy? Read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same answer.
+
 </details>
 
 <br>
