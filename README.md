@@ -145,23 +145,46 @@ What are rules?
 
 <br>
 
-<details markdown>
-<summary>Going further — Enterprise Integration (EAI)</summary>
-
-<br>This demo's `Use case: App Integration` already publishes shipped orders to Kafka (outbound). For the inbound side — accepting B2B orders from partner systems via a Custom API or Kafka subscriber, with field-mapping by example (so partners send `"Account": "Alice"` and `"Items": [{"Name": "Widget", ...}]`, not internal IDs) — see `samples/basic_demo_eai`. It's a fully working, AI-generated example of the same pattern, ready to run.
-
 </details>
+
+&nbsp;
+
+<details markdown>
+<summary>🚀 Where this leads — what AI can build once logic is off its plate</summary>
+
+<br>
+
+Once logic stops being something AI has to re-derive by hand for every transaction path, AI is free to spend its effort one level up — composing that logic into real services instead of policing 9 ways an `Order` can change.
+
+**That shows up as two service categories, both built on the same rule engine:**
+
+- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already publishes shipped orders to Kafka (outbound). For the inbound side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see `samples/basic_demo_eai`. Same rules, same engine, no extra logic written.
+- **AI-Enhanced Logic** — two flavors, both governed by the same deterministic rules:
+    - **MCP** — natural-language queries and orchestration against your API, no custom code — see `samples/demo_copilot_mcp_discovery`
+    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see `samples/basic_demo_ai_rules-supplier`
+
+**Put those together and these services have what it takes for Executable Requirements** — AI building real systems straight from a spec in a format you already trust, not a hand-off document that drifts from what got built:
+
+- Gherkin-style scenarios — `samples/demo_customs_clvs`
+- An actual government tariff regulation (Canada, CBSA) — `samples/demo_customs_surtax`
+
+None of this is a separate feature set. It's what the same 5-rule foundation does once it's actually carrying the weight.
 
 </details>
 
 &nbsp;
 
 <details markdown>
-<summary>📖 Understand it — why rules matter</summary>
+<summary>🔧 An LLM trained on procedural code — how'd it end up writing rules, not code?</summary>
 
-&nbsp;
+<br>
 
-Open [samples/basic_demo_logic_gov/readme.md](samples/basic_demo_logic_gov/readme.md) — a working system (API, rules, governance reports) with a side-by-side comparison of 5 declarative rules vs. 200 lines of AI-generated procedural code, including the 2 bugs the procedural version missed.
+It didn't figure that out on its own. It was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
+
+- **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
+- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*.md`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" and you're reading that same material, not a canned pitch.
+
+This is why the same prompt produces a governed system instead of a working-but-ungoverned demo — see the [3-Legged Stool](https://apilogicserver.github.io/Docs/Customs-readme-full/#3-legged-stool) for the case made in full.
 
 </details>
 
