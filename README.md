@@ -182,7 +182,9 @@ None of this is a separate feature set. It's what the same 5-rule foundation doe
 It didn't figure that out on its own. It was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
 
 - **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
-- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*.md`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" and you're reading that same material, not a canned pitch.
+- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*.md`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [logic/readme_logic.md](https://github.com/ApiLogicServer/basic_demo/blob/main/logic/readme_logic.md) — same material, no canned pitch.
+
+**The "can't be bypassed" claim, named:** rules aren't called from your code — they're wired into a single SQLAlchemy `before_flush` listener, installed once at server start. Every write, from any path — API, custom endpoint, Kafka consumer, agent — passes through that one listener before it commits. There's no second door.
 
 This is why the same prompt produces a governed system instead of a working-but-ungoverned demo — see the [3-Legged Stool](https://apilogicserver.github.io/Docs/Customs-readme-full/#3-legged-stool) for the case made in full.
 
