@@ -1,8 +1,8 @@
 # Welcome to GenAI-Logic
 
-One prompt builds a working API, Admin App, and database — then you declare business logic in **5 readable rules instead of 200 lines of AI-generated code** to enforce it.
+One prompt — or your existing database — builds a working API and Admin App, then you declare business logic in **5 readable rules instead of 200 lines of AI-generated code** to enforce it.
 
-You'll see that enforcement yourself in a few minutes: those rules run at **one commit point**, no matter which path the write came in on — API, MCP, agent, Kafka. **No bypass.**
+You'll see that enforcement yourself in a few minutes: those rules run at **one commit point**, no matter which path the transaction came in on — API, MCP, agent, Kafka. **No bypass.**
 
 And you're not reading alone: your AI assistant is a partner throughout. Ask it anything — architecture, rules, debugging, deployment, or how the system works.
 
