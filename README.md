@@ -185,6 +185,8 @@ Two funnels, one engine: however the rules get written — regulation, Gherkin, 
 
 These are less features than consequences of teaming AI with Logic Automation — integration, AI-governed judgment calls, whole systems built from a regulation document — all falling out of the same one decision: let the engine carry correctness, so AI doesn't have to.
 
+**This is the rational pairing: AI for speed, rules for the governance AI alone can't give you.** Both customs samples here were one prompt. The same pattern, at enterprise scale, took a major logistics company's team months to hand-code — and still missed an 8-figure compliance exposure that the governed version caught on day one, because the rules were finally readable enough to review. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
+
 </details>
 
 &nbsp;
