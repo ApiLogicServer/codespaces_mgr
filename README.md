@@ -1,6 +1,10 @@
 # Welcome to GenAI-Logic
 
-One prompt builds a working API, Admin App, and database — then you declare business logic in 5 rules instead of writing 200 lines of code to enforce it. Same engine, same project, no separate tooling.
+One prompt builds a working API, Admin App, and database — then you declare business logic in **5 readable rules instead of 200 lines of AI-generated code** to enforce it.
+
+You'll see that enforcement yourself in a few minutes: those rules run at **one commit point**, no matter which path the write came in on — API, MCP, agent, Kafka. **No bypass.**
+
+And you're not reading alone: your AI assistant is a partner throughout. Ask it anything — architecture, rules, debugging, deployment, or how the system works.
 
 This is the start page for the [GenAI-Logic Manager](https://apilogicserver.github.io/Docs/Manager) — where you manage projects, create notes and resources, etc.
 
@@ -67,6 +71,8 @@ Most code generators produce code you then have to own. This one produces *model
 3. **Admin App** — `ui/admin/admin.yaml`
 
 Each small, readable, yours. Plain Python — nothing locks you in.
+
+Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add-auth`.
 
 </details>
 
