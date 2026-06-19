@@ -135,7 +135,7 @@ What are rules?
 <details markdown>
 <summary>&emsp;&emsp;&emsp;&emsp;No AI handy?</summary>
 
-<br>Rules enforce business policy — multi-table derivations, constraints, and actions like messaging. They're Python functions in `logic/logic_discovery/` — readable, version-controlled, owned like any other source file.
+<br>Rules enforce business policy — multi-table derivations, constraints, and actions like messaging. **LogicBank**, the rule engine, hooks SQLAlchemy's commit event to run them on every transaction — authored as plain Python functions in `logic/logic_discovery/`, readable, version-controlled, owned like any other source file.
 
 But unlike procedural code, they're **declarative**:
 
