@@ -179,7 +179,7 @@ Quick recap: you triggered a rule, watched it chain across three tables, found t
 - **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
 - An **actual government tariff regulation** (Canada, CBSA) — [samples/demo_customs_surtax/readme.md](samples/demo_customs_surtax/readme.md)
 
-<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" align="right">
+<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
 Two funnels, one engine: however the rules get written — regulation, Gherkin, NL prompt — and however a write arrives at runtime — API, MCP, agent, workflow — everything passes through the same commit point. No bypass.
 
