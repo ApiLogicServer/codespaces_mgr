@@ -211,6 +211,32 @@ It didn't figure that out on its own. It was told to, in detail, by **Context En
 
 This is why the same prompt produces a governed system, not a working-but-ungoverned demo. Details: [3-Legged Stool](https://apilogicserver.github.io/Docs/Customs-readme-full/#3-legged-stool).
 
+**Have some questions before we get started?** Ask your AI assistant directly — it has the same materials we just walked through:
+
+- Is this really infrastructure, like a database?
+- Is this a black box? How do I debug a rule chain?
+- What's the lock-in risk if we stop using this?
+- How is this different from Copilot/Cursor generating the same logic as code?
+- What does this integrate with — APIs, workflows, agents, MCP?
+- Does this work with my existing database?
+
+More background (and the case for evaluating this way instead of reading a pitch): [Eval Guide](https://apilogicserver.github.io/Docs/Eval/).
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>🔍 Due diligence: why not just let AI generate this alone?</summary>
+
+&nbsp;
+
+Ask your AI assistant:
+
+```
+Ok, why not just let AI write the code?
+```
+
 </details>
 
 &nbsp;
