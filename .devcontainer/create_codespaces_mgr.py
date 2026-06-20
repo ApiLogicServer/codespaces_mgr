@@ -3,11 +3,17 @@
 Recreate the codespaces_mgr checkout from this local-mgr + Codespaces-only overrides.
 
 Usage (from this Manager root):
-    python3 .devcontainer-codespaces/create_codespaces_mgr.py /path/to/org_git/codespaces_mgr [--dry-run]
+    python3 .devcontainer-codespaces/create_codespaces_mgr.py /path/to/org_git/codespaces_mgr [--dry-run|--push|--release]
 
+    (no flag) : sync files into target, leave staged for manual review (does NOT commit/push)
     --dry-run : show what would be copied, apply no changes
+    --push    : sync + commit + push to the target repo's `dev` branch (day-to-day update)
+    --release : sync + commit + push to `dev`, then merge dev->main, tag main with the
+                gold-source product version, bump .devcontainer/devcontainer.json (triggers
+                the repo's "Configuration change" prebuild refresh), push main + tag,
+                and leave the target checked out on `dev`.
 
-What it does:
+What the sync does:
     1. Copy a scoped subset of local-mgr -> target (see SYNC_PATHS below).
        Excludes basic_demo/, scaffold/, tests/, dockers/, demo_customs/, demo_eai/, venv/.
        (.devcontainer-codespaces/ IS synced — it becomes .devcontainer/ in step 2)
@@ -19,12 +25,17 @@ What it does:
        - .vscode/settings.json -> python.defaultInterpreterPath -> /usr/local/bin/python
        - .vscode/launch.json  -> replaced with Codespaces-trimmed 2-config version
        - samples/*/. vscode/settings.json -> same interpreter patch
-    3. Leaves target staged for review/commit (does NOT commit or push)
+
+--release reads the product version from this sibling file (under org_git/, alongside
+codespaces_mgr) rather than from any README front matter, since that's the file Val
+actually bumps for a real release:
+    org_git/ApiLogicServer-src/api_logic_server_cli/api_logic_server.py  (__version__ = "...")
 """
 
 import sys
 import re
 import shutil
+import subprocess
 from pathlib import Path
 
 # ── paths ────────────────────────────────────────────────────────────────────
@@ -77,6 +88,40 @@ def copy_path(src: Path, dst: Path, dry_run: bool):
         print(f"  ✅ {src.name}")
 
 
+def find_gold_version() -> str:
+    """Read __version__ from ApiLogicServer-src/api_logic_server_cli/api_logic_server.py.
+
+    Located by walking up from SRC_ROOT to org_git/, then into ApiLogicServer-src/ —
+    works regardless of whether SRC_ROOT is the BLT workspace or the seminal Manager,
+    as long as both live under the same org_git/ parent as codespaces_mgr.
+    """
+    org_git = SRC_ROOT
+    for _ in range(6):
+        org_git = org_git.parent
+        candidate = org_git / "ApiLogicServer-src" / "api_logic_server_cli" / "api_logic_server.py"
+        if candidate.exists():
+            text = candidate.read_text()
+            m = re.search(r'__version__\s*=\s*"([^"]+)"', text)
+            if not m:
+                raise SystemExit(f"ERROR: no __version__ line found in {candidate}")
+            return m.group(1)
+    raise SystemExit(
+        "ERROR: could not locate ApiLogicServer-src/api_logic_server_cli/api_logic_server.py "
+        "by walking up from local-mgr — expected it under the same org_git/ parent as codespaces_mgr."
+    )
+
+
+def run_git(args, cwd: Path, check=True):
+    print(f"  $ git {' '.join(args)}")
+    result = subprocess.run(["git"] + args, cwd=cwd, capture_output=True, text=True)
+    if result.stdout.strip():
+        print("    " + result.stdout.strip().replace("\n", "\n    "))
+    if check and result.returncode != 0:
+        print("    " + result.stderr.strip().replace("\n", "\n    "))
+        raise SystemExit(f"ERROR: git {' '.join(args)} failed (exit {result.returncode})")
+    return result
+
+
 def patch_interpreter(path: Path):
     """Replace any python.defaultInterpreterPath value with /usr/local/bin/python."""
     text = path.read_text()
@@ -95,15 +140,27 @@ def patch_interpreter(path: Path):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: create_codespaces_mgr.py /path/to/org_git/codespaces_mgr [--dry-run]")
+        print("Usage: create_codespaces_mgr.py /path/to/org_git/codespaces_mgr [--dry-run|--push|--release]")
         sys.exit(1)
 
     target  = Path(sys.argv[1]).resolve()
     dry_run = "--dry-run" in sys.argv
+    push    = "--push" in sys.argv
+    release = "--release" in sys.argv
 
     if not (target / ".git").exists():
         print(f"ERROR: {target} does not look like a git checkout (no .git) — refusing.")
         sys.exit(1)
+
+    if push or release:
+        status = run_git(["status", "--porcelain"], cwd=target).stdout
+        if status.strip():
+            raise SystemExit(
+                f"ERROR: {target} has uncommitted changes before the sync even starts — "
+                "commit, stash, or discard them first, then re-run."
+            )
+        run_git(["checkout", "dev"], cwd=target)
+        run_git(["pull", "--ff-only", "origin", "dev"], cwd=target)
 
     print(f"Source (local-mgr): {SRC_ROOT}")
     print(f"Target (codespaces_mgr): {target}")
@@ -217,9 +274,77 @@ def main():
         if patch_interpreter(f):
             print(f"  ✅ {f.parent.parent.name}")
 
+    if not push and not release:
+        print()
+        print("Done. Review changes in target, then commit and push:")
+        print(f"  cd {target} && git status")
+        return
+
+    # ── Step 3: commit + push to dev ─────────────────────────────────────────
     print()
-    print("Done. Review changes in target, then commit and push:")
-    print(f"  cd {target} && git status")
+    print("Step 3: Committing + pushing to dev...")
+    run_git(["add", "-A"], cwd=target)
+    status = run_git(["status", "--porcelain"], cwd=target).stdout
+    if not status.strip():
+        print("  (nothing changed — dev already up to date with local-mgr)")
+    else:
+        gold_version = find_gold_version()
+        run_git(["commit", "-m", f"Sync from local-mgr (gold v{gold_version})"], cwd=target)
+        run_git(["push", "origin", "dev"], cwd=target)
+        print("  ✅ pushed to dev")
+
+    if not release:
+        print()
+        print(f"Done — {target} is on dev, pushed. Re-run with --release to publish to main.")
+        return
+
+    # ── Step 4: release — merge to main, tag, bump prebuild trigger ─────────
+    print()
+    print("Step 4: Releasing — merging dev -> main...")
+    gold_version = find_gold_version()
+    existing_tags = run_git(["tag", "-l"], cwd=target).stdout.split()
+    if gold_version in existing_tags:
+        raise SystemExit(
+            f"ERROR: tag '{gold_version}' already exists — the gold-source product version "
+            f"(api_logic_server.py __version__) hasn't been bumped since the last cs-mgr "
+            f"release. Bump it there first if this is meant to be a new release."
+        )
+
+    run_git(["checkout", "main"], cwd=target)
+    run_git(["pull", "--ff-only", "origin", "main"], cwd=target)
+    merge = run_git(["merge", "dev", "--no-edit"], cwd=target, check=False)
+    if merge.returncode != 0:
+        raise SystemExit(
+            "ERROR: merge dev -> main failed (likely a conflict). Repo is left mid-merge on "
+            "main — resolve manually, or `git merge --abort` and re-run --release.\n"
+            + merge.stderr
+        )
+
+    # Bump devcontainer.json (any whitespace-only touch) to trigger the
+    # "Configuration change" prebuild refresh on push.
+    devcontainer_json = target / ".devcontainer" / "devcontainer.json"
+    text = devcontainer_json.read_text()
+    timestamp_re = re.compile(r'(// last released: )(\S+)')
+    if timestamp_re.search(text):
+        text = timestamp_re.sub(rf"\g<1>{gold_version}", text)
+    else:
+        text = f"// last released: {gold_version}\n" + text
+    devcontainer_json.write_text(text)
+    run_git(["add", ".devcontainer/devcontainer.json"], cwd=target)
+    run_git(["commit", "-m", f"Release {gold_version}: bump devcontainer.json to refresh prebuild"], cwd=target)
+
+    run_git(["push", "origin", "main"], cwd=target)
+    run_git(["tag", gold_version], cwd=target)
+    run_git(["push", "origin", gold_version], cwd=target)
+
+    run_git(["checkout", "dev"], cwd=target)
+    run_git(["merge", "main", "--no-edit"], cwd=target)
+    run_git(["push", "origin", "dev"], cwd=target)
+
+    print()
+    print(f"✅ Released {gold_version}: dev -> main merged, tagged, pushed.")
+    print(f"   {target} is left on dev.")
+    print("   Prebuild refresh should start automatically (devcontainer.json changed on main).")
 
 
 if __name__ == "__main__":
