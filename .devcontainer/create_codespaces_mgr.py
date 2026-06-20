@@ -323,15 +323,15 @@ def main():
             + merge.stderr
         )
 
-    # Bump devcontainer.json (any whitespace-only touch) to trigger the
-    # "Configuration change" prebuild refresh on push.
+    # Touch devcontainer.json to fire the prebuild trigger. This line is disposable —
+    # it's NOT the version record (the git tag is); the next ordinary --push overwrites
+    # this file wholesale from local-mgr's untouched copy, which is fine, since this
+    # comment's only job is to differ from main's current content at release time.
     devcontainer_json = target / ".devcontainer" / "devcontainer.json"
     text = devcontainer_json.read_text()
-    timestamp_re = re.compile(r'(// last released: )(\S+)')
-    if timestamp_re.search(text):
-        text = timestamp_re.sub(rf"\g<1>{gold_version}", text)
-    else:
-        text = f"// last released: {gold_version}\n" + text
+    bump_re = re.compile(r'^// prebuild trigger bump: .*\n', re.MULTILINE)
+    text = bump_re.sub("", text)
+    text = f"// prebuild trigger bump: release {gold_version}\n" + text
     devcontainer_json.write_text(text)
     run_git(["add", ".devcontainer/devcontainer.json"], cwd=target)
     run_git(["commit", "-m", f"Release {gold_version}: bump devcontainer.json to refresh prebuild"], cwd=target)
