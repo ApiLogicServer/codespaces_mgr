@@ -88,27 +88,30 @@ def copy_path(src: Path, dst: Path, dry_run: bool):
         print(f"  ✅ {src.name}")
 
 
-def find_gold_version() -> str:
+def find_gold_version(target: Path) -> str:
     """Read __version__ from ApiLogicServer-src/api_logic_server_cli/api_logic_server.py.
 
-    Located by walking up from SRC_ROOT to org_git/, then into ApiLogicServer-src/ —
-    works regardless of whether SRC_ROOT is the BLT workspace or the seminal Manager,
-    as long as both live under the same org_git/ parent as codespaces_mgr.
+    Located via target's own org_git/ ancestor — target (codespaces_mgr) is always a
+    sibling of ApiLogicServer-src under org_git/, regardless of where local-mgr lives.
     """
-    org_git = SRC_ROOT
-    for _ in range(6):
-        org_git = org_git.parent
-        candidate = org_git / "ApiLogicServer-src" / "api_logic_server_cli" / "api_logic_server.py"
-        if candidate.exists():
-            text = candidate.read_text()
-            m = re.search(r'__version__\s*=\s*"([^"]+)"', text)
-            if not m:
-                raise SystemExit(f"ERROR: no __version__ line found in {candidate}")
-            return m.group(1)
-    raise SystemExit(
-        "ERROR: could not locate ApiLogicServer-src/api_logic_server_cli/api_logic_server.py "
-        "by walking up from local-mgr — expected it under the same org_git/ parent as codespaces_mgr."
-    )
+    org_git = None
+    for ancestor in [target] + list(target.parents):
+        if ancestor.name == "org_git":
+            org_git = ancestor
+            break
+    if org_git is None:
+        raise SystemExit(
+            f"ERROR: {target} is not under an org_git/ directory — "
+            "can't locate ApiLogicServer-src as a sibling."
+        )
+    candidate = org_git / "ApiLogicServer-src" / "api_logic_server_cli" / "api_logic_server.py"
+    if not candidate.exists():
+        raise SystemExit(f"ERROR: expected gold-source version file not found: {candidate}")
+    text = candidate.read_text()
+    m = re.search(r'__version__\s*=\s*"([^"]+)"', text)
+    if not m:
+        raise SystemExit(f"ERROR: no __version__ line found in {candidate}")
+    return m.group(1)
 
 
 def run_git(args, cwd: Path, check=True):
@@ -288,7 +291,7 @@ def main():
     if not status.strip():
         print("  (nothing changed — dev already up to date with local-mgr)")
     else:
-        gold_version = find_gold_version()
+        gold_version = find_gold_version(target)
         run_git(["commit", "-m", f"Sync from local-mgr (gold v{gold_version})"], cwd=target)
         run_git(["push", "origin", "dev"], cwd=target)
         print("  ✅ pushed to dev")
@@ -301,7 +304,7 @@ def main():
     # ── Step 4: release — merge to main, tag, bump prebuild trigger ─────────
     print()
     print("Step 4: Releasing — merging dev -> main...")
-    gold_version = find_gold_version()
+    gold_version = find_gold_version(target)
     existing_tags = run_git(["tag", "-l"], cwd=target).stdout.split()
     if gold_version in existing_tags:
         raise SystemExit(
