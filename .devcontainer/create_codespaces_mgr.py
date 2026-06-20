@@ -306,11 +306,11 @@ def main():
     print("Step 4: Releasing — merging dev -> main...")
     gold_version = find_gold_version(target)
     existing_tags = run_git(["tag", "-l"], cwd=target).stdout.split()
-    if gold_version in existing_tags:
-        raise SystemExit(
-            f"ERROR: tag '{gold_version}' already exists — the gold-source product version "
-            f"(api_logic_server.py __version__) hasn't been bumped since the last cs-mgr "
-            f"release. Bump it there first if this is meant to be a new release."
+    tag_already_exists = gold_version in existing_tags
+    if tag_already_exists:
+        print(
+            f"  (gold version '{gold_version}' already tagged — releasing content-only "
+            f"changes without a new version tag)"
         )
 
     run_git(["checkout", "main"], cwd=target)
@@ -337,8 +337,9 @@ def main():
     run_git(["commit", "-m", f"Release {gold_version}: bump devcontainer.json to refresh prebuild"], cwd=target)
 
     run_git(["push", "origin", "main"], cwd=target)
-    run_git(["tag", gold_version], cwd=target)
-    run_git(["push", "origin", gold_version], cwd=target)
+    if not tag_already_exists:
+        run_git(["tag", gold_version], cwd=target)
+        run_git(["push", "origin", gold_version], cwd=target)
 
     run_git(["checkout", "dev"], cwd=target)
     run_git(["merge", "main", "--no-edit"], cwd=target)
