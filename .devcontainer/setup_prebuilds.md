@@ -52,21 +52,23 @@ or fresh project creation re-runs `copy_md()` from `org_git/Docs/docs/Manager-re
 silently overwrites it. **Permanent README changes go in the Docs gold source, in mkdocs
 format**, not in either copy downstream of it.
 
-## Why prebuilds, and why "Configuration change" as the trigger
+## Why prebuilds, and why "Every push" as the trigger
 
 Prebuilds cache the devcontainer image so a new codespace starts fast. They cost storage +
 GitHub Actions minutes on every rebuild. There's no API/CLI for managing prebuilds — GitHub
 web UI only (Settings → Codespaces → Prebuilds).
 
 Trigger options are **Every push**, **Configuration change**, or **Scheduled** — no
-"manual-only" mode. Since `cs-mgr`'s `main` only ever changes via a deliberate `--release`
-(never mid-edit), **Configuration change** is the right fit: it rebuilds only when
-`.devcontainer/devcontainer.json` changes, which `--release` does on purpose as its last
-step on `main`. Ordinary `dev` edits and even routine `--release` merges into `main` of
-*other* files don't trigger anything extra — only the devcontainer bump does, and that's
-controlled.
+"manual-only" mode. The risk we were originally guarding against — a rebuild firing on a
+casual, possibly-mid-edit push to `main` — doesn't apply once `dev` exists: `main` *only*
+ever changes via a deliberate `--release`, never a casual edit. Given that, **Every push**
+and **Configuration change** trigger on the same events in practice (since `--release`
+always bumps `.devcontainer/devcontainer.json` as part of the merge) — but **Every push**
+is the more robust choice: it doesn't depend on that bump as the trigger mechanism, so it
+still rebuilds correctly even if a future change to the release flow ever merges into `main`
+without touching `devcontainer.json`. Configuration change would silently miss that case.
 
-(Configured: `main` branch, region US East.)
+(Configured: `main` branch, trigger = Every push, region US East.)
 
 ## Manual prebuild refresh (rarely needed)
 
