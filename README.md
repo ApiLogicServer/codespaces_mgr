@@ -4,7 +4,7 @@ One prompt — or your existing database — builds a working API and Admin App,
 
 You'll see that enforcement yourself in a few minutes: those rules run at **one commit point**, no matter which path the transaction came in on — API, MCP, agent, Kafka. **No bypass.**
 
-And you're not reading alone: your AI assistant is a partner throughout. Ask it anything — architecture, rules, debugging, deployment, or how the system works.
+And you're not alone: your AI assistant is your partner throughout. Ask it anything — architecture, rules, debugging, deployment, or how the system works.
 
 This is the start page for the [GenAI-Logic Manager](https://apilogicserver.github.io/Docs/Manager) — where you manage projects, create notes and resources, etc.
 
