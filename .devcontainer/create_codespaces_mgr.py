@@ -174,24 +174,24 @@ def main():
     readme = readme.lstrip("\n")
     print("  ✅ Front matter and style block stripped")
 
-    # Inject Codespaces + browser notes after OBX heading (idempotent)
-    # Sentinel: "## 🚀 First Time Here?" — update if heading ever changes
+    # Inject Codespaces + browser notes inside "See it work" (idempotent)
+    # Match on the stable "<summary>⚡ See it work" prefix — the text after the
+    # em-dash is gold-source copy (org_git/Docs) and changes independently of this script.
+    summary_re = re.compile(r"<summary>⚡ See it work[^<]*</summary>")
     if "Use Chrome or Edge" not in readme:
         cs_note = (
-            "\n"
-            "> **Codespaces:** This workspace runs in GitHub Codespaces — a cloud VS Code "
-            "environment, no local install needed. "
-            "[Open a codespace](https://codespaces.new/ApiLogicServer/codespaces_mgr) "
-            "or see the [GitHub Codespaces docs](https://docs.github.com/en/codespaces).\n"
-            ">\n"
-            "> **Browser:** Use Chrome or Edge — Safari has known compatibility issues "
-            "with VS Code in the browser.\n"
+            "\n&nbsp;\n\n"
+            "You're already running in GitHub Codespaces — a cloud VS Code environment "
+            "in your browser. Nothing to install. (Use Chrome or Edge — Safari has known "
+            "compatibility issues with VS Code in the browser.)\n"
         )
-        readme = readme.replace(
-            "## 🚀 First Time Here?\n",
-            "## 🚀 First Time Here?\n" + cs_note,
-            1,
-        )
+        match = summary_re.search(readme)
+        if not match:
+            raise SystemExit(
+                "ERROR: no '<summary>⚡ See it work...</summary>' line found in README.md — "
+                "update this script's summary_re pattern to match the current heading."
+            )
+        readme = readme[:match.end()] + cs_note + readme[match.end():]
         print("  ✅ Codespaces + browser notes injected")
     else:
         print("  (notes already present, skipped)")

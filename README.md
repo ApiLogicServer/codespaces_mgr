@@ -32,14 +32,14 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 &nbsp;
 
 ## 🚀 First Time Here?
-<!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.sh injects browser note here — do not rename this heading -->
+<!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.py injects browser note here — do not rename this heading -->
 
 <details>
-<summary>⚡ See it work — 5 minutes, no install</summary>
-
+<summary>⚡ See it work — build a complete system from a prompt, including logic</summary>
 &nbsp;
 
 You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
+
 
 &nbsp;
 
@@ -147,7 +147,7 @@ But unlike procedural code, they're **declarative**:
 
 Think of a spreadsheet: `B10 = SUM(B1:B9)`, and every recalculation just happens. Rules work the same way for database transactions — that's what makes 5 declarative rules replace 200 lines of procedural code with zero missed paths, as you just saw above.
 
-Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md).
+Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic](https://apilogicserver.github.io/Docs/samples/basic_demo_logic_gov/logic/readme_logic).
 
 </details>
 
@@ -175,15 +175,15 @@ Quick recap: you triggered a rule, watched it chain across three tables, found t
 
 **That shows up as two service categories, both built on the same rule engine.** Each is a complete, runnable sample in `samples/`, with its own readme:
 
-- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already *publishes* shipped orders to Kafka (outbound). For the *subscribe* side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md). Same rules, same engine, no extra logic written.
+- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already *publishes* shipped orders to Kafka (outbound). For the *subscribe* side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see [samples/basic_demo_eai/readme](https://apilogicserver.github.io/Docs/samples/basic_demo_eai/readme). Same rules, same engine, no extra logic written.
 - **AI-Enhanced Logic** — two flavors, both governed by the same deterministic rules, both in the same sample:
-    - **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
-    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
+    - **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](https://apilogicserver.github.io/Docs/samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
+    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme](https://apilogicserver.github.io/Docs/samples/basic_demo_ai_rules-supplier/readme)
 
 **Put those together and these services have what it takes for Executable Requirements** — AI building real systems straight from a spec in a format you already trust, not a hand-off document that drifts from what got built:
 
-- **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
-- An **actual government tariff regulation** (Canada, CBSA) — [samples/demo_customs_surtax/readme.md](samples/demo_customs_surtax/readme.md)
+- **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme](https://apilogicserver.github.io/Docs/samples/demo_customs_clvs/readme)
+- An **actual government tariff regulation** (Canada, CBSA) — [samples/demo_customs_surtax/readme](https://apilogicserver.github.io/Docs/samples/demo_customs_surtax/readme)
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
@@ -205,7 +205,7 @@ These are less features than consequences of teaming AI with Logic Automation �
 It didn't figure that out on its own. It was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
 
 - **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
-- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*.md`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
+- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic](https://apilogicserver.github.io/Docs/samples/basic_demo_logic_gov/logic/readme_logic) — same material.
 
 **The "can't be bypassed" claim, named:** rules aren't called from your code — they're wired into a single SQLAlchemy `before_flush` listener, installed once at server start. Every write, from any path — API, custom endpoint, Kafka consumer, agent — passes through that one listener before it commits. There's no second door.
 
@@ -382,6 +382,7 @@ Verify it's operating properly:
 Explore [genai_demo_iteration_discount](system/genai/examples/genai_demo/genai_demo_iteration_discount).  It's an iteration of basic_demo (see system/genai/examples/genai_demo/genai_demo_iteration_discount/002_create_db_models.prompt).  This will add carbon_neutral to the data model, and update the logic to provide the discount:
 
 **Iterate Business Logic:**
+**Iterate Business Logic:**
 ```bash title='Iterate Business Logic'
 # Iterate with data model and logic
 genai-logic genai --project-name='genai_demo_with_discount' --using=system/genai/examples/genai_demo/genai_demo_iteration_discount
@@ -393,6 +394,7 @@ genai-logic genai --project-name='genai_demo_with_discount' --using=system/genai
 You can perform **model iterations:** add new columns/tables, while keeping the prior model intact.  First, we create a project with no logic, perhaps just to see the screens (this step is optional, provided just to illustrate that iterations create new projects from existing ones):
 
 **Iterate Without Logic:**
+**Iterate Without Logic:**
 ```bash title='Iterate Without Logic'
 # Step 1 - create without logic
 genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/examples/genai_demo/genai_demo_no_logic.prompt
@@ -401,6 +403,7 @@ genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/exam
 
 Then, we would create another prompt in the docs directory with our model changes. We've already created these for you in `system/genai/examples/genai_demo/genai_demo_iteration` - we use that to alter the data model (see `system/genai/examples/genai_demo/genai_demo_iteration/004_iteration_renames_logic.prompt`):
 
+**Iterate With Logic:**
 **Iterate With Logic:**
 ```bash title='Iterate With Logic'
 # Iterate with data model and logic
@@ -421,6 +424,7 @@ Explore [genai_demo_iteration](system/genai/examples/genai_demo/genai_demo_itera
 <br>You can declare rules using dot notation, or more informally:
 
 **Informal Logic (no dot notation):**
+**Informal Logic (no dot notation):**
 ```bash title="Informal Logic (no dot notation)"
 genai-logic genai --using=system/genai/examples/genai_demo/genai_demo_informal.prompt --project-name=genai_demo_informal
 ```
@@ -435,6 +439,7 @@ genai-logic genai --using=system/genai/examples/genai_demo/genai_demo_informal.p
 <br>You can add new columns/tables, while keeping the prior model intact:
 
 **Multi-Rule Logic:**
+**Multi-Rule Logic:**
 ```bash title="Multi-Rule Logic"
 genai-logic genai --using=system/genai/examples/emp_depts/emp_dept.prompt
 ```
@@ -448,11 +453,13 @@ genai-logic genai --using=system/genai/examples/emp_depts/emp_dept.prompt
 <br>You can create a project, and ask GenAI for logic suggestions:
 
 **1. Create Project, without Rules:**
+**1. Create Project, without Rules:**
 ```bash title='1. Create Project, without Rules'
 # 1. Create Project, without Rules
 genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/examples/genai_demo/genai_demo_no_logic.prompt
 ```
 
+**2. Request Rule Suggestions:**
 **2. Request Rule Suggestions:**
 ```bash title="2. Request Rule Suggestions"
 # 2. Request Rule Suggestions
@@ -465,6 +472,7 @@ You can review the [resultant logic suggestions](genai_demo_no_logic/docs/logic_
  * See and edit: `docs/logic_suggestions/002_logic_suggestions.prompt` (used in step 3, below)
     * This corresponds to the Logic Editor - Logic View in the WebGenAI web app
 
+**3. See the rules for the logic:**
 **3. See the rules for the logic:**
 ```bash title="3. See the rules for the logic"
 # 3. See the rule code for the logic
@@ -486,6 +494,7 @@ The [logic suggestions directory](genai_demo_no_logic/docs/logic_suggestions) no
 When you are ready to proceed:
 1. Execute the following to create a *new project* (iteration), with suggested logic:
 
+**4. Create a new project with the Rule Suggestions:**
 **4. Create a new project with the Rule Suggestions:**
 ```bash title="4. Create a new project with the Rule Suggestions"
 # 4. Create a new project with the Rule Suggestions
@@ -524,6 +533,7 @@ The `genai-utils --fixup` fixes such project issues by updating the Data Model a
 After starting the [Manager](https://apilogicserver.github.io/Docs/Manager): 
 
 **0. Create Project Requiring Fixup:**
+**0. Create Project Requiring Fixup:**
 ```bash title="0. Create Project Requiring Fixup"
 # 0. Create a project requiring fixup
 genai-logic genai --repaired-response=system/genai/examples/genai_demo/genai_demo_fixup_required.json --project-name=genai_demo_fixup_required
@@ -541,6 +551,7 @@ Missing Attrs (try genai-logic genai-utils --fixup): ['Customer.balance: constra
 
 To Fix it:
 **1. Run FixUp to add missing attributes to the fixup response data model:**
+**1. Run FixUp to add missing attributes to the fixup response data model:**
 ```bash title="1. Run FixUp to add missing attributes to the fixup response data model"
 # 1. Run FixUp to add missing attributes to the data model
 cd genai_demo_fixup_required
@@ -548,6 +559,7 @@ genai-logic genai-utils --fixup
 ```
 
 Finally, use the created [fixup files](genai_demo_fixup_required/docs/fixup/) to rebuild the project:
+**2. Rebuild the project from the fixup response data model:**
 **2. Rebuild the project from the fixup response data model:**
 ```bash title="2. Rebuild the project from the fixup response data model"
 # 2. Rebuild the project from the fixup response data model
@@ -620,6 +632,7 @@ genai-logic genai-utils --rebuild-test-data
 
 <br>You can add new columns/tables, while keeping the prior model intact:
 
+**Iterate:**
 **Iterate:**
 ```bash title="Iterate"
 # create project without creating a file...
@@ -765,6 +778,7 @@ Please see [this doc](https://apilogicserver.github.io/Docs/Sample-AI-ChatGPT/)
 
 
 **Quick Basic Demo:**
+**Quick Basic Demo:**
 ```bash title="Quick Basic Demo"
 
 # Microservice Automation
@@ -793,6 +807,7 @@ genai-logic rebuild-from-database --db_url=sqlite:///database/db.sqlite
 
 <br>This demo creates and customizes a project, starting from a prompt:
 
+**Quick GenAI Demo:**
 **Quick GenAI Demo:**
 ```bash title="Quick GenAI Demo"
 

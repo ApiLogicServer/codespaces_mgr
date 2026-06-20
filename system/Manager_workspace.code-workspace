@@ -2,12 +2,6 @@
 	"folders": [
 		{
 			"path": ".."
-		},
-		{
-			"path": "../../../servers/skillz"
-		},
-		{
-			"path": "../../../servers/rich"
 		}
 	],
 	"settings": {
