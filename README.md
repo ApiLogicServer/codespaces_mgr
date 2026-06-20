@@ -213,6 +213,7 @@ This is why the same prompt produces a governed system, not a working-but-ungove
 
 **Have some questions before we get started?** Ask your AI assistant directly — it has the same materials we just walked through:
 
+- Ok, why not just let AI write the code?
 - Is this really infrastructure, like a database?
 - Is this a black box? How do I debug a rule chain?
 - What's the lock-in risk if we stop using this?
@@ -221,21 +222,6 @@ This is why the same prompt produces a governed system, not a working-but-ungove
 - Does this work with my existing database?
 
 More background: [Eval Guide](https://apilogicserver.github.io/Docs/Eval/).
-
-</details>
-
-&nbsp;
-
-<details markdown>
-<summary>🔍 Due diligence: why not just let AI generate this alone?</summary>
-
-&nbsp;
-
-Ask your AI assistant:
-
-```
-Ok, why not just let AI write the code?
-```
 
 </details>
 
