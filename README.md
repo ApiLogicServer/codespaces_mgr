@@ -220,7 +220,7 @@ This is why the same prompt produces a governed system, not a working-but-ungove
 - What does this integrate with — APIs, workflows, agents, MCP?
 - Does this work with my existing database?
 
-More background (and the case for evaluating this way instead of reading a pitch): [Eval Guide](https://apilogicserver.github.io/Docs/Eval/).
+More background: [Eval Guide](https://apilogicserver.github.io/Docs/Eval/).
 
 </details>
 
