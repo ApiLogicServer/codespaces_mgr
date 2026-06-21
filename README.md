@@ -64,6 +64,8 @@ Use case: App Integration
     1. Publish the Order to Kafka topic 'order_shipping' if the date_shipped is not None.
 ```
 
+> Note: the prompt above creates a new database. You *could* use an existing one instead — `create basic_demo from samples/dbs/basic_demo.sqlite` — replacing the first 2 lines above.
+
 Most code generators produce code you then have to own. This one produces *models* — executable, maintainable:
 
 1. **Data model** — `database/models.py`
@@ -97,6 +99,8 @@ Change the quantity to a very large number. Save.
 ```
 
 The save fails - note the dialog box.  But, *why...?*
+
+> Auditable, not just shown: [sample trace](samples/basic_demo_logic_gov/logs/als-sample.log) of this rule chain firing.
 
 </details>
 
