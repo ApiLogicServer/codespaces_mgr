@@ -64,6 +64,12 @@ COPY_EXCLUDES = {
     ".git", "venv", ".venv", "__pycache__", "logs", ".DS_Store", ".devcontainer",
 }
 
+# Curated files that live inside an otherwise-excluded directory (e.g. logs/) — copied
+# individually after the main sync since COPY_EXCLUDES skips their parent wholesale.
+EXTRA_FILES = [
+    "samples/basic_demo_logic_gov/logs/als-sample.log",
+]
+
 # ── helpers ──────────────────────────────────────────────────────────────────
 
 def ignore_fn(dir_, names):
@@ -175,6 +181,8 @@ def main():
     print("Step 1: Syncing scoped subset...")
     for p in SYNC_PATHS:
         copy_path(SRC_ROOT / p, target / p, dry_run)
+    for f in EXTRA_FILES:
+        copy_path(SRC_ROOT / f, target / f, dry_run)
 
     if dry_run:
         print("\nDry run complete — no overrides applied.")
