@@ -72,7 +72,7 @@ Most code generators produce code you then have to own. This one produces *model
 2. **Full JSONAPI** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
 3. **Admin App** — `ui/admin/admin.yaml`
 
-Each small, readable, yours. Plain Python — nothing locks you in.
+Each small, readable, yours. Plain Python — standard tooling applies.
 
 Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add-auth`.
 
@@ -217,10 +217,10 @@ This is why the same prompt produces a governed system, not a working-but-ungove
 
 **Have some questions before we get started?** Ask your AI assistant directly — it has the same materials we just walked through:
 
-- Ok, why not just let AI write the code?
 - Is this really infrastructure, like a database?
 - Is this a black box? How do I debug a rule chain?
-- What's the lock-in risk if we stop using this?
+- What does it take to migrate off this if we ever wanted to?
+- How does this perform at scale?
 - How is this different from Copilot/Cursor generating the same logic as code?
 - What does this integrate with — APIs, workflows, agents, MCP?
 - Does this work with my existing database?
