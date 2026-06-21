@@ -221,7 +221,7 @@ This is why the same prompt produces a governed system, not a working-but-ungove
 - Is this a black box? How do I debug a rule chain?
 - What does it take to migrate off this if we ever wanted to?
 - How does this perform at scale?
-- How is this different from Copilot/Cursor generating the same logic as code?
+- How is this different from AI tools like Copilot or Cursor writing the same logic directly?
 - What does this integrate with — APIs, workflows, agents, MCP?
 - Does this work with my existing database?
 
