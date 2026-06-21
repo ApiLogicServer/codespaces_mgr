@@ -2,216 +2,209 @@
 "models":
 - "classname": |-
     Customer
-  "code": |-
+  "code": |
     class Customer(Base):
         __tablename__ = 'customer'
 
         id = Column(Integer, primary_key=True, autoincrement=True)
-        name = Column(String)
-        credit_limit = Column(Numeric)
-        balance = Column(Numeric)
+        name = Column(String(255))
+        balance = Column(Decimal, default=0.0)
+        credit_limit = Column(Decimal)
   "description": |-
-    Table for customers with credit limit and balance.
+    Data model for customers
   "name": |-
     Customer
 - "classname": |-
     Order
-  "code": |-
+  "code": |
     class Order(Base):
         __tablename__ = 'order'
 
         id = Column(Integer, primary_key=True, autoincrement=True)
         customer_id = Column(Integer, ForeignKey('customer.id'))
-        date_shipped = Column(DateTime, nullable=True)
-        amount_total = Column(Numeric)
-        notes = Column(String)
-
-        # Relationship
-        customer = relationship('Customer', backref='orders')
+        date_shipped = Column(DateTime)
+        notes = Column(Text)
+        amount_total = Column(Decimal, default=0.0)
   "description": |-
-    Table for orders related to customers with shipping details.
+    Data model for orders
   "name": |-
     Order
 - "classname": |-
+    Product
+  "code": |
+    class Product(Base):
+        __tablename__ = 'product'
+
+        id = Column(Integer, primary_key=True, autoincrement=True)
+        name = Column(String(255))
+        unit_price = Column(Decimal)
+  "description": |-
+    Data model for products
+  "name": |-
+    Product
+- "classname": |-
     Item
-  "code": |-
+  "code": |
     class Item(Base):
         __tablename__ = 'item'
 
         id = Column(Integer, primary_key=True, autoincrement=True)
         order_id = Column(Integer, ForeignKey('order.id'))
         product_id = Column(Integer, ForeignKey('product.id'))
-        quantity = Column(Numeric)
-        unit_price = Column(Numeric)
-        amount = Column(Numeric)
-
-        # Relationships
-        order = relationship('Order', backref='items')
-        product = relationship('Product', backref='items')
+        quantity = Column(Integer, nullable=False)
+        amount = Column(Decimal, default=0.0)
+        unit_price = Column(Decimal)
   "description": |-
-    Table for items in an order with price and quantity details.
+    Data model for order items
   "name": |-
     Item
-- "classname": |-
-    Product
-  "code": |-
-    class Product(Base):
-        __tablename__ = 'product'
-
-        id = Column(Integer, primary_key=True, autoincrement=True)
-        name = Column(String)
-        unit_price = Column(Numeric)
-  "description": |-
-    Table for products with pricing.
-  "name": |-
-    Product
 "name": |-
-  CustomerOrderSystem
+  ECommerceSystem
 "rules":
 - "code": |-
     Rule.constraint(validate=Customer, as_condition=lambda row: row.balance <= row.credit_limit, error_msg="Customer balance ({row.balance}) exceeds credit limit ({row.credit_limit})")
   "description": |-
-    Ensures customer's balance does not exceed credit limit.
+    Ensure customer balance does not exceed credit limit
   "entity": |-
     Customer
   "name": |-
-    Customer Balance Check
+    CustomerBalanceConstraint
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total, where=lambda row: row.date_shipped is None)
   "description": |-
-    Balances are summed from all pending order amounts.
+    Calculate customer's balance by summing order amounts where the order is not yet shipped
   "entity": |-
     Customer
   "name": |-
-    Customer Balance Sum
+    CustomerBalanceSumRule
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.sum(derive=Order.amount_total, as_sum_of=Item.amount)
   "description": |-
-    Derives the total order amount from individual item amounts.
+    Calculate order total amount by summing the amounts of contained items
   "entity": |-
     Order
   "name": |-
-    Order Amount Total Calculation
+    OrderAmountTotalRule
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.formula(derive=Item.amount, as_expression=lambda row: row.quantity * row.unit_price)
   "description": |-
-    Calculates item amount using quantity and unit price.
+    Compute item amount as quantity multiplied by unit price
   "entity": |-
     Item
   "name": |-
-    Item Amount Calculation
+    ItemAmountFormulaRule
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.copy(derive=Item.unit_price, from_parent=Product.unit_price)
   "description": |-
-    Copies unit price from product to order item.
+    Copy unit price from product to item
   "entity": |-
     Item
   "name": |-
-    Unit Price Copy Rule
+    ItemUnitPriceCopyRule
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka, if_condition=lambda row: row.date_shipped is not None, with_args={"topic": "order_shipping"})
   "description": |-
-    Send order to Kafka if it is shipped.
+    Send order to Kafka topic when shipped
   "entity": |-
     Order
   "name": |-
-    Order Kafka Dispatch
+    OrderKafkaEventRule
   "use_case": |-
     App Integration
 "test_data": |-
-  Inserting data for Customer, Order, Item, and Product models.
+  Customer, Order, Item, Product
 "test_data_rows":
 - "code": |-
-    customer1 = Customer(name="John Doe", credit_limit=5000, balance=0)
+    customer1 = Customer(id=1, name="Customer A", balance=500.0, credit_limit=1000.0)
   "test_data_row_variable": |-
     customer1
 - "code": |-
-    customer2 = Customer(name="Jane Smith", credit_limit=10000, balance=0)
+    customer2 = Customer(id=2, name="Customer B", balance=200.0, credit_limit=500.0)
   "test_data_row_variable": |-
     customer2
 - "code": |-
-    customer3 = Customer(name="Alice Johnson", credit_limit=7000, balance=0)
+    customer3 = Customer(id=3, name="Customer C", balance=800.0, credit_limit=800.0)
   "test_data_row_variable": |-
     customer3
 - "code": |-
-    customer4 = Customer(name="Bob Brown", credit_limit=8000, balance=0)
+    customer4 = Customer(id=4, name="Customer D", balance=0.0, credit_limit=1500.0)
   "test_data_row_variable": |-
     customer4
 - "code": |-
-    product1 = Product(name="Widget A", unit_price=20)
-  "test_data_row_variable": |-
-    product1
-- "code": |-
-    product2 = Product(name="Widget B", unit_price=40)
-  "test_data_row_variable": |-
-    product2
-- "code": |-
-    product3 = Product(name="Widget C", unit_price=30)
-  "test_data_row_variable": |-
-    product3
-- "code": |-
-    product4 = Product(name="Widget D", unit_price=25)
-  "test_data_row_variable": |-
-    product4
-- "code": |-
-    order1 = Order(customer_id=customer1.id, date_shipped=None, amount_total=0, notes="Urgent")
+    order1 = Order(id=1, customer_id=1, date_shipped=None, notes="Urgent delivery", amount_total=300.0)
   "test_data_row_variable": |-
     order1
 - "code": |-
-    order2 = Order(customer_id=customer2.id, date_shipped=None, amount_total=0, notes="Gift")
+    order2 = Order(id=2, customer_id=2, date_shipped=None, notes="Weekly order", amount_total=100.0)
   "test_data_row_variable": |-
     order2
 - "code": |-
-    order3 = Order(customer_id=customer3.id, date_shipped=None, amount_total=0, notes="Backordered")
+    order3 = Order(id=3, customer_id=3, date_shipped=date(2023, 9, 15), notes="Monthly backup supply", amount_total=800.0)
   "test_data_row_variable": |-
     order3
 - "code": |-
-    order4 = Order(customer_id=customer4.id, date_shipped=None, amount_total=0, notes="Standard")
+    order4 = Order(id=4, customer_id=4, date_shipped=None, notes="Standard delivery", amount_total=0.0)
   "test_data_row_variable": |-
     order4
 - "code": |-
-    item1 = Item(order_id=order1.id, product_id=product1.id, quantity=2, unit_price=product1.unit_price, amount=0)
+    product1 = Product(id=1, name="Product X", unit_price=20.0)
+  "test_data_row_variable": |-
+    product1
+- "code": |-
+    product2 = Product(id=2, name="Product Y", unit_price=40.0)
+  "test_data_row_variable": |-
+    product2
+- "code": |-
+    product3 = Product(id=3, name="Product Z", unit_price=10.0)
+  "test_data_row_variable": |-
+    product3
+- "code": |-
+    product4 = Product(id=4, name="Product W", unit_price=5.0)
+  "test_data_row_variable": |-
+    product4
+- "code": |-
+    item1 = Item(id=1, order_id=1, product_id=1, quantity=10, amount=200.0, unit_price=20.0)
   "test_data_row_variable": |-
     item1
 - "code": |-
-    item2 = Item(order_id=order2.id, product_id=product2.id, quantity=3, unit_price=product2.unit_price, amount=0)
+    item2 = Item(id=2, order_id=2, product_id=2, quantity=2, amount=80.0, unit_price=40.0)
   "test_data_row_variable": |-
     item2
 - "code": |-
-    item3 = Item(order_id=order3.id, product_id=product3.id, quantity=1, unit_price=product3.unit_price, amount=0)
+    item3 = Item(id=3, order_id=3, product_id=4, quantity=160, amount=800.0, unit_price=5.0)
   "test_data_row_variable": |-
     item3
 - "code": |-
-    item4 = Item(order_id=order4.id, product_id=product4.id, quantity=4, unit_price=product4.unit_price, amount=0)
+    item4 = Item(id=4, order_id=3, product_id=3, quantity=1, amount=0.0, unit_price=10.0)
   "test_data_row_variable": |-
     item4
 "test_data_sqlite": |-
-  INSERT INTO customer (name, credit_limit, balance) VALUES ('John Doe', 5000, 0);
-  INSERT INTO customer (name, credit_limit, balance) VALUES ('Jane Smith', 10000, 0);
-  INSERT INTO customer (name, credit_limit, balance) VALUES ('Alice Johnson', 7000, 0);
-  INSERT INTO customer (name, credit_limit, balance) VALUES ('Bob Brown', 8000, 0);
+  INSERT INTO customer (id, name, balance, credit_limit) VALUES (1, 'Customer A', 500.0, 1000.0);
+  INSERT INTO customer (id, name, balance, credit_limit) VALUES (2, 'Customer B', 200.0, 500.0);
+  INSERT INTO customer (id, name, balance, credit_limit) VALUES (3, 'Customer C', 800.0, 800.0);
+  INSERT INTO customer (id, name, balance, credit_limit) VALUES (4, 'Customer D', 0.0, 1500.0);
 
-  INSERT INTO product (name, unit_price) VALUES ('Widget A', 20);
-  INSERT INTO product (name, unit_price) VALUES ('Widget B', 40);
-  INSERT INTO product (name, unit_price) VALUES ('Widget C', 30);
-  INSERT INTO product (name, unit_price) VALUES ('Widget D', 25);
+  INSERT INTO order (id, customer_id, date_shipped, notes, amount_total) VALUES (1, 1, NULL, 'Urgent delivery', 300.0);
+  INSERT INTO order (id, customer_id, date_shipped, notes, amount_total) VALUES (2, 2, NULL, 'Weekly order', 100.0);
+  INSERT INTO order (id, customer_id, date_shipped, notes, amount_total) VALUES (3, 3, '2023-09-15', 'Monthly backup supply', 800.0);
+  INSERT INTO order (id, customer_id, date_shipped, notes, amount_total) VALUES (4, 4, NULL, 'Standard delivery', 0.0);
 
-  INSERT INTO "order" (customer_id, date_shipped, amount_total, notes) VALUES (1, NULL, 0, 'Urgent');
-  INSERT INTO "order" (customer_id, date_shipped, amount_total, notes) VALUES (2, NULL, 0, 'Gift');
-  INSERT INTO "order" (customer_id, date_shipped, amount_total, notes) VALUES (3, NULL, 0, 'Backordered');
-  INSERT INTO "order" (customer_id, date_shipped, amount_total, notes) VALUES (4, NULL, 0, 'Standard');
+  INSERT INTO product (id, name, unit_price) VALUES (1, 'Product X', 20.0);
+  INSERT INTO product (id, name, unit_price) VALUES (2, 'Product Y', 40.0);
+  INSERT INTO product (id, name, unit_price) VALUES (3, 'Product Z', 10.0);
+  INSERT INTO product (id, name, unit_price) VALUES (4, 'Product W', 5.0);
 
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (1, 1, 2, 20, 0);
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (2, 2, 3, 40, 0);
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (3, 3, 1, 30, 0);
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (4, 4, 4, 25, 0);
+  INSERT INTO item (id, order_id, product_id, quantity, amount, unit_price) VALUES (1, 1, 1, 10, 200.0, 20.0);
+  INSERT INTO item (id, order_id, product_id, quantity, amount, unit_price) VALUES (2, 2, 2, 2, 80.0, 40.0);
+  INSERT INTO item (id, order_id, product_id, quantity, amount, unit_price) VALUES (3, 3, 4, 160, 800.0, 5.0);
+  INSERT INTO item (id, order_id, product_id, quantity, amount, unit_price) VALUES (4, 3, 3, 1, 0.0, 10.0);

@@ -1,0 +1,148 @@
+{
+    "models": [
+        {
+            "classname": "Customer",
+            "code": "class Customer:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    credit_limit = Column(DECIMAL, nullable=False)\n    balance = Column(DECIMAL)\n\n\nclass Order:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    customer_id = Column(ForeignKey('customer.id'))\n    notes = Column(String)\n    date_shipped = Column(DateTime)\n    amount_total = Column(DECIMAL)\n\n\nclass Item:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    order_id = Column(ForeignKey('order.id'))\n    product_id = Column(ForeignKey('product.id'))\n    quantity = Column(Integer, nullable=False)\n    unit_price = Column(DECIMAL, nullable=False)\n    amount = Column(DECIMAL)\n\n\nclass Product:\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String, nullable=False)\n    unit_price = Column(DECIMAL, nullable=False)",
+            "description": "Models for customer, order, items, and product.",
+            "name": "Order Management System"
+        },
+        {
+            "classname": "Customer",
+            "code": "CREATE TABLE customer (\n    id INTEGER NOT NULL, \n    name VARCHAR NOT NULL, \n    credit_limit NUMERIC NOT NULL, \n    balance NUMERIC, \n    PRIMARY KEY (id)\n)",
+            "description": "Customer table creation SQL",
+            "name": "Customer"
+        },
+        {
+            "classname": "Order",
+            "code": "CREATE TABLE order (\n    id INTEGER NOT NULL, \n    customer_id INTEGER, \n    notes VARCHAR, \n    date_shipped DATETIME, \n    amount_total NUMERIC, \n    PRIMARY KEY (id)\n)",
+            "description": "Order table creation SQL",
+            "name": "Order"
+        },
+        {
+            "classname": "Item",
+            "code": "CREATE TABLE item (\n    id INTEGER NOT NULL, \n    order_id INTEGER, \n    product_id INTEGER, \n    quantity INTEGER NOT NULL, \n    unit_price NUMERIC NOT NULL, \n    amount NUMERIC, \n    PRIMARY KEY (id)\n)",
+            "description": "Item table creation SQL",
+            "name": "Item"
+        },
+        {
+            "classname": "Product",
+            "code": "CREATE TABLE product (\n    id INTEGER NOT NULL, \n    name VARCHAR NOT NULL, \n    unit_price NUMERIC NOT NULL, \n    PRIMARY KEY (id)\n)",
+            "description": "Product table creation SQL",
+            "name": "Product"
+        }
+    ],
+    "rules": [
+        {
+            "name": "Check Credit: Balance Constraint",
+            "description": "Customer's balance should be less than the credit limit.",
+            "use_case": "Check Credit",
+            "entity": "Customer",
+            "code": "Rule.constraint(validate=Customer, as_condition=lambda row: row.balance <= row.credit_limit, error_msg=\"Customer balance ({row.balance}) exceeds credit limit ({row.credit_limit})\")"
+        },
+        {
+            "name": "Check Credit: Balance Sum",
+            "description": "Customer's balance is the sum of Orders where date_shipped is null.",
+            "use_case": "Check Credit",
+            "entity": "Customer",
+            "code": "Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total, where=lambda row: row.date_shipped is None)"
+        },
+        {
+            "name": "Check Credit: Order Amount Total",
+            "description": "Order's amount_total is the sum of Item amount.",
+            "use_case": "Check Credit",
+            "entity": "Order",
+            "code": "Rule.sum(derive=Order.amount_total, as_sum_of=Item.amount)"
+        },
+        {
+            "name": "Check Credit: Item Amount Formula",
+            "description": "Item amount is calculated as quantity * unit_price.",
+            "use_case": "Check Credit",
+            "entity": "Item",
+            "code": "Rule.formula(derive=Item.amount, as_expression=lambda row: row.quantity * row.unit_price)"
+        },
+        {
+            "name": "Check Credit: Copy Unit Price",
+            "description": "Copy Item unit_price from Product unit_price.",
+            "use_case": "Check Credit",
+            "entity": "Item",
+            "code": "Rule.copy(derive=Item.unit_price, from_parent=Product.unit_price)"
+        },
+        {
+            "name": "App Integration: Order Shipping Event",
+            "description": "Send Order to Kafka if date_shipped is not None.",
+            "use_case": "App Integration",
+            "entity": "Order",
+            "code": "Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka, if_condition=lambda row: row.date_shipped is not None, with_args={\"topic\": \"order_shipping\"})"
+        }
+    ],
+    "graphics": [],
+    "test_data": "class CustomerTestData:\n    customer1 = Customer(id=1, name=\"John Doe\", credit_limit=2000, balance=0)\n    customer2 = Customer(id=2, name=\"Jane Smith\", credit_limit=3000, balance=0)\n    customer3 = Customer(id=3, name=\"Alice Johnson\", credit_limit=1500, balance=0)\n    customer4 = Customer(id=4, name=\"Bob Brown\", credit_limit=5000, balance=0)\n\nclass OrderTestData:\n    order1 = Order(id=1, customer_id=1, notes=\"Urgent\", date_shipped=None, amount_total=0)\n    order2 = Order(id=2, customer_id=2, notes=\"Next Day\", date_shipped=None, amount_total=0)\n    order3 = Order(id=3, customer_id=3, notes=\"Gift Wrap\", date_shipped=None, amount_total=0)\n    order4 = Order(id=4, customer_id=4, notes=\"Standard\", date_shipped=None, amount_total=0)\n\nclass ItemTestData:\n    item1 = Item(id=1, order_id=1, product_id=1, quantity=2, unit_price=20, amount=0)\n    item2 = Item(id=2, order_id=2, product_id=2, quantity=1, unit_price=50, amount=0)\n    item3 = Item(id=3, order_id=3, product_id=3, quantity=3, unit_price=30, amount=0)\n    item4 = Item(id=4, order_id=4, product_id=4, quantity=4, unit_price=25, amount=0)\n\nclass ProductTestData:\n    product1 = Product(id=1, name=\"Laptop\", unit_price=100)\n    product2 = Product(id=2, name=\"Headphones\", unit_price=50)\n    product3 = Product(id=3, name=\"Monitor\", unit_price=150)\n    product4 = Product(id=4, name=\"Mouse\", unit_price=30)",
+    "test_data_rows": [
+        {
+            "test_data_row_variable": "customer1",
+            "code": "customer1 = Customer(id=1, name=\"John Doe\", credit_limit=2000, balance=0)"
+        },
+        {
+            "test_data_row_variable": "customer2",
+            "code": "customer2 = Customer(id=2, name=\"Jane Smith\", credit_limit=3000, balance=0)"
+        },
+        {
+            "test_data_row_variable": "customer3",
+            "code": "customer3 = Customer(id=3, name=\"Alice Johnson\", credit_limit=1500, balance=0)"
+        },
+        {
+            "test_data_row_variable": "customer4",
+            "code": "customer4 = Customer(id=4, name=\"Bob Brown\", credit_limit=5000, balance=0)"
+        },
+        {
+            "test_data_row_variable": "order1",
+            "code": "order1 = Order(id=1, customer_id=1, notes=\"Urgent\", date_shipped=None, amount_total=0)"
+        },
+        {
+            "test_data_row_variable": "order2",
+            "code": "order2 = Order(id=2, customer_id=2, notes=\"Next Day\", date_shipped=None, amount_total=0)"
+        },
+        {
+            "test_data_row_variable": "order3",
+            "code": "order3 = Order(id=3, customer_id=3, notes=\"Gift Wrap\", date_shipped=None, amount_total=0)"
+        },
+        {
+            "test_data_row_variable": "order4",
+            "code": "order4 = Order(id=4, customer_id=4, notes=\"Standard\", date_shipped=None, amount_total=0)"
+        },
+        {
+            "test_data_row_variable": "item1",
+            "code": "item1 = Item(id=1, order_id=1, product_id=1, quantity=2, unit_price=20, amount=0)"
+        },
+        {
+            "test_data_row_variable": "item2",
+            "code": "item2 = Item(id=2, order_id=2, product_id=2, quantity=1, unit_price=50, amount=0)"
+        },
+        {
+            "test_data_row_variable": "item3",
+            "code": "item3 = Item(id=3, order_id=3, product_id=3, quantity=3, unit_price=30, amount=0)"
+        },
+        {
+            "test_data_row_variable": "item4",
+            "code": "item4 = Item(id=4, order_id=4, product_id=4, quantity=4, unit_price=25, amount=0)"
+        },
+        {
+            "test_data_row_variable": "product1",
+            "code": "product1 = Product(id=1, name=\"Laptop\", unit_price=100)"
+        },
+        {
+            "test_data_row_variable": "product2",
+            "code": "product2 = Product(id=2, name=\"Headphones\", unit_price=50)"
+        },
+        {
+            "test_data_row_variable": "product3",
+            "code": "product3 = Product(id=3, name=\"Monitor\", unit_price=150)"
+        },
+        {
+            "test_data_row_variable": "product4",
+            "code": "product4 = Product(id=4, name=\"Mouse\", unit_price=30)"
+        }
+    ],
+    "test_data_sqlite": "INSERT INTO customer (id, name, credit_limit, balance) VALUES (1, 'John Doe', 2000, 0);\nINSERT INTO customer (id, name, credit_limit, balance) VALUES (2, 'Jane Smith', 3000, 0);\nINSERT INTO customer (id, name, credit_limit, balance) VALUES (3, 'Alice Johnson', 1500, 0);\nINSERT INTO customer (id, name, credit_limit, balance) VALUES (4, 'Bob Brown', 5000, 0);\n\nINSERT INTO \"order\" (id, customer_id, notes, date_shipped, amount_total) VALUES (1, 1, 'Urgent', NULL, 0);\nINSERT INTO \"order\" (id, customer_id, notes, date_shipped, amount_total) VALUES (2, 2, 'Next Day', NULL, 0);\nINSERT INTO \"order\" (id, customer_id, notes, date_shipped, amount_total) VALUES (3, 3, 'Gift Wrap', NULL, 0);\nINSERT INTO \"order\" (id, customer_id, notes, date_shipped, amount_total) VALUES (4, 4, 'Standard', NULL, 0);\n\nINSERT INTO item (id, order_id, product_id, quantity, unit_price, amount) VALUES (1, 1, 1, 2, 20, 0);\nINSERT INTO item (id, order_id, product_id, quantity, unit_price, amount) VALUES (2, 2, 2, 1, 50, 0);\nINSERT INTO item (id, order_id, product_id, quantity, unit_price, amount) VALUES (3, 3, 3, 3, 30, 0);\nINSERT INTO item (id, order_id, product_id, quantity, unit_price, amount) VALUES (4, 4, 4, 4, 25, 0);\n\nINSERT INTO product (id, name, unit_price) VALUES (1, 'Laptop', 100);\nINSERT INTO product (id, name, unit_price) VALUES (2, 'Headphones', 50);\nINSERT INTO product (id, name, unit_price) VALUES (3, 'Monitor', 150);\nINSERT INTO product (id, name, unit_price) VALUES (4, 'Mouse', 30);",
+    "name": "Order Management System"
+}
