@@ -2,25 +2,25 @@
     "models": [
         {
             "classname": "Customer",
-            "code": "class Customer(Base):\n    __tablename__ = 'customer'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String(100), nullable=False)\n    credit_limit = Column(Decimal, nullable=False)\n    balance = Column(Decimal, nullable=False, default=0)\n",
+            "code": "class Customer(Base):\n    __tablename__ = 'customer'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String(100), nullable=False)\n    credit_limit = Column(DECIMAL, nullable=False)\n    balance = Column(DECIMAL, nullable=False, default=0)\n",
             "description": "A class representing a customer, storing credit limit and balance.",
             "name": "Customer"
         },
         {
             "classname": "Order",
-            "code": "class Order(Base):\n    __tablename__ = 'order'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)\n    notes = Column(String(500))\n    amount_total = Column(Decimal, default=0)\n    date_shipped = Column(Date)\n",
+            "code": "class Order(Base):\n    __tablename__ = 'order'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)\n    notes = Column(String(500))\n    amount_total = Column(DECIMAL, default=0)\n    date_shipped = Column(Date)\n",
             "description": "A class representing an order, includes a link to customer and notes.",
             "name": "Order"
         },
         {
             "classname": "Item",
-            "code": "class Item(Base):\n    __tablename__ = 'item'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    order_id = Column(Integer, ForeignKey('order.id'), nullable=False)\n    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)\n    quantity = Column(Integer, nullable=False)\n    unit_price = Column(Decimal, nullable=False)\n    amount = Column(Decimal, nullable=False, default=0)\n",
+            "code": "class Item(Base):\n    __tablename__ = 'item'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    order_id = Column(Integer, ForeignKey('order.id'), nullable=False)\n    product_id = Column(Integer, ForeignKey('product.id'), nullable=False)\n    quantity = Column(Integer, nullable=False)\n    unit_price = Column(DECIMAL, nullable=False)\n    amount = Column(DECIMAL, nullable=False, default=0)\n",
             "description": "A class representing items within an order, referencing order and product.",
             "name": "Item"
         },
         {
             "classname": "Product",
-            "code": "class Product(Base):\n    __tablename__ = 'product'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String(100), nullable=False)\n    unit_price = Column(Decimal, nullable=False)\n",
+            "code": "class Product(Base):\n    __tablename__ = 'product'\n\n    id = Column(Integer, primary_key=True, autoincrement=True)\n    name = Column(String(100), nullable=False)\n    unit_price = Column(DECIMAL, nullable=False)\n",
             "description": "A class representing products available for orders.",
             "name": "Product"
         }

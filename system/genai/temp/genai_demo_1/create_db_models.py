@@ -29,34 +29,37 @@ Base = declarative_base()  # from system/genai/create_db_models_inserts/create_d
 from sqlalchemy.dialects.sqlite import *
 
 class Customer(Base):
-    """description: This class defines the Customer entity."""
+    """description: This class represents a customer in the system, including financial information."""
     __tablename__ = 'customer'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
     balance = Column(DECIMAL)
     credit_limit = Column(DECIMAL)
 
 class Order(Base):
-    """description: This class defines the Order entity with a notes field."""
+    """description: This class represents an order linked to a customer with additional details and total spending."""
     __tablename__ = 'order'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     customer_id = Column(Integer, ForeignKey('customer.id'))
-    amount_total = Column(DECIMAL)
     date_shipped = Column(DateTime)
+    amount_total = Column(DECIMAL)
     notes = Column(String)
 
 class Item(Base):
-    """description: This class defines the Item entity."""
+    """description: The class represents order items with details on quantity and pricing."""
     __tablename__ = 'item'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
     order_id = Column(Integer, ForeignKey('order.id'))
+    product_id = Column(Integer, ForeignKey('product.id'))
     quantity = Column(Integer)
     unit_price = Column(DECIMAL)
     amount = Column(DECIMAL)
 
 class Product(Base):
-    """description: This class defines the Product entity for storing product information."""
+    """description: This class represents products available in the system."""
     __tablename__ = 'product'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
     unit_price = Column(DECIMAL)
 
 
@@ -86,26 +89,18 @@ try:
     
     
     session.commit()
-    customer1 = Customer(balance=Decimal('1000'), credit_limit=Decimal('5000'))
-    order1 = Order(customer_id=1, amount_total=Decimal('300'), date_shipped=date(2023, 1, 1), notes="Priority order")
-    item1 = Item(order_id=1, quantity=10, unit_price=Decimal('30'), amount=Decimal('300'))
-    product1 = Product(unit_price=Decimal('30'))
-    customer2 = Customer(balance=Decimal('1500'), credit_limit=Decimal('5000'))
-    order2 = Order(customer_id=2, amount_total=Decimal('450'), date_shipped=date(2023, 2, 15), notes="Urge shipment")
-    item2 = Item(order_id=2, quantity=15, unit_price=Decimal('30'), amount=Decimal('450'))
-    product2 = Product(unit_price=Decimal('30'))
-    customer3 = Customer(balance=Decimal('2000'), credit_limit=Decimal('5000'))
-    order3 = Order(customer_id=3, amount_total=Decimal('750'), date_shipped=date(2023, 3, 10), notes="Regular shipment")
-    item3 = Item(order_id=3, quantity=25, unit_price=Decimal('30'), amount=Decimal('750'))
-    product3 = Product(unit_price=Decimal('30'))
-    customer4 = Customer(balance=Decimal('2500'), credit_limit=Decimal('5000'))
-    order4 = Order(customer_id=4, amount_total=Decimal('900'), date_shipped=date(2023, 4, 5), notes="Delayed shipment")
-    item4 = Item(order_id=4, quantity=30, unit_price=Decimal('30'), amount=Decimal('900'))
-    product4 = Product(unit_price=Decimal('30'))
+    customer1 = Customer(id=1, name="John Doe", balance=Decimal('0.00'), credit_limit=Decimal('1000.00'))
+    customer2 = Customer(id=2, name="Jane Smith", balance=Decimal('150.75'), credit_limit=Decimal('2000.00'))
+    order1 = Order(id=1, customer_id=1, date_shipped=date(2023, 8, 10), amount_total=Decimal('200.00'), notes="Urgent delivery requested.")
+    order2 = Order(id=2, customer_id=2, date_shipped=None, amount_total=Decimal('50.50'), notes="Needs gift wrapping.")
+    item1 = Item(id=1, order_id=1, product_id=1, quantity=5, unit_price=Decimal('40.00'), amount=Decimal('200.00'))
+    item2 = Item(id=2, order_id=2, product_id=2, quantity=1, unit_price=Decimal('50.50'), amount=Decimal('50.50'))
+    product1 = Product(id=1, name="Widget A", unit_price=Decimal('40.00'))
+    product2 = Product(id=2, name="Widget B", unit_price=Decimal('50.50'))
     
     
     
-    session.add_all([customer1, order1, item1, product1, customer2, order2, item2, product2, customer3, order3, item3, product3, customer4, order4, item4, product4])
+    session.add_all([customer1, customer2, order1, order2, item1, item2, product1, product2])
     session.commit()
     # end of test data
     

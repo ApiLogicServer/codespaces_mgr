@@ -10,7 +10,7 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 &nbsp;
 
-## 🤖 AI Assistance
+## 🤖 AI Assistance - Tell Your AI Assistant
 
 ```
 Please load `.github/.copilot-instructions.md`.
