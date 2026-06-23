@@ -10,10 +10,10 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 &nbsp;
 
-## 🤖 AI Assistance - Tell Your AI Assistant
+## 🤖 AI Assistance
 
 <details markdown>
-<summary>Selecting your AI assistant</summary>
+<summary>First select your AI assistant, then paste the prompt below</summary>
 
 &nbsp;
 
@@ -25,7 +25,7 @@ For more information, see [AI-Enabled Projects](https://apilogicserver.github.io
 
 </details>
 
-Then paste this to your AI assistant:
+&nbsp;
 
 ```
 Please load `.github/.copilot-instructions.md`.
@@ -37,21 +37,21 @@ Please load `.github/.copilot-instructions.md`.
 <!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.py injects browser note here — do not rename this heading -->
 
 <details>
-<summary>⚡ See it work — build a complete system from a prompt, including logic</summary>
+<summary>⚡ Try Prompt → System -- then ask: is this maintainable?</summary>
 &nbsp;
 
 You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
 
 
-&nbsp;
+<br>
 
-<details markdown>
-<summary>&emsp;&emsp;1. Create — database, API, Admin App and business logic from a prompt</summary>
+<details markdown open>
+<summary>&emsp;&emsp;1. Create — API, Admin App and business logic from a prompt - existing db</summary>
 
-<br>Say this to your AI assistant (allow 8-10 mins):
+<br>Say this to your AI assistant (allow 2-3 mins):
 
 ```
-Create basic_demo, with customers, orders, items and products.
+Create basic_demo from samples/dbs/basic_demo.sqlite (customers, orders, products).
 
 Include a notes field for orders.
 
@@ -66,13 +66,24 @@ Use case: App Integration
     1. Publish the Order to Kafka topic 'order_shipping' if the date_shipped is not None.
 ```
 
-> Note: the prompt above creates a new database. You *could* use an existing one instead — `create basic_demo from samples/dbs/basic_demo.sqlite` — replacing the first 2 lines above.
+<details markdown>
+<summary>Or, create with a new database</summary>
+
+<br>The prompt above starts from an *existing* database — the common real-world case (1t does not need to be sqlite).   You could create the same system with a *new* database, using a file-based prompt:
+
+```
+Create basic_demo from samples/prompts/genai_demo.prompt
+```
+</details>
+
+&nbsp;
 
 Most code generators produce code you then have to own. This one produces *models* — executable, maintainable:
 
 1. **Data model** — `database/models.py`
 2. **Full JSONAPI** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
 3. **Admin App** — `ui/admin/admin.yaml`
+4. **Business logic** — `logic/logic_discovery/place_order/check_credit.py`
 
 Each small, readable, yours. Plain Python — standard tooling applies.
 
@@ -164,7 +175,11 @@ Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic](https://apilogic
 <details markdown>
 <summary>&emsp;&emsp;6. Iterate — ask for a new rule in plain English</summary>
 
-<br>Try: *"Customers should not be able to create new orders if they have unresolved past due letters."* — watch the AI add and explain the new rule.
+<br>Try:
+```
+Customers should not be able to create new orders if they have unresolved past due letters.
+```
+Since the engine resolves dependencies at load time, adding this rule doesn't touch the 5 you already have — no regeneration, no regression risk. An AI rewriting procedural code from scratch would have to re-touch all of it, with more surface area for a missed path and more tokens spent doing it.
 
 </details>
 

@@ -255,10 +255,11 @@ def main():
     readme = readme.lstrip("\n")
     print("  ✅ Front matter and style block stripped")
 
-    # Inject Codespaces + browser notes inside "See it work" (idempotent)
-    # Match on the stable "<summary>⚡ See it work" prefix — the text after the
-    # em-dash is gold-source copy (org_git/Docs) and changes independently of this script.
-    summary_re = re.compile(r"<summary>⚡ See it work[^<]*</summary>")
+    # Inject Codespaces + browser notes right after the outer "First Time Here?" details
+    # summary (idempotent). Match on the stable "<details>\n<summary>⚡ ...</summary>" prefix —
+    # the text after the lightning bolt is gold-source copy (org_git/Docs) and changes
+    # independently of this script.
+    summary_re = re.compile(r"<details>\n<summary>⚡[^<]*</summary>")
     if "Use Chrome or Edge" not in readme:
         cs_note = (
             "\n&nbsp;\n\n"
@@ -269,13 +270,31 @@ def main():
         match = summary_re.search(readme)
         if not match:
             raise SystemExit(
-                "ERROR: no '<summary>⚡ See it work...</summary>' line found in README.md — "
+                "ERROR: no '<details>\\n<summary>⚡ ...</summary>' line found in README.md — "
                 "update this script's summary_re pattern to match the current heading."
             )
         readme = readme[:match.end()] + cs_note + readme[match.end():]
         print("  ✅ Codespaces + browser notes injected")
     else:
         print("  (notes already present, skipped)")
+
+    # Codespaces-only: open item 1's details block by default — reviewer feedback that
+    # devs skim code, not prose, and the first prompt-as-code-block should be visible
+    # without a click on a first-time, one-shot visit. Local README keeps it collapsed
+    # (every-day use, would be noisy). Scoped to item 1 only — items 2-6 stay collapsed,
+    # preserving the agenda/outline feel of the numbered list.
+    item1_re = re.compile(r"<details markdown>\n<summary>[^<]*?1\.[^<]*</summary>")
+    readme, n = item1_re.subn(
+        lambda m: m.group(0).replace("<details markdown>", "<details markdown open>", 1),
+        readme,
+        count=1,
+    )
+    if n == 0:
+        raise SystemExit(
+            "ERROR: could not find item 1's <details markdown> block to open by default — "
+            "update this script's item1_re pattern to match the current heading."
+        )
+    print("  ✅ Item 1 details block set to open by default (Codespaces-only)")
 
     readme_path.write_text(readme)
 
