@@ -14,7 +14,7 @@ const routes: Routes = [
       }
     }
   },{
-    path: ':City/Order', loadChildren: () => import('../Order/Order.module').then(m => m.OrderModule),
+    path: ':Country/Order', loadChildren: () => import('../Order/Order.module').then(m => m.OrderModule),
     data: {
         oPermission: {
             permissionId: 'Order-detail-permissions'

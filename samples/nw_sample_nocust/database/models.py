@@ -10,8 +10,8 @@ from sqlalchemy.ext.declarative import declarative_base
 # Alter this file per your database maintenance policy
 #    See https://apilogicserver.github.io/Docs/Project-Rebuild/#rebuilding
 #
-# Created:  June 21, 2026 20:49:50
-# Database: sqlite:////Users/kat/dev/genai-logic/ApiLogicServer-dev/build_and_test/genai-logic/samples/nw_sample_nocust/database/db.sqlite
+# Created:  June 23, 2026 16:31:55
+# Database: sqlite:////Users/val/dev/ApiLogicServer/ApiLogicServer-dev/build_and_test/genai-logic/samples/nw_sample_nocust/database/db.sqlite
 # Dialect:  sqlite
 #
 # mypy: ignore-errors

@@ -25,19 +25,19 @@
       
       <mat-tab-group fxFill>
         
-        <mat-tab label="ORDER-City">
+        <mat-tab label="ORDER-Country">
     <div layout-padding>
       <o-table 
         attr="OrderTable" 
         service="Order" 
         entity="Order" 
         keys="Id"
-        parent-keys="City:country"
-        columns="ShipName;CloneFromOrder;City;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;Country;Ready;OrderDetailCount;Id"  
+        parent-keys="Country:country"
+        columns="ShipName;CloneFromOrder;Country;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;City;Ready;OrderDetailCount;Id"  
         horizontal-scroll="yes"
         detail-form-route="Order" 
         edit-form-route="Order"
-        visible-columns="ShipName;CloneFromOrder;City;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;Country;Ready;OrderDetailCount;Id"  
+        visible-columns="ShipName;CloneFromOrder;Country;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;City;Ready;OrderDetailCount;Id"  
         sort-columns="ShipName" 
         query-rows="25" 
         quick-filter="yes"
@@ -64,7 +64,7 @@
     </o-table-cell-renderer-service>
 </o-table-column>
         
-          <o-table-column #City attr="City" title="City" editable="no" required="no" content-align="left"></o-table-column>
+          <o-table-column #Country attr="Country" title="Country" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column #CustomerId attr="CustomerId" title="CustomerId" editable="no" required="yes" content-align="left"></o-table-column>
         
@@ -99,7 +99,7 @@
         
           <o-table-column #AmountTotal attr="AmountTotal" title="AmountTotal" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
         
-          <o-table-column #Country attr="Country" title="Country" editable="no" required="no" content-align="left"></o-table-column>
+          <o-table-column #City attr="City" title="City" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="Ready" title="Ready">
     <o-table-cell-renderer-boolean render-true-value="check_circle" render-false-value="highlight_off"

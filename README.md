@@ -1,3 +1,27 @@
+<!--
+title: Welcome - see end for instructions to hide this
+Description: Instant mcp-enabled microservices, standard projects, declarative business logic
+Source: docs/Manager-readme
+version info: 17.00.12 (06/18/2026)
+do_process_code_block_titles: True
+Used: Manager Readme (via copy_md())
+demo_customs: Customs-readme
+demo_customs_surtax: Customs-readme-surtax
+demo_kafka: Sample-Integration
+demo_allo: Sample_Allo_Dept_GL_readme
+demo_ai_rules: Sample-ai-rules
+demo_mcp_send: Sample-Basic-Demo-MCP-Send-Email
+demo_eai: Sample-Basic-EAI
+demo_vibe: Sample-Basic-Demo-Vibe
+demo_copilot_mcp_discovery: Sample-ai-mcp
+basic_demo: Sample-Basic-Demo
+codespaces_patch: |
+  create_codespaces_mgr.py injects a Codespaces-only browser note immediately after
+  the "## 🚀 First Time Here?" heading (sentinel: do not rename that heading without
+  updating the matching logic in create_codespaces_mgr.py). The note warns Safari users to
+  switch to Chrome/Edge. This avoids forking the README for Codespaces.
+-->
+
 # Welcome to GenAI-Logic
 
 One prompt — or your existing database — builds a working API and Admin App, then you declare business logic in **5 readable rules instead of 200 lines of AI-generated code** to enforce it.
@@ -43,10 +67,10 @@ Please load `.github/.copilot-instructions.md`.
 You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
 
 
-<br>
+&nbsp;
 
-<details markdown open>
-<summary>&emsp;&emsp;1. Create — API, Admin App and business logic from a prompt - existing db</summary>
+<details markdown>
+<summary>&emsp;&emsp;1. Create — API, Admin App and business logic from a prompt (existing db)</summary>
 
 <br>Say this to your AI assistant (allow 2-3 mins):
 
@@ -67,16 +91,13 @@ Use case: App Integration
 ```
 
 <details markdown>
-<summary>Or, create with a new database</summary>
-
-<br>The prompt above starts from an *existing* database — the common real-world case (1t does not need to be sqlite).   You could create the same system with a *new* database, using a file-based prompt:
-
-```
-Create basic_demo from samples/prompts/genai_demo.prompt
-```
-</details>
+<summary>Starting from a new database instead?</summary>
 
 &nbsp;
+
+The prompt above starts from an existing database — the common real-world case, and much faster (no schema design step). You *could* have AI design a new database from scratch instead — drop the `from samples/dbs/basic_demo.sqlite` clause from the first line above (allow 8-10 mins).
+
+</details>
 
 Most code generators produce code you then have to own. This one produces *models* — executable, maintainable:
 
@@ -433,7 +454,6 @@ Verify it's operating properly:
 Explore [genai_demo_iteration_discount](system/genai/examples/genai_demo/genai_demo_iteration_discount).  It's an iteration of basic_demo (see system/genai/examples/genai_demo/genai_demo_iteration_discount/002_create_db_models.prompt).  This will add carbon_neutral to the data model, and update the logic to provide the discount:
 
 **Iterate Business Logic:**
-**Iterate Business Logic:**
 ```bash title='Iterate Business Logic'
 # Iterate with data model and logic
 genai-logic genai --project-name='genai_demo_with_discount' --using=system/genai/examples/genai_demo/genai_demo_iteration_discount
@@ -445,7 +465,6 @@ genai-logic genai --project-name='genai_demo_with_discount' --using=system/genai
 You can perform **model iterations:** add new columns/tables, while keeping the prior model intact.  First, we create a project with no logic, perhaps just to see the screens (this step is optional, provided just to illustrate that iterations create new projects from existing ones):
 
 **Iterate Without Logic:**
-**Iterate Without Logic:**
 ```bash title='Iterate Without Logic'
 # Step 1 - create without logic
 genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/examples/genai_demo/genai_demo_no_logic.prompt
@@ -454,7 +473,6 @@ genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/exam
 
 Then, we would create another prompt in the docs directory with our model changes. We've already created these for you in `system/genai/examples/genai_demo/genai_demo_iteration` - we use that to alter the data model (see `system/genai/examples/genai_demo/genai_demo_iteration/004_iteration_renames_logic.prompt`):
 
-**Iterate With Logic:**
 **Iterate With Logic:**
 ```bash title='Iterate With Logic'
 # Iterate with data model and logic
@@ -475,7 +493,6 @@ Explore [genai_demo_iteration](system/genai/examples/genai_demo/genai_demo_itera
 <br>You can declare rules using dot notation, or more informally:
 
 **Informal Logic (no dot notation):**
-**Informal Logic (no dot notation):**
 ```bash title="Informal Logic (no dot notation)"
 genai-logic genai --using=system/genai/examples/genai_demo/genai_demo_informal.prompt --project-name=genai_demo_informal
 ```
@@ -490,7 +507,6 @@ genai-logic genai --using=system/genai/examples/genai_demo/genai_demo_informal.p
 <br>You can add new columns/tables, while keeping the prior model intact:
 
 **Multi-Rule Logic:**
-**Multi-Rule Logic:**
 ```bash title="Multi-Rule Logic"
 genai-logic genai --using=system/genai/examples/emp_depts/emp_dept.prompt
 ```
@@ -504,13 +520,11 @@ genai-logic genai --using=system/genai/examples/emp_depts/emp_dept.prompt
 <br>You can create a project, and ask GenAI for logic suggestions:
 
 **1. Create Project, without Rules:**
-**1. Create Project, without Rules:**
 ```bash title='1. Create Project, without Rules'
 # 1. Create Project, without Rules
 genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/examples/genai_demo/genai_demo_no_logic.prompt
 ```
 
-**2. Request Rule Suggestions:**
 **2. Request Rule Suggestions:**
 ```bash title="2. Request Rule Suggestions"
 # 2. Request Rule Suggestions
@@ -523,7 +537,6 @@ You can review the [resultant logic suggestions](genai_demo_no_logic/docs/logic_
  * See and edit: `docs/logic_suggestions/002_logic_suggestions.prompt` (used in step 3, below)
     * This corresponds to the Logic Editor - Logic View in the WebGenAI web app
 
-**3. See the rules for the logic:**
 **3. See the rules for the logic:**
 ```bash title="3. See the rules for the logic"
 # 3. See the rule code for the logic
@@ -545,7 +558,6 @@ The [logic suggestions directory](genai_demo_no_logic/docs/logic_suggestions) no
 When you are ready to proceed:
 1. Execute the following to create a *new project* (iteration), with suggested logic:
 
-**4. Create a new project with the Rule Suggestions:**
 **4. Create a new project with the Rule Suggestions:**
 ```bash title="4. Create a new project with the Rule Suggestions"
 # 4. Create a new project with the Rule Suggestions
@@ -584,7 +596,6 @@ The `genai-utils --fixup` fixes such project issues by updating the Data Model a
 After starting the [Manager](https://apilogicserver.github.io/Docs/Manager): 
 
 **0. Create Project Requiring Fixup:**
-**0. Create Project Requiring Fixup:**
 ```bash title="0. Create Project Requiring Fixup"
 # 0. Create a project requiring fixup
 genai-logic genai --repaired-response=system/genai/examples/genai_demo/genai_demo_fixup_required.json --project-name=genai_demo_fixup_required
@@ -602,7 +613,6 @@ Missing Attrs (try genai-logic genai-utils --fixup): ['Customer.balance: constra
 
 To Fix it:
 **1. Run FixUp to add missing attributes to the fixup response data model:**
-**1. Run FixUp to add missing attributes to the fixup response data model:**
 ```bash title="1. Run FixUp to add missing attributes to the fixup response data model"
 # 1. Run FixUp to add missing attributes to the data model
 cd genai_demo_fixup_required
@@ -610,7 +620,6 @@ genai-logic genai-utils --fixup
 ```
 
 Finally, use the created [fixup files](genai_demo_fixup_required/docs/fixup/) to rebuild the project:
-**2. Rebuild the project from the fixup response data model:**
 **2. Rebuild the project from the fixup response data model:**
 ```bash title="2. Rebuild the project from the fixup response data model"
 # 2. Rebuild the project from the fixup response data model
@@ -683,7 +692,6 @@ genai-logic genai-utils --rebuild-test-data
 
 <br>You can add new columns/tables, while keeping the prior model intact:
 
-**Iterate:**
 **Iterate:**
 ```bash title="Iterate"
 # create project without creating a file...
@@ -829,7 +837,6 @@ Please see [this doc](https://apilogicserver.github.io/Docs/Sample-AI-ChatGPT/)
 
 
 **Quick Basic Demo:**
-**Quick Basic Demo:**
 ```bash title="Quick Basic Demo"
 
 # Microservice Automation
@@ -858,7 +865,6 @@ genai-logic rebuild-from-database --db_url=sqlite:///database/db.sqlite
 
 <br>This demo creates and customizes a project, starting from a prompt:
 
-**Quick GenAI Demo:**
 **Quick GenAI Demo:**
 ```bash title="Quick GenAI Demo"
 

@@ -35,7 +35,7 @@
         separator=" - " width="680px" class="form-field">
 </o-list-picker>
       
-      <o-text-input #City attr="City" label="City" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      <o-text-input #Country attr="Country" label="Country" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
       <o-list-picker 
         attr="CustomerId"
@@ -97,7 +97,7 @@
       
       <o-currency-input #AmountTotal attr="AmountTotal" title="AmountTotal" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator="," decimal-separator="."></o-currency-input>
       
-      <o-text-input #Country attr="Country" label="Country" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
+      <o-text-input #City attr="City" label="City" enabled="yes" required="no" fxFlex="20%" class="form-field"></o-text-input>
       
       <o-checkbox #Ready attr="Ready" label="Ready" read-only="no" enabled="yes"></o-checkbox>
       
@@ -118,11 +118,11 @@
         entity="Order" 
         keys="Id"
         parent-keys="CloneFromOrder:Id"
-        columns="ShipName;CloneFromOrder;City;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;Country;Ready;OrderDetailCount;Id"  
+        columns="ShipName;CloneFromOrder;Country;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;City;Ready;OrderDetailCount;Id"  
         horizontal-scroll="yes"
         detail-form-route="Order" 
         edit-form-route="Order"
-        visible-columns="ShipName;CloneFromOrder;City;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;Country;Ready;OrderDetailCount;Id"  
+        visible-columns="ShipName;CloneFromOrder;Country;CustomerId;EmployeeId;OrderDate;RequiredDate;ShippedDate;ShipVia;Freight;ShipAddress;ShipCity;ShipRegion;ShipPostalCode;ShipCountry;AmountTotal;City;Ready;OrderDetailCount;Id"  
         sort-columns="ShipName" 
         query-rows="25" 
         quick-filter="yes"
@@ -149,7 +149,7 @@
     </o-table-cell-renderer-service>
 </o-table-column>
         
-          <o-table-column #City attr="City" title="City" editable="no" required="no" content-align="left"></o-table-column>
+          <o-table-column #Country attr="Country" title="Country" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column #CustomerId attr="CustomerId" title="CustomerId" editable="no" required="yes" content-align="left"></o-table-column>
         
@@ -184,7 +184,7 @@
         
           <o-table-column #AmountTotal attr="AmountTotal" title="AmountTotal" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
         
-          <o-table-column #Country attr="Country" title="Country" editable="no" required="no" content-align="left"></o-table-column>
+          <o-table-column #City attr="City" title="City" editable="no" required="no" content-align="left"></o-table-column>
         
           <o-table-column attr="Ready" title="Ready">
     <o-table-cell-renderer-boolean render-true-value="check_circle" render-false-value="highlight_off"
