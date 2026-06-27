@@ -185,7 +185,7 @@ But unlike procedural code, they're **declarative**:
 
 Think of a spreadsheet: `B10 = SUM(B1:B9)`, and every recalculation just happens. Rules work the same way for database transactions — that's what makes 5 declarative rules replace 200 lines of procedural code with zero missed paths, as you just saw above.
 
-Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic](https://apilogicserver.github.io/Docs/samples/basic_demo_logic_gov/logic/readme_logic).
+Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md).
 
 </details>
 
@@ -224,15 +224,15 @@ Quick recap: you triggered a rule, watched it chain across three tables, found t
 
 **That shows up as two service categories, both built on the same rule engine.** Each is a complete, runnable sample in `samples/`, with its own readme:
 
-- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already *publishes* shipped orders to Kafka (outbound). For the *subscribe* side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see [samples/basic_demo_eai/readme](https://apilogicserver.github.io/Docs/samples/basic_demo_eai/readme). Same rules, same engine, no extra logic written.
+- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already *publishes* shipped orders to Kafka (outbound). For the *subscribe* side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md). Same rules, same engine, no extra logic written.
 - **AI-Enhanced Logic** — two flavors, both governed by the same deterministic rules, both in the same sample:
-    - **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](https://apilogicserver.github.io/Docs/samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
-    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme](https://apilogicserver.github.io/Docs/samples/basic_demo_ai_rules-supplier/readme)
+    - **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
+    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
 **Put those together and these services have what it takes for Executable Requirements** — AI building real systems straight from a spec in a format you already trust, not a hand-off document that drifts from what got built:
 
-- **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme](https://apilogicserver.github.io/Docs/samples/demo_customs_clvs/readme)
-- An **actual government tariff regulation** (Canada, CBSA) — [samples/demo_customs_surtax/readme](https://apilogicserver.github.io/Docs/samples/demo_customs_surtax/readme)
+- **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
+- An **actual government tariff regulation** (Canada, CBSA) — [samples/demo_customs_surtax/readme.md](samples/demo_customs_surtax/readme.md)
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
@@ -254,7 +254,7 @@ These are less features than consequences of teaming AI with Logic Automation �
 It didn't figure that out on its own. It was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
 
 - **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
-- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic](https://apilogicserver.github.io/Docs/samples/basic_demo_logic_gov/logic/readme_logic) — same material.
+- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
 
   <details markdown>
   <summary>The AI was trained on this material — can you trust its answers?</summary>
@@ -338,14 +338,14 @@ Explore the key use cases from our home page:
 
 | Use Case | Say to your AI / Run | What You'll Learn |
 |----------|---------|-------------------|
-| **[Allocation with AI Rules](https://www.genai-logic.com)** <br> demo_allo_dept_gl | create demo_allo_dept_gl from samples/prompts/allocation.prompt <br> or genai-logic create --project_name=demo_allo_dept_gl --db_url=sqlite:///samples/dbs/starter.sqlite | - [Cascade Allocation (Costs to Depts/GL)](https://apilogicserver.github.io/Docs/Sample_Allo_Dept_GL_full) <br> - AI Rules for fuzzy match to project |
-| **[Use Case 1: AI Rules](https://www.genai-logic.com/#h.ussov6phwsja)**<br> demo_ai_rules_supplier | genai-logic create --project_name=demo_ai_rules_supplier --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Use AI Rules (req pattern) to choose Optimal Supplier, per world conditions |
-| **[Use Case 2: Governed MCP Server](https://www.genai-logic.com/#h.kjyi4tc52seu)** <br>demo_mcp_send_email | genai-logic create --project_name=demo_mcp_send_email --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Bus Users compose new service to send email to overdue customers, subject to email opt-out rules<br>- Create custom API with NL<br>- Create an email service (req pattern) |
-| **[EAI: Enterprise App Integration](https://www.genai-logic.com/#h.wdoo0f18oqd1)** <br>demo_eai | genai-logic create --project_name=demo_eai --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Executable Requirements<br>- Create custom API with NL<br>- Create Kafka Listener with NL |
-| **[Use Case 4: Vibe Dev Backend](https://www.genai-logic.com/#h.6d0vlkwk86lb)** <br> demo_vibe | genai-logic create --project_name=demo_vibe --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - UI elements, eg, Cards, Maps, Trees... |
+| **[Allocation with AI Rules](samples/allocate_dept_account_demo/docs/requirements/logic_flow_allocate_dept_account_demo.md)** <br> demo_allo_dept_gl | create demo_allo_dept_gl from samples/prompts/allocation.prompt.md <br> or genai-logic create --project_name=demo_allo_dept_gl --db_url=sqlite:///samples/dbs/starter.sqlite | - [Cascade Allocation (Costs to Depts/GL)](https://apilogicserver.github.io/Docs/Sample_Allo_Dept_GL_full) <br> - AI Rules for fuzzy match to project |
+| **[Use Case 1: AI Rules](samples/basic_demo_ai_rules-supplier/readme.md)**<br> demo_ai_rules_supplier | genai-logic create --project_name=demo_ai_rules_supplier --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Use AI Rules (req pattern) to choose Optimal Supplier, per world conditions |
+| **[Use Case 2: Governed MCP Server](https://apilogicserver.github.io/Docs/Sample-Basic-Demo-MCP-Send-Email/)** <br>demo_mcp_send_email | genai-logic create --project_name=demo_mcp_send_email --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Bus Users compose new service to send email to overdue customers, subject to email opt-out rules<br>- Create custom API with NL<br>- Create an email service (req pattern) |
+| **[EAI: Enterprise App Integration](samples/basic_demo_eai/readme.md)** <br>demo_eai | genai-logic create --project_name=demo_eai --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Executable Requirements<br>- Create custom API with NL<br>- Create Kafka Listener with NL |
+| **[Use Case 4: Vibe Dev Backend](https://apilogicserver.github.io/Docs/Sample-Basic-Demo-Vibe/)** <br> demo_vibe | genai-logic create --project_name=demo_vibe --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - UI elements, eg, Cards, Maps, Trees... |
 | **[Use Case 5: Business Users](https://www.genai-logic.com/#h.69d2voz8q5r1)** <br> webgenai | See `webgenai/` in this Manager | - Create systems from browser, with logic, sample data and derived attributes |
-| **[Customs CLVS](samples/requirements/customs_demo/docs/requirements/customs_demo/requirements.md)** <br> demo_customs_clvs | genai-logic create  --project_name=demo_customs_clvs --db_url=sqlite:///samples/requirements/customs_demo_clvs/database/customs.sqlite | - Governed Business Systems<br> - EAI (using XML), textual requirements |
-| **[Customs Surtax](https://apilogicserver.github.io/Docs/samples/prompts/customs_cbsa.prompt)** <br> demo_customs_surtax | implement project demo_customs_surtax from samples/prompts/customs_cbsa.prompt | - New Business System from Regulations |
+| **[Customs CLVS](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/requirements.md)** <br> demo_customs_clvs | genai-logic create  --project_name=demo_customs_clvs --db_url=sqlite:///samples/requirements/customs_demo_clvs/database/customs.sqlite | - Governed Business Systems<br> - EAI (using XML), textual requirements |
+| **[Customs Surtax](samples/prompts/customs_cbsa.prompt.md)** <br> demo_customs_surtax | implement project demo_customs_surtax from samples/prompts/customs_cbsa.prompt.md | - New Business System from Regulations |
 
 &nbsp;
 
@@ -359,7 +359,7 @@ Advanced examples and specialized patterns:
 
 | Demo | Say to your AI / Run | What You'll Learn |
 |------|---------|-------------------|
-| **Executable Requirements** | See [samples/requirements/readme.md](samples/requirements/readme.md) | Create from Gherkin requirements <br>implement reqs <path> |
+| **Executable Requirements** | See [samples/requirements/readme_reqmts.md](samples/requirements/readme_reqmts.md) | Create from Gherkin requirements <br>implement reqs <path> |
 | **New system from prompt** | genai-logic genai --using=samples/prompts/genai_demo.prompt | Create systems from prompt<br>Like WebGenAI, but from IDE |
 | **Coding Samples** | code samples/nw_sample | Useful code examples<br>Search: `#als` |
 | **MCP Discovery** <br> demo_copilot_mcp_discovery | genai-logic create --project_name=demo_copilot_mcp_discovery --db_url=sqlite:///samples/dbs/basic_demo.sqlite | test rules via Copilot access to MCP Server | 
