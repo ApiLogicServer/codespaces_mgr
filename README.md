@@ -202,8 +202,12 @@ Customers should not be able to create new orders if they have unresolved past d
 ```
 Notice what just happened — two things, easy to miss:
 
+**1. What the AI did.** There was no `Letter` (past-due notice) table in the model — the AI had to add the table and its relationship to `Customer`, then declare two rules: a `count` of unresolved letters, and a `constraint` blocking new orders when that count is non-zero. A schema change and two rules, from one sentence.
+
+**2. The implications:**
+
 - **You didn't do archaeology.** No opening `check_credit.py` to find where this belongs, no tracing the other 5 rules to check for conflicts. Auto-ordering means there's no maintenance hunt — you declare the rule, the engine places it.
-- **AI-only would have to rebuild.** Without the engine, an AI rewriting procedural code from scratch would have to re-read and re-touch all 5 existing rules to check for dependencies — more surface area for a missed path, more tokens spent doing it. Here, the engine resolves dependencies at load time, so adding this rule doesn't touch the rest — no regeneration, no regression risk.
+- **AI-only would have to rebuild — and that cost scales with rule count.** Without the engine, an AI rewriting procedural code from scratch would have to re-read and re-touch all existing rules to check for dependencies — more surface area for a missed path, more tokens spent doing it. At 5 rules that's a nuisance; **at 500, the re-read is the bottleneck and the missed-path risk compounds.** Here, the engine resolves dependencies at load time, so adding this rule doesn't touch the rest — no regeneration, no regression risk, at any scale.
 
 </details>
 
