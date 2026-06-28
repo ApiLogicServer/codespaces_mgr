@@ -223,7 +223,7 @@ Notice what just happened — two things, easy to miss:
 
 Quick recap: you created a system from prompt, ran it, triggered a rule, watched it chain across three tables, driven by 5 lines of code, then asked your AI to add a new one — in plain English.  So... how does this scale up to enterprise-class systems?
 
-**First, we add key enterprise architecture:**
+**We add key *enterprise architecture:***
 
 - **Enterprise Integration (EAI)** — the demo above showed ***Publish** the Order to Kafka topic*. For the **subscribe** side, see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md): B2B orders from partner systems, via a Custom API or Kafka subscriber, including *lookups* so partners send `"Account": "Alice"` (not internal IDs).
 
@@ -232,7 +232,7 @@ Copilot, Claude, or ChatGPT can find the schema and answer natural-language quer
 
 - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes).  Such AI "proposals" are governed by the deterministic rules to ensure results conform to business policy — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
-**And that enterprise architecture, along with logic automation, enables *Executable Requirements*** — AI building real enterprise-class systems, from formats you already are familiar with, not a syntax you need to learn:
+***Executable Requirements*** is the consequence of combining AI, logic automation, and that enterprise architecture - AI building real enterprise-class systems, from formats you already are familiar with, not a new syntax to learn:
 
 - **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
 
@@ -244,9 +244,7 @@ Copilot, Claude, or ChatGPT can find the schema and answer natural-language quer
 
 The architecture that makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, passing through the same commit point. No bypass.
 
-**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code, a system you can audit, trust, and maintain. 
-
-The key is combining the speed of AI with the power of the logic engine.  It is this approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
+**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code that becomes instant tech debt. It is this approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
 
 </details>
 
@@ -260,6 +258,7 @@ The key is combining the speed of AI with the power of the logic engine.  It is 
 It didn't figure that out on its own. It was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
 
 - **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
+
 - **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
 
   <details markdown>
