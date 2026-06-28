@@ -207,6 +207,7 @@ Notice what just happened — two things, easy to miss:
 **2. The implications:**
 
 - **You didn't do archaeology.** No opening `check_credit.py` to find where this belongs, no tracing the other 5 rules to check for conflicts. Auto-ordering means there's no maintenance hunt — you declare the rule, the engine places it.
+
 - **AI-only would have to rebuild — and that cost scales with rule count.** Without the engine, an AI rewriting procedural code from scratch would have to re-read and re-touch all existing rules to check for dependencies — more surface area for a missed path, more tokens spent doing it. At 5 rules that's a nuisance; **at 500, the re-read is the bottleneck and the missed-path risk compounds.** Here, the engine resolves dependencies at load time, so adding this rule doesn't touch the rest — no regeneration, no regression risk, at any scale.
 
 </details>
@@ -220,26 +221,32 @@ Notice what just happened — two things, easy to miss:
 
 <br>
 
-Quick recap: you triggered a rule, watched it chain across three tables, found the fix in 5 lines of code, then asked your AI to add a new one — in plain English. That's only possible because logic isn't something AI has to re-derive by hand for every transaction path.
+Quick recap: you created a system from prompt, ran it, triggered a rule, watched it chain across three tables, driven by 5 lines of code, then asked your AI to add a new one — in plain English.  So... how does this scale up to enterprise-class systems?
 
-**What's next adds enterprise architecture on top — same engine, same rules:**
+**First, we add key enterprise architecture:**
 
-- **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already *publishes* shipped orders to Kafka (outbound). For the *subscribe* side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md). Same rules, same engine, no extra logic written.
-- **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
-- **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
+- **Enterprise Integration (EAI)** — the demo above showed ***Publish** the Order to Kafka topic*. For the **subscribe** side, see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md): B2B orders from partner systems, via a Custom API or Kafka subscriber, including *lookups* so partners send `"Account": "Alice"` (not internal IDs).
 
-**That combination is what enables Executable Requirements** — AI building real systems straight from a spec in a format you already trust, not a hand-off document that drifts from what got built:
+- **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`).
+Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it.  There's no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
+
+- **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes).  Such AI "proposals" are governed by the deterministic rules to ensure results conform to business policy — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
+
+**And that enterprise architecture, along with logic automation, enables *Executable Requirements*** — AI building real enterprise-class systems, from formats you already are familiar with, not a syntax you need to learn:
 
 - **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
+
 - The **short prompt that built a system straight from an actual government tariff regulation** (Canada, CBSA) — [the prompt](samples/demo_customs_surtax/readme.md), and [the rules it produced](samples/demo_customs_surtax/logic/logic_discovery/cbsa_steel_surtax.py)
 
     > So, simply by referencing the regs, you get a complete enterprise system — including governed logic you can audit, trust, and maintain.
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
-What makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, pass through the same commit point. No bypass.
+The architecture that makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, passing through the same commit point. No bypass.
 
-**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code, a system you can audit, trust, and maintain. This is the approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed for months. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
+**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code, a system you can audit, trust, and maintain. 
+
+The key is combining the speed of AI with the power of the logic engine.  It is this approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
 
 </details>
 
