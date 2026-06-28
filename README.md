@@ -232,7 +232,7 @@ Copilot, Claude, or ChatGPT can find the schema and answer natural-language quer
 
 - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes).  Such AI "proposals" are governed by the deterministic rules to ensure results conform to business policy — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
-***Executable Requirements*** is the consequence of combining AI, logic automation, and that enterprise architecture - AI building real enterprise-class systems, from formats you already are familiar with, not a new syntax to learn:
+That combination — AI, logic automation, and that enterprise architecture — is what enables ***Executable Requirements***: AI building real enterprise-class systems from formats you already trust, not a hand-off document that drifts from what got built:
 
 - **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
 
@@ -240,11 +240,13 @@ Copilot, Claude, or ChatGPT can find the schema and answer natural-language quer
 
     > So, simply by referencing the regs, you get a complete enterprise system — including governed logic you can audit, trust, and maintain.
 
+&nbsp;
+
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
 The architecture that makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, passing through the same commit point. No bypass.
 
-**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code that becomes instant tech debt. It is this approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
+**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code that becomes instant tech debt. It is this approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed for months. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
 
 </details>
 
