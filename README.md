@@ -24,7 +24,7 @@ codespaces_patch: |
 
 # Welcome to GenAI-Logic
 
-One prompt — or your existing database — builds a working API and Admin App, then you declare business logic in **5 readable rules instead of 200 lines of AI-generated code** to enforce it.
+One prompt — or your existing database — builds a working API and Admin App, then you declare business logic in **5 readable rules instead of ~200 lines of AI-generated code** to enforce it.
 
 You'll see that enforcement yourself in a few minutes: those rules run at **one commit point**, no matter which path the transaction came in on — API, MCP, agent, Kafka. **No bypass.**
 
@@ -126,13 +126,13 @@ Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add
 <details markdown>
 <summary>&emsp;&emsp;3. Trigger the logic</summary>
 
-<br>In the Admin App, open Order 1 / Alice, edit the Widget item:
+<br>In the Admin App, open Order 2 / Alice, edit the Widget item:
 
 ```
 Change the quantity to a very large number. Save.
 ```
 
-The save fails - note the dialog box.  But, *why...?*
+The save fails - note the dialog box. But, *why...?*
 
 > Auditable, not just shown: [sample trace](samples/basic_demo_logic_gov/logs/als-sample.log) of this rule chain firing.
 
@@ -183,7 +183,7 @@ But unlike procedural code, they're **declarative**:
 | **Auto-invoked** | Rules fire at every commit, from every caller — you never call them | Can't be forgotten, can't be bypassed |
 | **Auto-ordered** | The engine computes dependency order at startup | Add a rule anywhere, it finds its place |
 
-Think of a spreadsheet: `B10 = SUM(B1:B9)`, and every recalculation just happens. Rules work the same way for database transactions — that's what makes 5 declarative rules replace 200 lines of procedural code with zero missed paths, as you just saw above.
+Think of a spreadsheet: `B10 = SUM(B1:B9)`, and every recalculation just happens. Rules work the same way for database transactions — that's what makes 5 declarative rules replace ~200 lines of procedural code with zero missed paths, as you just saw above.
 
 Full writeup: [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md).
 
@@ -220,27 +220,26 @@ Notice what just happened — two things, easy to miss:
 
 <br>
 
-Quick recap: you triggered a rule, watched it chain across three tables, found the fix in 5 lines of code, then asked your AI to add a new one — in plain English. That's only possible because logic isn't something AI has to re-derive by hand for every transaction path. Once it's off AI's plate, AI is free to spend its effort one level up — composing that logic into real services instead of policing 9 ways an `Order` can change.
+Quick recap: you triggered a rule, watched it chain across three tables, found the fix in 5 lines of code, then asked your AI to add a new one — in plain English. That's only possible because logic isn't something AI has to re-derive by hand for every transaction path.
 
-**That shows up as two service categories, both built on the same rule engine.** Each is a complete, runnable sample in `samples/`, with its own readme:
+**What's next adds enterprise architecture on top — same engine, same rules:**
 
 - **Enterprise Integration (EAI)** — this demo's `Use case: App Integration` already *publishes* shipped orders to Kafka (outbound). For the *subscribe* side — B2B orders from partner systems via a Custom API or Kafka subscriber, field-mapped by example so partners send `"Account": "Alice"` not internal IDs — see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md). Same rules, same engine, no extra logic written.
-- **AI-Enhanced Logic** — two flavors, both governed by the same deterministic rules, both in the same sample:
-    - **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
-    - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
+- **MCP** — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`), so Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it, no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
+- **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes), with the deterministic rules keeping the result inside business limits — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
-**Put those together and these services have what it takes for Executable Requirements** — AI building real systems straight from a spec in a format you already trust, not a hand-off document that drifts from what got built:
+**That combination is what enables Executable Requirements** — AI building real systems straight from a spec in a format you already trust, not a hand-off document that drifts from what got built:
 
 - **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
-- An **actual government tariff regulation** (Canada, CBSA) — [samples/demo_customs_surtax/readme.md](samples/demo_customs_surtax/readme.md)
+- The **short prompt that built a system straight from an actual government tariff regulation** (Canada, CBSA) — [the prompt](samples/demo_customs_surtax/readme.md), and [the rules it produced](samples/demo_customs_surtax/logic/logic_discovery/cbsa_steel_surtax.py)
+
+    > So, simply by referencing the regs, you get a complete enterprise system — including governed logic you can audit, trust, and maintain.
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
-Two funnels, one engine: however the rules get written — regulation, Gherkin, NL prompt — and however a write arrives at runtime — API, MCP, agent, workflow — everything passes through the same commit point. No bypass.
+What makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, pass through the same commit point. No bypass.
 
-These are less features than consequences of teaming AI with Logic Automation — integration, AI-governed judgment calls, whole systems built from a regulation document — all falling out of the same one decision: let the engine enforce correctness, so AI doesn't have to.
-
-**This is the rational pairing: AI for speed, rules for the governance AI alone can't give you.** Both customs samples here were one prompt. The same pattern, at enterprise scale, took a major logistics company's team months to hand-code — and still missed an 8-figure compliance exposure that the governed version caught on day one, because the rules were finally readable enough to review. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
+**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code, a system you can audit, trust, and maintain. This is the approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed for months. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
 
 </details>
 
@@ -291,7 +290,7 @@ Even if AI generates perfect procedural code — and it doesn't, reliably — yo
 
 5 declarative rules are readable. Auditable. The next developer can understand them, compliance can sign off on them, and when something goes wrong you can debug them. That's not a convenience — it's a requirement.
 
-Our A/B test on a 3-table system measured this directly: 5 declarative rules vs. ~220 lines of AI-generated procedural code — a 44X reduction. That 44X compounds: a larger system needs proportionally more procedural code to cover the same change paths, while the rule count grows with the requirements, not with the paths. Code nobody can read, verify, or safely change. Unreadable at scale is ungovernable at scale.
+Our A/B test on a 3-table system measured this directly: 5 declarative rules vs. ~200 lines of AI-generated procedural code — a ~40X reduction. That reduction compounds: a larger system needs proportionally more procedural code to cover the same change paths, while the rule count grows with the requirements, not with the paths. Code nobody can read, verify, or safely change. Unreadable at scale is ungovernable at scale.
 
 And there's a structural problem underneath: procedural code cannot represent transitive dependencies reliably. The AI diagnosed this itself — *"Business logic is not a coding problem. It's a dependency graph problem."* That's not a capability gap. No amount of AI capability fixes a representation problem.
 
@@ -365,8 +364,8 @@ Advanced examples and specialized patterns:
 | **MCP Discovery** <br> demo_copilot_mcp_discovery | genai-logic create --project_name=demo_copilot_mcp_discovery --db_url=sqlite:///samples/dbs/basic_demo.sqlite | test rules via Copilot access to MCP Server | 
 
 
-**Copy Snippits for venv:**
-```bash title="Copy Snippits for venv"
+**Copy Snippets for venv:**
+```bash title="Copy Snippets for venv"
 source venv/bin/activate       # windows: venv\Scripts\activate
 source ../venv/bin/activate    # windows: ../venv\Scripts\activate
 python -m venv venv            # may require python3 -m venv venv
@@ -451,7 +450,7 @@ Verify it's operating properly:
     * `--using` existing projects `docs` directory, and 
     * `--project-name` as the output project
  
- **Logic iterations** are particuarly useful.  For example, here we take the basic check-credit logic, and add:
+ **Logic iterations** are particularly useful.  For example, here we take the basic check-credit logic, and add:
 
 > Provide a 10% discount when buying more than 10 carbon neutral products.<br><br>The Item carbon neutral is copied from the Product carbon neutral
 
@@ -710,7 +709,7 @@ genai-logic genai-iterate --using='add Order Details and Products'
 
 <details markdown>
 
-<summary> AI somtimes fails - here's how to recover</summary>
+<summary> AI sometimes fails - here's how to recover</summary>
 
 <br>AI results are not consistent, so the model file may need corrections.  You can find it at `system/genai/temp/model.py`.  You can correct the model file, and then run:
 
@@ -847,7 +846,7 @@ Please see [this doc](https://apilogicserver.github.io/Docs/Sample-AI-ChatGPT/)
 # Admin App, API, Project
 genai-logic create --project-name=basic_demo --db-url=basic_demo
 
-# Logic and Securityf
+# Logic and Security
 # see logic (logic/declare_logic.py, logic/cocktail-napkin.jpg);  add an Order and Item
 # see security (security/declare_security.py); compare customers, s1 vs. admin
 genai-logic add-cust
@@ -947,7 +946,7 @@ For PyCharm, start the server with CTL-D, Stop with red stop button.
 
 To enter a new Order:
 
-1. Click `Customer 1``
+1. Click `Customer 1`
 
 2. Click `+ ADD NEW ORDER`
 
