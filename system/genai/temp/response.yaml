@@ -5,13 +5,12 @@
   "code": |-
     class Customer(Base):
         __tablename__ = 'customer'
-
         Id = Column(Integer, primary_key=True, autoincrement=True)
-        Name = Column(String, nullable=False)
-        Balance = Column(Decimal, nullable=False)
-        CreditLimit = Column(Decimal, nullable=False)
+        Name = Column(String(255))
+        Balance = Column(Decimal, default=0.0)  # Derived attribute
+        CreditLimit = Column(Decimal)
   "description": |-
-    Customer details including balance and credit limit
+    Customer model with derived attribute for balance and a credit limit.
   "name": |-
     Customer
 - "classname": |-
@@ -19,14 +18,13 @@
   "code": |-
     class Order(Base):
         __tablename__ = 'order'
-
         Id = Column(Integer, primary_key=True, autoincrement=True)
         CustomerId = Column(Integer, ForeignKey('customer.Id'))
-        AmountTotal = Column(Decimal, nullable=False)
-        DateShipped = Column(DateTime)
-        Notes = Column(String)
+        AmountTotal = Column(Decimal, default=0.0)  # Derived attribute
+        DateShipped = Column(DateTime, nullable=True)
+        Notes = Column(String(8000))
   "description": |-
-    Orders placed by customers with related information
+    Order model with derived attribute for amount total and a field for notes.
   "name": |-
     Order
 - "classname": |-
@@ -34,15 +32,14 @@
   "code": |-
     class Item(Base):
         __tablename__ = 'item'
-
         Id = Column(Integer, primary_key=True, autoincrement=True)
         OrderId = Column(Integer, ForeignKey('order.Id'))
         ProductId = Column(Integer, ForeignKey('product.Id'))
         Quantity = Column(Integer)
-        Amount = Column(Decimal, nullable=False)
-        UnitPrice = Column(Decimal, nullable=False)
+        UnitPrice = Column(Decimal)  # Copied from Product
+        Amount = Column(Decimal, default=0.0)  # Derived attribute
   "description": |-
-    Items in an order with specific product and unit price details
+    Item model with attributes for quantity, unit price (copied from product) and derived amount.
   "name": |-
     Item
 - "classname": |-
@@ -50,166 +47,188 @@
   "code": |-
     class Product(Base):
         __tablename__ = 'product'
-
         Id = Column(Integer, primary_key=True, autoincrement=True)
-        Name = Column(String, nullable=False)
-        UnitPrice = Column(Decimal, nullable=False)
+        Name = Column(String(255))
+        UnitPrice = Column(Decimal)
   "description": |-
-    Product information including price
+    Product model with basic pricing.
   "name": |-
     Product
 "name": |-
-  OrderSystem
+  InventoryManagementSystem
 "rules":
 - "code": |-
-    Rule.constraint(validate=Customer, as_condition=lambda row: row.Balance <= row.CreditLimit, error_msg='Balance exceeds credit limit')
+    Rule.constraint(validate=Customer, as_condition=lambda row: row.Balance <= row.CreditLimit, error_msg='Customer balance ({row.Balance}) exceeds credit limit ({row.CreditLimit})')
   "description": |-
-    Ensure customer's balance is within credit limit
+    Ensure a customer's balance does not exceed their credit limit.
   "entity": |-
     Customer
   "name": |-
-    CheckCredit1
+    CustomerBalanceLessThanCreditLimit
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.sum(derive=Customer.Balance, as_sum_of=Order.AmountTotal, where=lambda row: row.DateShipped is None)
   "description": |-
-    Customer balance derived from non-shipped orders sum
+    Calculate customer's balance as the sum of their unshipped orders.
   "entity": |-
     Customer
   "name": |-
-    CheckCredit2
+    CustomerBalanceSumOfOrders
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.sum(derive=Order.AmountTotal, as_sum_of=Item.Amount)
   "description": |-
-    Order amount is sum of item amounts
+    Calculate order's total amount as the sum of item amounts.
   "entity": |-
     Order
   "name": |-
-    CheckCredit3
+    OrderAmountTotalSumOfItems
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.formula(derive=Item.Amount, as_expression=lambda row: row.Quantity * row.UnitPrice)
   "description": |-
-    Item amount is calculated as quantity times unit price
+    Calculate item amount as product of quantity and unit price.
   "entity": |-
     Item
   "name": |-
-    CheckCredit4
+    ItemAmountCalculation
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.copy(derive=Item.UnitPrice, from_parent=Product.UnitPrice)
   "description": |-
-    Item unit price copied from product unit price
+    Copy the unit price from the product to the item when added to an order.
   "entity": |-
     Item
   "name": |-
-    CheckCredit5
+    CopyUnitPriceFromProduct
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka, if_condition=lambda row: row.DateShipped is not None, with_args={'topic': 'order_shipping'})
   "description": |-
-    Send Order data to Kafka if date_shipped is not None
+    Send Order to Kafka if DateShipped is not None.
   "entity": |-
     Order
   "name": |-
-    AppIntegration1
+    SendOrderToKafka
   "use_case": |-
     App Integration
 "test_data": |-
-  # Test Data
+  test_data = [
+      # Customer test data
+      Customer(Id=1, Name="John Doe", Balance=0.0, CreditLimit=1000.0),
+      Customer(Id=2, Name="Jane Smith", Balance=200.0, CreditLimit=1500.0),
+      Customer(Id=3, Name="Acme Corp", Balance=500.0, CreditLimit=3000.0),
+      Customer(Id=4, Name="Globex Inc", Balance=1500.0, CreditLimit=2000.0),
 
-  # Customers
-  customer1 = Customer(Id=1, Name="John Doe", Balance=0, CreditLimit=5000)
-  customer2 = Customer(Id=2, Name="Jane Smith", Balance=0, CreditLimit=10000)
-  customer3 = Customer(Id=3, Name="Emily Johnson", Balance=0, CreditLimit=7500)
-  customer4 = Customer(Id=4, Name="Mike Brown", Balance=0, CreditLimit=2000)
+      # Product test data
+      Product(Id=1, Name="Widget", UnitPrice=10.0),
+      Product(Id=2, Name="Gadget", UnitPrice=20.0),
+      Product(Id=3, Name="Thingamajig", UnitPrice=30.0),
+      Product(Id=4, Name="Contraption", UnitPrice=40.0),
 
-  # Orders
-  order1 = Order(Id=1, CustomerId=1, AmountTotal=0, DateShipped=None)
-  order2 = Order(Id=2, CustomerId=2, AmountTotal=0, DateShipped=date(2023, 3, 15))
-  order3 = Order(Id=3, CustomerId=3, AmountTotal=0, DateShipped=None)
-  order4 = Order(Id=4, CustomerId=4, AmountTotal=0, DateShipped=date(2023, 5, 9))
+      # Order test data
+      Order(Id=1, CustomerId=1, AmountTotal=0.0, DateShipped=None, Notes="Urgent"),
+      Order(Id=2, CustomerId=2, AmountTotal=300.0, DateShipped=None, Notes="Order details"),
+      Order(Id=3, CustomerId=3, AmountTotal=450.0, DateShipped=None, Notes="Please confirm"),
+      Order(Id=4, CustomerId=4, AmountTotal=600.0, DateShipped=None, Notes="Rush"),
 
-  # Items
-  item1 = Item(Id=1, OrderId=1, ProductId=1, Quantity=2, Amount=0, UnitPrice=20)
-  item2 = Item(Id=2, OrderId=2, ProductId=2, Quantity=5, Amount=0, UnitPrice=15)
-  item3 = Item(Id=3, OrderId=3, ProductId=3, Quantity=3, Amount=0, UnitPrice=30)
-  item4 = Item(Id=4, OrderId=4, ProductId=1, Quantity=1, Amount=0, UnitPrice=20)
-
-  # Products
-  product1 = Product(Id=1, Name="Widget A", UnitPrice=20)
-  product2 = Product(Id=2, Name="Widget B", UnitPrice=15)
-  product3 = Product(Id=3, Name="Widget C", UnitPrice=30)
-  product4 = Product(Id=4, Name="Widget D", UnitPrice=50)
+      # Item test data
+      Item(Id=1, OrderId=1, ProductId=1, Quantity=10, UnitPrice=10.0, Amount=100.0),
+      Item(Id=2, OrderId=2, ProductId=2, Quantity=5, UnitPrice=20.0, Amount=100.0),
+      Item(Id=3, OrderId=3, ProductId=3, Quantity=7, UnitPrice=30.0, Amount=210.0),
+      Item(Id=4, OrderId=4, ProductId=4, Quantity=4, UnitPrice=40.0, Amount=160.0)
+  ]
 "test_data_rows":
 - "code": |-
-    Customer(Id=1, Name="John Doe", Balance=0, CreditLimit=5000)
+    Customer1 = Customer(Id=1, Name="John Doe", Balance=0.0, CreditLimit=1000.0)
   "test_data_row_variable": |-
-    customer1
+    Customer1
 - "code": |-
-    Customer(Id=2, Name="Jane Smith", Balance=0, CreditLimit=10000)
+    Customer2 = Customer(Id=2, Name="Jane Smith", Balance=200.0, CreditLimit=1500.0)
   "test_data_row_variable": |-
-    customer2
+    Customer2
 - "code": |-
-    Customer(Id=3, Name="Emily Johnson", Balance=0, CreditLimit=7500)
+    Customer3 = Customer(Id=3, Name="Acme Corp", Balance=500.0, CreditLimit=3000.0)
   "test_data_row_variable": |-
-    customer3
+    Customer3
 - "code": |-
-    Customer(Id=4, Name="Mike Brown", Balance=0, CreditLimit=2000)
+    Customer4 = Customer(Id=4, Name="Globex Inc", Balance=1500.0, CreditLimit=2000.0)
   "test_data_row_variable": |-
-    customer4
+    Customer4
 - "code": |-
-    Order(Id=1, CustomerId=1, AmountTotal=0, DateShipped=None, Notes="Order notes")
+    Product1 = Product(Id=1, Name="Widget", UnitPrice=10.0)
   "test_data_row_variable": |-
-    order1
+    Product1
 - "code": |-
-    Order(Id=2, CustomerId=2, AmountTotal=0, DateShipped=date(2023, 3, 15), Notes="Order notes")
+    Product2 = Product(Id=2, Name="Gadget", UnitPrice=20.0)
   "test_data_row_variable": |-
-    order2
+    Product2
 - "code": |-
-    Order(Id=3, CustomerId=3, AmountTotal=0, DateShipped=None, Notes="Order notes")
+    Product3 = Product(Id=3, Name="Thingamajig", UnitPrice=30.0)
   "test_data_row_variable": |-
-    order3
+    Product3
 - "code": |-
-    Order(Id=4, CustomerId=4, AmountTotal=0, DateShipped=date(2023, 5, 9), Notes="Order notes")
+    Product4 = Product(Id=4, Name="Contraption", UnitPrice=40.0)
   "test_data_row_variable": |-
-    order4
+    Product4
 - "code": |-
-    Item(Id=1, OrderId=1, ProductId=1, Quantity=2, Amount=0, UnitPrice=20)
+    Order1 = Order(Id=1, CustomerId=1, AmountTotal=0.0, DateShipped=None, Notes="Urgent")
   "test_data_row_variable": |-
-    item1
+    Order1
 - "code": |-
-    Item(Id=2, OrderId=2, ProductId=2, Quantity=5, Amount=0, UnitPrice=15)
+    Order2 = Order(Id=2, CustomerId=2, AmountTotal=300.0, DateShipped=None, Notes="Order details")
   "test_data_row_variable": |-
-    item2
+    Order2
 - "code": |-
-    Item(Id=3, OrderId=3, ProductId=3, Quantity=3, Amount=0, UnitPrice=30)
+    Order3 = Order(Id=3, CustomerId=3, AmountTotal=450.0, DateShipped=None, Notes="Please confirm")
   "test_data_row_variable": |-
-    item3
+    Order3
 - "code": |-
-    Item(Id=4, OrderId=4, ProductId=1, Quantity=1, Amount=0, UnitPrice=20)
+    Order4 = Order(Id=4, CustomerId=4, AmountTotal=600.0, DateShipped=None, Notes="Rush")
   "test_data_row_variable": |-
-    item4
+    Order4
 - "code": |-
-    Product(Id=1, Name="Widget A", UnitPrice=20)
+    Item1 = Item(Id=1, OrderId=1, ProductId=1, Quantity=10, UnitPrice=10.0, Amount=100.0)
   "test_data_row_variable": |-
-    product1
+    Item1
 - "code": |-
-    Product(Id=2, Name="Widget B", UnitPrice=15)
+    Item2 = Item(Id=2, OrderId=2, ProductId=2, Quantity=5, UnitPrice=20.0, Amount=100.0)
   "test_data_row_variable": |-
-    product2
+    Item2
 - "code": |-
-    Product(Id=3, Name="Widget C", UnitPrice=30)
+    Item3 = Item(Id=3, OrderId=3, ProductId=3, Quantity=7, UnitPrice=30.0, Amount=210.0)
   "test_data_row_variable": |-
-    product3
+    Item3
 - "code": |-
-    Product(Id=4, Name="Widget D", UnitPrice=50)
+    Item4 = Item(Id=4, OrderId=4, ProductId=4, Quantity=4, UnitPrice=40.0, Amount=160.0)
   "test_data_row_variable": |-
-    product4
-"test_data_sqlite": ""
+    Item4
+"test_data_sqlite": |-
+  INSERT INTO customer (Id, Name, Balance, CreditLimit) VALUES
+  (1, 'John Doe', 0.0, 1000.0),
+  (2, 'Jane Smith', 200.0, 1500.0),
+  (3, 'Acme Corp', 500.0, 3000.0),
+  (4, 'Globex Inc', 1500.0, 2000.0);
+
+  INSERT INTO product (Id, Name, UnitPrice) VALUES
+  (1, 'Widget', 10.0),
+  (2, 'Gadget', 20.0),
+  (3, 'Thingamajig', 30.0),
+  (4, 'Contraption', 40.0);
+
+  INSERT INTO order (Id, CustomerId, AmountTotal, DateShipped, Notes) VALUES
+  (1, 1, 0.0, NULL, 'Urgent'),
+  (2, 2, 300.0, NULL, 'Order details'),
+  (3, 3, 450.0, NULL, 'Please confirm'),
+  (4, 4, 600.0, NULL, 'Rush');
+
+  INSERT INTO item (Id, OrderId, ProductId, Quantity, UnitPrice, Amount) VALUES
+  (1, 1, 1, 10, 10.0, 100.0),
+  (2, 2, 2, 5, 20.0, 100.0),
+  (3, 3, 3, 7, 30.0, 210.0),
+  (4, 4, 4, 4, 40.0, 160.0);
