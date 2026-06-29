@@ -61,7 +61,7 @@ Please load `.github/.copilot-instructions.md`.
 <!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.py injects browser note here — do not rename this heading -->
 
 <details>
-<summary>⚡ Try Prompt → System -- then ask: is this maintainable?</summary>
+<summary>⚡ Try Prompt → System — then ask: is this maintainable?</summary>
 &nbsp;
 
 You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
@@ -99,11 +99,13 @@ The prompt above starts from an existing database — the common real-world case
 
 </details>
 
+&nbsp;
+
 Most code generators produce code you then have to own. This one produces *models* — executable, maintainable:
 
 1. **Data model** — `database/models.py`
 2. **Full JSONAPI** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
-3. **Admin App** — `ui/admin/admin.yaml`
+3. **Admin App** — multi-table, with navigations and lookups (`ui/admin/admin.yaml`)
 4. **Business logic** — `logic/logic_discovery/place_order/check_credit.py`
 
 Each small, readable, yours. Plain Python — standard tooling applies.
@@ -217,7 +219,7 @@ Notice what just happened — two things, easy to miss:
 &nbsp;
 
 <details markdown>
-<summary>🚀 Where this leads — what AI can build once logic is off its plate</summary>
+<summary>🚀 How does this lead to enterprise-class systems?</summary>
 
 <br>
 
@@ -232,7 +234,7 @@ Copilot, Claude, or ChatGPT can find the schema and answer natural-language quer
 
 - **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes).  Such AI "proposals" are governed by the deterministic rules to ensure results conform to business policy — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
-That combination — AI, logic automation, and that enterprise architecture — is what enables ***Executable Requirements***: AI building real enterprise-class systems from formats you already trust, not a hand-off document that drifts from what got built:
+That combination — AI, logic automation, and that enterprise architecture — is what enables ***Executable Requirements***: AI building real enterprise-class systems, from formats you already are familiar with, not a new syntax to learn:
 
 - **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
 
@@ -244,9 +246,9 @@ That combination — AI, logic automation, and that enterprise architecture — 
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
-The architecture that makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, passing through the same commit point. No bypass.
+The architecture that makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, passing through **the same commit point. No bypass.**
 
-**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code that becomes instant tech debt. It is this approach that caught an 8-figure compliance exposure a major logistics company's hand-coded system missed for months. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
+**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code that becomes instant tech debt. It is this approach that **caught an 8-figure compliance exposure** a major logistics company's hand-coded system missed for months. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
 
 </details>
 
@@ -332,7 +334,7 @@ genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basi
 
 ## 📚 Build It Yourself — Demo Catalog
 
-"Where this leads" showed you pre-built samples to browse. These are the same use cases, but as commands you run yourself — paste one into your AI assistant and it builds that project for you, live.
+The section above showed you pre-built samples to browse. These are the same use cases, but as commands you run yourself — paste one into your AI assistant and it builds that project for you, live.
 
 > Tip: every project is AI-enabled — once it's built, ask your AI assistant how it works
 
