@@ -21,6 +21,12 @@ codespaces_patch: |
   updating the matching logic in create_codespaces_mgr.py). The note warns Safari users to
   switch to Chrome/Edge. This avoids forking the README for Codespaces.
 -->
+<style>
+  -typeset h1,
+  -content__button {
+    display: none;
+  }
+</style>
 
 # Welcome to GenAI-Logic
 
@@ -62,10 +68,6 @@ Please load `.github/.copilot-instructions.md`.
 
 <details>
 <summary>⚡ Try Prompt → System — then ask: is this maintainable?</summary>
-&nbsp;
-
-You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
-
 
 &nbsp;
 
@@ -242,7 +244,7 @@ Copilot, Claude, or ChatGPT can find the schema and answer natural-language quer
 
 That combination — AI, logic automation, and that enterprise architecture — is what enables ***Executable Requirements***: AI building real enterprise-class systems, from formats you already are familiar with, not a new syntax to learn:
 
-- **Gherkin-style scenarios** — [samples/demo_customs_clvs/readme.md](samples/demo_customs_clvs/readme.md)
+- **Gherkin-style scenarios** — [business description](samples/demo_customs_clvs/readme.md), and the [actual requirements](samples/demo_customs_clvs/docs/requirements/customs_demo/requirements.md) used by AI to create the system.
 
 - The **short prompt that built a system straight from an actual government tariff regulation** (Canada, CBSA) — [the prompt](samples/demo_customs_surtax/readme.md), and [the rules it produced](samples/demo_customs_surtax/logic/logic_discovery/cbsa_steel_surtax.py)
 
