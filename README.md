@@ -103,12 +103,12 @@ The prompt above starts from an existing database — the common real-world case
 
 &nbsp;
 
-Most code generators produce code you then have to own. This one produces *models* — executable, maintainable:
+You've probably seen AI generate code before. The difference here: this produces *models*, not code — each artifact declares structure or policy rather than procedure, so there's no logic buried in the wiring:
 
 1. **Data model** — `database/models.py`
 2. **Full JSONAPI** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
 3. **Admin App** — multi-table, with navigations and lookups (`ui/admin/admin.yaml`)
-4. **Business logic** — `logic/logic_discovery/place_order/check_credit.py`
+4. **Business logic** — `logic/logic_discovery/place_order/check_credit.py` *(more on this in step 5)*
 
 Each small, readable, yours. Plain Python — standard tooling applies.
 
@@ -231,7 +231,11 @@ Notice what just happened — two things, easy to miss:
 
 <br>
 
-Quick recap: you created a system from prompt, ran it, triggered a rule, watched it chain across three tables, driven by 5 lines of code, then asked your AI to add a new one — in plain English.  So... how does this scale up to enterprise-class systems?
+Quick recap: you created a system from prompt, ran it, triggered a rule, watched it chain across three tables, driven by 5 lines of code, then added a new one from one sentence — without touching the existing rules.
+
+That's the second distinction from AI-generated code: the business logic is *rules*, not procedures. A procedure answers "what happens when X?" — so every new path needs a new procedure. A rule declares a fact about data — it's automatically re-used over every path, including ones that don't exist yet. Step 5 showed this working; step 6 showed it not breaking when you added one. That property is what scales.
+
+How does this lead to enterprise-class systems?
 
 **We add key *enterprise architecture:***
 
