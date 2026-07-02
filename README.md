@@ -11,6 +11,7 @@ demo_kafka: Sample-Integration
 demo_allo: Sample_Allo_Dept_GL_readme
 demo_ai_rules: Sample-ai-rules
 demo_mcp_send: Sample-Basic-Demo-MCP-Send-Email
+demo_emp_types: Sample-Types
 demo_eai: Sample-Basic-EAI
 demo_vibe: Sample-Basic-Demo-Vibe
 demo_copilot_mcp_discovery: Sample-ai-mcp
@@ -21,12 +22,6 @@ codespaces_patch: |
   updating the matching logic in create_codespaces_mgr.py). The note warns Safari users to
   switch to Chrome/Edge. This avoids forking the README for Codespaces.
 -->
-<style>
-  -typeset h1,
-  -content__button {
-    display: none;
-  }
-</style>
 
 # Welcome to GenAI-Logic
 
@@ -68,6 +63,10 @@ Please load `.github/.copilot-instructions.md`.
 
 <details>
 <summary>⚡ Try Prompt → System — then ask: is this maintainable?</summary>
+&nbsp;
+
+You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
+
 
 &nbsp;
 
