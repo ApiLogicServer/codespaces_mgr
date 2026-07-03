@@ -64,7 +64,7 @@ C_FORMULA_ANN   = "#e67e22"   # orange text annotation inside column
 # ── regex ─────────────────────────────────────────────────────────────────────
 _RE_SUM     = re.compile(r'Rule\.sum\s*\([^)]*derive\s*=\s*([^\s,)]+)[^)]*as_sum_of\s*=\s*([^\s,)]+)([^)]*\))', re.DOTALL)
 _RE_COUNT   = re.compile(r'Rule\.count\s*\([^)]*derive\s*=\s*([^\s,)]+)[^)]*as_count_of\s*=\s*([^\s,)]+)([^)]*\))', re.DOTALL)
-_RE_FORMULA = re.compile(r'Rule\.formula\s*\([^)]*derive\s*=\s*([^\s,)]+)[^)]*as_expression\s*=\s*lambda\s+row\s*:(.*?)(?=\)|,\s*no_prune)', re.DOTALL)
+_RE_FORMULA = re.compile(r'Rule\.formula\s*\([^)]*derive\s*=\s*([^\s,)]+)[^)]*as_expression\s*=\s*lambda\s+row\s*:', re.DOTALL)
 _RE_FORMULA_CALL = re.compile(r'Rule\.formula\s*\([^)]*derive\s*=\s*([^\s,)]+)[^)]*calling\s*=\s*([^\s,)]+)', re.DOTALL)
 _RE_COPY    = re.compile(r'Rule\.copy\s*\([^)]*derive\s*=\s*([^\s,)]+)[^)]*from_parent\s*=\s*([^\s,)]+)', re.DOTALL)
 _RE_CONSTR  = re.compile(r'Rule\.constraint\s*\([^)]*validate\s*=\s*([^\s,)]+)', re.DOTALL)
@@ -79,6 +79,31 @@ _RE_DBML_REF = re.compile(r'Ref:\s*(\w+)\.\((\w+)\)\s*>\s*(\w+)\.\((\w+)\)')
 _SKIP_ATTRS = {'order', 'customer', 'product', 'item', 'supplier',
                'order_list', 'item_list', 'product_supplier_list',
                'sys_email', 'sysemail'}
+
+
+def _extract_lambda_body(src, start):
+    """
+    Return the lambda expression body starting at `start` (just after "lambda row:"),
+    ending where the ENCLOSING Rule.formula(...) call's parens close — i.e. at the
+    first ')' that would bring paren depth to -1 relative to `start`, or a top-level
+    ',' (e.g. before a trailing no_prune= kwarg). A naive "stop at next )" breaks on
+    any expression with its own nested parens (e.g. "Decimal(0)"), truncating mid-call.
+    """
+    depth = 0
+    i = start
+    n = len(src)
+    while i < n:
+        ch = src[i]
+        if ch in '([{':
+            depth += 1
+        elif ch in ')]}':
+            if depth == 0:
+                return src[start:i].strip()
+            depth -= 1
+        elif ch == ',' and depth == 0:
+            return src[start:i].strip()
+        i += 1
+    return src[start:].strip()
 
 
 def _strip(name):
@@ -211,7 +236,7 @@ def parse_rules(files):
                           "where_cols": where_cols, "file":rel})
         for m in _RE_FORMULA.finditer(src):
             derive = _strip(m.group(1))
-            expr_body = m.group(2).strip()
+            expr_body = _extract_lambda_body(src, m.end())
             deps = [f"{_cls(derive)}.{a}" for a in _RE_ROW_ATTR.findall(expr_body)
                     if a.lower() not in _SKIP_ATTRS]
             deps = [d for d in deps if d != derive]
@@ -703,8 +728,7 @@ def build_logic_flow_md(rules, files, project_name, svg_path, ranks,
                     doc = f"derives {short(r['derive'])} from {', '.join(deps)}"
                 lines.append(f"{seq}. `{short(r['derive'])} = {fn}(row)` — {doc}")
             elif expr:
-                e = expr if len(expr) <= 50 else expr[:47] + "..."
-                lines.append(f"{seq}. `{short(r['derive'])} = {e}`")
+                lines.append(f"{seq}. `{short(r['derive'])} = {expr}`")
             else:
                 deps = list(dict.fromkeys(short(d) for d in r["deps"]))[:3]
                 lines.append(f"{seq}. `{short(r['derive'])} = f({', '.join(deps)})`")
@@ -747,15 +771,28 @@ def build_logic_flow_md(rules, files, project_name, svg_path, ranks,
         if parts:
             req_section = "## Requirements\n\n" + "\n\n".join(parts) + "\n\n"
 
+    rule_html = rule_block.replace("\n", "<br>\n")
+
     md = f"""# {title}
 {scope_note}
-{req_section}![logic flow]({svg_name})
+<table>
+<tr valign="top">
+<td width="65%">
 
-## Rules
+![logic flow]({svg_name})
 
-{rule_block}
+</td>
+<td width="35%">
 
----
+### Rules
+
+{rule_html}
+
+</td>
+</tr>
+</table>
+
+{req_section}---
 _Generated {datetime.now().strftime('%Y-%m-%d %H:%M')}_
 """
     return md
@@ -896,6 +933,7 @@ def _postprocess_svg(svg_path: Path, dot_path: Path = None):
     )
 
     tightened = 0
+    max_intra_x = 0.0   # track rightmost extent reached by injected arcs + labels
     for (table, src_col, dst_col, seq, arc_idx) in intra_directives:
         if table not in node_geom:
             continue
@@ -920,7 +958,6 @@ def _postprocess_svg(svg_path: Path, dot_path: Path = None):
         path_el.set('d', d)
         path_el.set('stroke', INTRA)
         path_el.set('stroke-width', '1.2')
-        path_el.set('stroke-dasharray', '4,3')
         path_el.set('fill', 'none')
 
         s = 4
@@ -929,13 +966,17 @@ def _postprocess_svg(svg_path: Path, dot_path: Path = None):
         poly_el.set('stroke', INTRA)
         poly_el.set('fill', INTRA)
 
+        label_x = base_x + bulge + 3
         text_el = ET.SubElement(graph_g, f'{{{SVG}}}text')
-        text_el.set('x', str(round(base_x + bulge + 3, 1)))
+        text_el.set('x', str(round(label_x, 1)))
         text_el.set('y', str(round(mid_y + 4, 1)))
         text_el.set('font-family', 'Helvetica,sans-Serif')
         text_el.set('font-size', '10')
         text_el.set('fill', INTRA)
         text_el.text = str(seq)
+
+        # reserve room for the label text (~7pt per digit, generous for 1-2 digit seq numbers)
+        max_intra_x = max(max_intra_x, label_x + 7 * len(str(seq)))
 
         tightened += 1
 
@@ -956,6 +997,12 @@ def _postprocess_svg(svg_path: Path, dot_path: Path = None):
             new_vy = vy + TRIM
             new_vw = vw - 2 * TRIM
             new_vh = vh - 2 * TRIM
+            # Injected intra-table arcs (and their labels) can extend past graphviz's
+            # own right edge, since graphviz never laid them out — widen the canvas
+            # to cover them instead of letting the crop clip them off.
+            if max_intra_x > 0:
+                needed_w = (max_intra_x - vx) + KEEP
+                new_vw = max(new_vw, needed_w)
             if new_vw > 0 and new_vh > 0:
                 root.set('viewBox', f'{new_vx:.2f} {new_vy:.2f} {new_vw:.2f} {new_vh:.2f}')
                 root.set('width',  f'{new_vw:.0f}pt')
@@ -1032,7 +1079,8 @@ def generate(project_name: str, requirement: str = None, manager_root: Path = No
     involved_tables = tables_in_rules(rules)
     ranks = topo_rank(involved_tables, fk_parents, all_fk_parents=fk_parents)
 
-    flow_name = f"logic_flow_{requirement}.md" if requirement else f"logic_flow_{project_name}.md"
+    project_basename = Path(project_name).name   # strip any subdirectory prefix (e.g. "samples/demo_emp_types")
+    flow_name = f"logic_flow_{requirement}.md" if requirement else f"logic_flow_{project_basename}.md"
     flow_path = req_dir / flow_name
     # SVG ref is relative from flow_path to svg_path
     svg_rel   = f"logic_diagrams/{svg_path.name}"
