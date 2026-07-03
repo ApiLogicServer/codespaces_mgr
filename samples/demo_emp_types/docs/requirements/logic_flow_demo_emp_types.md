@@ -62,4 +62,4 @@ Total compensation for non-military employees = salary.
 ```
 
 ---
-_Generated 2026-07-02 19:55_
+_Generated 2026-07-03 07:39_
