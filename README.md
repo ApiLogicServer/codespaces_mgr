@@ -163,9 +163,11 @@ Notice: you didn't *place* an order, you *edited* one — and the rule still cau
 <details markdown>
 <summary>&emsp;&emsp;5. Now let's see... what's really going on with the logic?</summary>
 
-<br>Open [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — real, AI-generated code for the credit-check requirement.
+<br>Let's compare 2 approaches for implementing the check-credit requirement:
 
-Then open [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — same requirement, same AI.  5 rules. No bugs.
+* Compare **standard AI-generated code** - open [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py)
+
+* With the **rule-based version** - open [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) - same requirement, same AI.  5 rules. No bugs.
 
 Well, *that's* different... what's up with that? Ask your AI:
 
@@ -194,7 +196,7 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 
 <br>
 
-> But here's the part that matters beyond line count: with procedural code, even if you find the right passage — how do you know it's called for every transaction source? API, MCP, agent, Kafka, a future caller you haven't written yet? With thousands of code paths, you can't know. That's not a testing gap; it's a representation problem. <br><br>Rules solve it structurally — declared once, fired at one commit point, from every caller, with no bypass possible. The 40x reduction in code isn't the point. The verifiable coverage is: ***you can read the rules, and trust they are being enforced.  Always.***
+> But here's the part that matters beyond line count: with procedural code, even if you find the right passage — how do you know it's called for *every* transaction source? API, MCP, agent, Kafka, a future caller you haven't written yet? With thousands of code paths, you can't know. That's not a testing gap; it's a representation problem. <br><br>Rules solve it structurally — declared once, fired at one commit point, from every caller, with no bypass possible. The 40x reduction in code isn't the point. The verifiable coverage is: ***you can read the rules, and trust they are being enforced.  Always.***
 
 <br>
 
@@ -236,7 +238,7 @@ That's the second distinction from AI-generated code: the business logic is *rul
 
 How does this lead to enterprise-class systems?
 
-**We add key *enterprise architecture:***
+**We add key *enterprise architecture* integration:**
 
 - **Enterprise Integration (EAI)** — the demo above showed ***Publish** the Order to Kafka topic*. For the **subscribe** side, see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md): B2B orders from partner systems, via a Custom API or Kafka subscriber, including *lookups* so partners send `"Account": "Alice"` (not internal IDs).
 
