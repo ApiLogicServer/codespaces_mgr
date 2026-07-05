@@ -88,7 +88,7 @@ On Placing Orders, Check Credit
     5. The Item unit_price is copied from the Product unit_price
 
 Use case: App Integration
-    1. Publish the Order to Kafka topic 'order_shipping' when the date_shipped becomes not None.
+    1. Publish the Order to Kafka topic 'order_shipping' when the date_shipped is not None.
 ```
 
 <details markdown>
@@ -188,7 +188,7 @@ But unlike procedural code, they're **declarative**:
 | **Auto-invoked** | Rules fire at every commit, from every caller — you never call them | Can't be forgotten, can't be bypassed |
 | **Auto-ordered** | The engine computes dependency order at startup | Add a rule anywhere, it finds its place |
 
-Think of a spreadsheet: `B10 = SUM(B1:B9)`, and every recalculation just happens. Rules work the same way for database transactions — that's what makes 5 declarative rules replace ~200 lines of procedural code with zero missed paths, as you just saw above.
+Think of a spreadsheet: `B10 = SUM(B1:B9)` isn't called, it *reacts* — change any input cell, it recalculates. Rules react the same way to changes in what they depend on — that's what makes 5 declarative rules replace ~200 lines of procedural code with zero missed paths, as you just saw above.
 
 Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md).
 
