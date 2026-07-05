@@ -135,7 +135,24 @@ Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add
 Change the quantity to a very large number. Save.
 ```
 
+<details markdown>
+<summary>&emsp;&emsp;&emsp;&emsp;Detail Instructions</summary>
+
+<br>Alter the quantity for an *unshipped* item:
+
+1. Show the Customer List
+2. Show the first Customer
+3. Show first Order
+4. Edit the Item
+5. Set the quantity
+
 The save fails - note the dialog box. But, *why...?*
+
+![credit-check](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/basic_demo/credit-check.png?raw=true?raw=true)
+
+</details>
+
+<br>
 
 > Auditable, not just shown: [sample trace](samples/basic_demo_logic_gov/logs/als-sample.log) of this rule chain firing.
 
@@ -855,63 +872,6 @@ Please see [this doc](https://apilogicserver.github.io/Docs/Sample-AI-ChatGPT/)
 
 ## Procedures
 
-<details markdown>
-
-<summary>Quick Basic Demo - Cheat Sheet</summary>
-
-<br>This demo creates and customizes a project, starting from a database:
-
-
-**Quick Basic Demo:**
-```bash title="Quick Basic Demo"
-
-# Microservice Automation
-# Admin App, API, Project
-genai-logic create --project-name=basic_demo --db-url=basic_demo
-
-# Logic and Security
-# see logic (logic/declare_logic.py, logic/cocktail-napkin.jpg);  add an Order and Item
-# see security (security/declare_security.py); compare customers, s1 vs. admin
-genai-logic add-cust
-genai-logic add-auth --db_url=auth
-
-# Python Extensibility, Kafka Integration, Rebuild Iteration
-# see logic/declare_logic.py (breakpoint for Kafka)
-# Swagger: ServicesEndPoint.OrderB2B
-genai-logic add-cust
-genai-logic rebuild-from-database --db_url=sqlite:///database/db.sqlite
-```
-
-</details>
-<br>
-
-<details markdown>
-
-<summary>Quick GenAI Demo - Cheat Sheet</summary>
-
-<br>This demo creates and customizes a project, starting from a prompt:
-
-**Quick GenAI Demo:**
-```bash title="Quick GenAI Demo"
-
-# Microservice Automation from GenAI Prompt
-# Admin App, API, Project
-genai-logic genai --using=system/genai/examples/genai_demo/genai_demo.prompt
-
-# Or, Microservice Automation from Saved Response
-# Admin App, API, Project
-genai-logic genai --repaired-response=system/genai/temp/chatgpt_retry.response
-
-# Logic and Security
-#   - see logic (logic/declare_logic.py, logic/cocktail-napkin.jpg);  add an Order and Item
-#   - see security (security/declare_security.py); compare customers, s1 vs. admin
-# Python Extensibility, Kafka Integration, Rebuild Iteration
-#   - see logic/declare_logic.py (breakpoint for Kafka)
-#   - Swagger: ServicesEndPoint.OrderB2B
-genai-logic add-cust
-```
-
-</details>
 <br>
 
 <details markdown>
