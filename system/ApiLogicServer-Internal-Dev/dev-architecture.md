@@ -4,8 +4,12 @@ Description: Enables AI assistants to be co-designers for GenAI-Logic features
 Source: ApiLogicServer-src/prototypes/manager/system/ApiLogicServer-Internal-Dev/dev-architecture.md
 Propagation: BLT process → Manager workspace
 Usage: AI assistants read this to understand project structure, development workflow, and recent additions
-version: 2.18
+version: 2.19
 changelog:
+  - 2.19 (Jul 2026) - Confirmed live in Codespaces: serverReadyAction fails there the
+    same way it did in fresh local project windows (v2.17). cs-mgr's launch.json
+    override correctly omits it already — documented as confirmed-correct, not an
+    oversight, in the "F5 Simple Browser auto-open" section below.
   - 2.18 (Jul 2026) - CORRECTED v2.16: had the nw_sample/other-samples relationship
     backwards. nw_sample and nw_sample_nocust are freshly `create`d by BLT against
     current prototypes/base gold source every run — they always reflect the latest
@@ -1271,6 +1275,8 @@ Placed as the first branch in the existing `isinstance` chain (before `list`/`se
 **User-facing effect:** F5 in any created/sample project starts the server without auto-opening Simple Browser; user opens it manually once (readme/CE already documents the URL). No more "server not available" on first F5 in a new project window.
 
 **Not fixable from this codebase's side** — Werkzeug already prints "Running on" only once genuinely bound with full app init done first. Any future fix would have to live in VS Code's `serverReadyAction` retry behavior, not here.
+
+**Codespaces confirmed same failure mode (Jul 2026):** `codespaces_mgr`'s `.devcontainer-codespaces/launch.json` override (synced to cs-mgr's `.vscode/launch.json` by `create_codespaces_mgr.py`) has never included `serverReadyAction` on its "API Logic Server Run" config. Val tested live in Codespaces with `serverReadyAction` added and confirmed it fails the same way as a fresh local project window — expected, since every Codespaces session is by definition a freshly opened window, so it never gets the Manager's warm-window exemption. **Verdict: leave cs-mgr's launch.json without `serverReadyAction` — this is confirmed-correct, not an oversight.** Do not add it there even though the Manager-root local launch.json keeps it.
 
 &nbsp;
 
