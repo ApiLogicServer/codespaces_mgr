@@ -129,7 +129,7 @@ Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add
 <details markdown>
 <summary>&emsp;&emsp;3. Trigger the logic</summary>
 
-<br>In the Admin App, open Order 2 / Alice, edit the Widget item:
+<br>In the Admin App, open an **unshipped** Order for Alice, edit the Widget item:
 
 ```
 Change the quantity to a very large number. Save.
