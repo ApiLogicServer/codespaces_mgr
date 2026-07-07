@@ -73,7 +73,7 @@ You're already running in GitHub Codespaces — a cloud VS Code environment in y
 <details markdown>
 <summary>&emsp;&emsp;1. Create — API, Admin App and business logic from a prompt (existing db)</summary>
 
-<br>Say this to your AI assistant (allow 2-3 mins):
+<br>Say this to your AI assistant (allow several minutes):
 
 ```
 Create basic_demo from samples/dbs/basic_demo.sqlite (customers, orders, products).
