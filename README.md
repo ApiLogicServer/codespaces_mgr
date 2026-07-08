@@ -274,7 +274,7 @@ That combination — AI, logic automation, and that enterprise architecture — 
 
 - The **short prompt that built a system straight from an actual government tariff regulation** (Canada, CBSA) — [the prompt](samples/demo_customs_surtax/readme.md), and [the rules it produced](samples/demo_customs_surtax/logic/logic_discovery/cbsa_steel_surtax.py)
 
-    > So, simply by referencing the regs, you get a complete enterprise system — including governed logic you can audit, trust, and maintain.
+    > So, simply by referencing the regs, you get a complete enterprise system — including governed logic you can audit, trust, and maintain. AI implements the spec end-to-end and reports an **ad-libs list** — every decision it made beyond what the spec said — so you know exactly where it guessed.
 
 &nbsp;
 
