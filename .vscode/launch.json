@@ -38,8 +38,8 @@
         {
             "id": "runProjectName",
             "type": "promptString",
-            "description": "Project folder to run (e.g. samples/basic_demo_sample)",
-            "default": "samples/basic_demo_sample"
+            "description": "Project folder to run (e.g. basic_demo, or samples/basic_demo_logic_gov)",
+            "default": "basic_demo"
         }
     ]
 }
