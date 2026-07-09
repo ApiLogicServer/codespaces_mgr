@@ -140,12 +140,16 @@ That's not a capability gap. No amount of AI capability fixes a representation p
 <details markdown>
 <summary>&emsp;&emsp;1. Run it — see the API and logic operate</summary>
 
-<br>Same 5 requirements, same AI — but as **5 lines**: a **~40X reduction** from the ~200 you just saw. Run the Step 0 prompt above. It produces *models*, not code — each artifact declares structure or policy rather than procedure:
+<br>You've probably used AI to generate code before — so what's different here?
+
+**Difference 1: it produces models, not code.** Run the Step 0 prompt above, and instead of a pile of procedural code, you get artifacts that declare structure or policy rather than procedure — same 5 requirements, same AI, but as **5 lines**, a **~40X reduction** from the ~200 you just saw:
 
 1. **Data model** — `database/models.py`
 2. **Full JSON:API** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
 3. **Admin App** — multi-table, with navigations and lookups (`ui/admin/admin.yaml`)
 4. **Business logic** — [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — 5 rules, same requirements, same AI, 0 bugs
+
+**Difference 2: the logic itself is declarative** — more on why that matters below.
 
 Each small, readable, yours. Plain Python — standard tooling applies. Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add-auth`.
 
