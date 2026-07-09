@@ -1,0 +1,59 @@
+<o-form-layout-manager attr="OrderDetail" mode="tab" title="ORDERDETAIL">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="OrderDetailTable" 
+            service="OrderDetail" 
+            entity="OrderDetail" 
+            title="ORDERDETAIL"
+            keys="Id"
+            columns="Id;ProductId;OrderId;UnitPrice;Quantity;Discount;Amount;ShippedDate" 
+            header-actions="R;D"
+            visible-columns="Id;ProductId;OrderId;UnitPrice;Quantity;Discount;Amount;ShippedDate"  
+            sort-columns="Id" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #Id attr="Id" title=" Id" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column attr="ProductId" title="Product">
+    <o-table-cell-renderer-service attr="ProductId" 
+        service="Product" entity="ProductType" columns="Id;ProductName"
+        parent-keys="Id:ProductId"
+        value-column="ProductName" keys="ProductId"
+        visible-columns="ProductName" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column attr="OrderId" title="Order">
+    <o-table-cell-renderer-service attr="OrderId" 
+        service="Order" entity="OrderType" columns="Id;Id"
+        parent-keys="Id:OrderId"
+        value-column="Id" keys="OrderId"
+        visible-columns="Id" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column #UnitPrice attr="UnitPrice" title="UnitPrice" type="real" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000.0000" content-align="center"></o-table-column>
+            
+            <o-table-column #Quantity attr="Quantity" title="Quantity" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #Discount attr="Discount" title="Discount" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #Amount attr="Amount" title="Amount" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-column #ShippedDate attr="ShippedDate" title="ShippedDate" type="VARCHAR" editable="no" required="no" ></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

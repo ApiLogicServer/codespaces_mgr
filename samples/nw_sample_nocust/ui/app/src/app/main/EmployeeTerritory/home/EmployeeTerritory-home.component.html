@@ -1,0 +1,42 @@
+<o-form-layout-manager attr="EmployeeTerritory" mode="tab" title="EMPLOYEETERRITORY">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="EmployeeTerritoryTable" 
+            service="EmployeeTerritory" 
+            entity="EmployeeTerritory" 
+            title="EMPLOYEETERRITORY"
+            keys="Id"
+            columns="Id;EmployeeId;TerritoryId" 
+            header-actions="R;D"
+            visible-columns="Id;EmployeeId;TerritoryId"  
+            sort-columns="Id" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #Id attr="Id" title=" Id" editable="no" required="yes" content-align="left"></o-table-column>
+            
+            <o-table-column attr="EmployeeId" title="Employee">
+    <o-table-cell-renderer-service attr="EmployeeId" 
+        service="Employee" entity="EmployeeType" columns="Id;LastName"
+        parent-keys="Id:EmployeeId"
+        value-column="LastName" keys="EmployeeId"
+        visible-columns="LastName" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column #TerritoryId attr="TerritoryId" title="TerritoryId" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

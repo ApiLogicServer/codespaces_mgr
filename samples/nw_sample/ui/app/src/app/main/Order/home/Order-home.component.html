@@ -1,0 +1,79 @@
+<o-form-layout-manager attr="Order" mode="tab" title="ORDER">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="OrderTable" 
+            service="Order" 
+            entity="Order" 
+            title="ORDER"
+            keys="Id"
+            columns="Id;EmployeeId;ShippedDate;OrderDate;AmountTotal;Ready;CloneFromOrder;OrderDetailCount;Freight;Country;City;RequiredDate;CustomerId;ShipName;ShipVia;ShipAddress;ShipCity;ShipRegion;ShipZip;ShipCountry" 
+            header-actions="R;D"
+            visible-columns="Id;EmployeeId;ShippedDate;OrderDate;AmountTotal;Ready;CloneFromOrder;OrderDetailCount;Freight;Country;City;RequiredDate;CustomerId;ShipName;ShipVia;ShipAddress;ShipCity;ShipRegion;ShipZip;ShipCountry"  
+            sort-columns="Id" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #Id attr="Id" title="Id" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column attr="EmployeeId" title="Employee">
+    <o-table-cell-renderer-service attr="EmployeeId" 
+        service="Employee" entity="EmployeeType" columns="Id;LastName"
+        parent-keys="Id:EmployeeId"
+        value-column="LastName" keys="EmployeeId"
+        visible-columns="LastName" separator=" - " width="680px">
+    </o-table-cell-renderer-service>
+</o-table-column>
+            
+            <o-table-column #ShippedDate attr="ShippedDate" title="ShippedDate" type="VARCHAR" editable="no" required="no" ></o-table-column>
+            
+            <o-table-column #OrderDate attr="OrderDate" title="OrderDate" type="DATE" editable="no" required="no" ></o-table-column>
+            
+            <o-table-column #AmountTotal attr="AmountTotal" title="AmountTotal" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-column attr="Ready" title="Ready">
+    <o-table-cell-renderer-boolean render-true-value="check_circle" render-false-value="highlight_off"
+        render-type="icon" boolean-type="boolean" true-value="true" false-value="false"></o-table-cell-renderer-boolean>
+</o-table-column>
+            
+            <o-table-column #CloneFromOrder attr="CloneFromOrder" title="CloneFromOrder" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #OrderDetailCount attr="OrderDetailCount" title="OrderDetailCount" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #Freight attr="Freight" title="Freight" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator=","decimal-separator="."></o-table-column>
+            
+            <o-table-column #Country attr="Country" title="Country" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #City attr="City" title="City" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #RequiredDate attr="RequiredDate" title="RequiredDate" type="DATE" editable="no" required="no" ></o-table-column>
+            
+            <o-table-column #CustomerId attr="CustomerId" title="CustomerId" editable="no" required="yes" content-align="left"></o-table-column>
+            
+            <o-table-column #ShipName attr="ShipName" title=" Ship Name" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #ShipVia attr="ShipVia" title="ShipVia" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-column #ShipAddress attr="ShipAddress" title="ShipAddress" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #ShipCity attr="ShipCity" title="ShipCity" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #ShipRegion attr="ShipRegion" title="ShipRegion" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #ShipZip attr="ShipZip" title="ShipZip" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #ShipCountry attr="ShipCountry" title="ShipCountry" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

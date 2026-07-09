@@ -1,0 +1,36 @@
+<o-form-layout-manager mode="tab" title="Employees" label-columns="LastName;FirstName" separator=", ">
+    <o-grid #grid attr="EmployeeTable" service="Employee" entity="Employee"
+    columns="LastName;OnLoanDepartmentId;WorksForDepartmentId;Salary;ProperSalary;EmployeeType;Dues;FirstName;Id;Title;TitleOfCourtesy;BirthDate;HireDate;Address;City;Region;PostalCode;Country;HomePhone;Extension;ReportsTo;PhotoPath;Notes"
+    quick-filter-columns="LastName;OnLoanDepartmentId;WorksForDepartmentId;Salary;ProperSalary;EmployeeType;Dues;FirstName;Id;Title;TitleOfCourtesy;BirthDate;HireDate;Address;City;Region;PostalCode;Country;HomePhone;Extension;ReportsTo;PhotoPath;Notes" keys="Id" sort-columns="LastName"
+    pageable="yes" query-rows="16" fixed-header="yes" refresh-button="no" gutter-size="18px" detail-mode="none"
+    insert-button="yes">
+    <o-grid-item *ngFor="let item of grid.dataArray">
+        <div (click)="openDetail(item)" fxLayout="column" fxLayoutAlign="space-evenly center" class="Employee-item mat-elevation-z1">
+            <div fxLayout="row" fxLayoutAlign="space-between end" class="image-container">
+            <mat-divider fxFlex></mat-divider>
+            <div class="image">
+                <img [src]="getImageSrc(item.PhotoPath)">
+            </div>
+            <mat-divider fxFlex></mat-divider>
+            </div>
+        
+            <div fxLayout="column" fxLayoutAlign="start center" class="Employee-data">
+            
+            
+            <span>{{item.EmployeeType}}</span>
+            
+            <span>{{item. LastName}}</span>
+            
+            <span>{{item.FirstName}}</span>
+            
+            <span>{{item.Address}}</span>
+            
+            <span>{{item. Country}}</span>
+            
+            <span>{{item. HomePhone}}</span>
+            
+            </div>
+        </div>
+        </o-grid-item>
+</o-grid>
+</o-form-layout-manager>

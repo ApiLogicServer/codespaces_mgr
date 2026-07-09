@@ -1,0 +1,76 @@
+<div class="container">
+<o-form-container breadcrumb="yes" breadcrumb-label-columns="Id" breadcrumb-separator=", " class="fill-form">
+      <o-form #form attr="OrderDetail_form_edit" 
+        service="OrderDetail" 
+        entity="OrderDetail" 
+        fxLayout="column" 
+        show-header="yes" 
+        header-actions="R;U;D"
+        #oDetailForm keys="Id" 
+        keys-sql-types="INTEGER" 
+        show-header-navigation="yes"
+        (onDataLoaded)="onDataLoaded($event)">
+
+  <o-row attr="row1" layout-align="start stretch">
+    <div fxLayout="row wrap" fxLayoutAlign="start start" fxFlex fxLayoutGap="14px">
+      
+      <o-integer-input #Id attr="Id" label=" Id" type="integer" editable="no" required="no" ></o-integer-input>
+      
+      <o-list-picker 
+        attr="ProductId"
+        service="Product" 
+        entity="ProductType"
+        fxFlex="30" 
+        query-on-init="no" 
+        query-on-bind="yes" 
+        required="yes" 
+        enabled="yes" 
+        filter="yes"
+        value-column="Id" 
+        value-column-type="INTEGER"  
+        keys="Id" 
+        columns="Id;ProductId;ProductName" 
+        title="Product"
+        visible-columns="Id;ProductName" 
+        separator=" - " width="680px" class="form-field">
+</o-list-picker>
+      
+      <o-list-picker 
+        attr="OrderId"
+        service="Order" 
+        entity="OrderType"
+        fxFlex="30" 
+        query-on-init="no" 
+        query-on-bind="yes" 
+        required="yes" 
+        enabled="yes" 
+        filter="yes"
+        value-column="Id" 
+        value-column-type="INTEGER"  
+        keys="Id" 
+        columns="Id;OrderId;Id" 
+        title="Order"
+        visible-columns="Id;Id" 
+        separator=" - " width="680px" class="form-field">
+</o-list-picker>
+      
+      <o-real-input #UnitPrice attr="UnitPrice" label="UnitPrice" min-decimal-digits="2" max-decimal-digits="4" min="0" max="1000000000" fxFlex="20%" class="form-field"></o-real-input>
+      
+      <o-integer-input #Quantity attr="Quantity" label="Quantity" type="integer" editable="no" required="no" ></o-integer-input>
+      
+      <o-percent-input #Discount attr="Discount" label="Discount" value-base="100" fxFlex="20%" class="form-field"></o-percent-input>
+      
+      <o-currency-input #Amount attr="Amount" title="Amount" type="currency" editable="no" required="no" currency-symbol="$" currency-symbol-position="left" thousand-separator="," decimal-separator="."></o-currency-input>
+      
+      <o-date-input #ShippedDate attr="ShippedDate" value-type="string" label="ShippedDate" editable="no" required="no" format="YYYY-MM-DD hh:mm:ss" fxFlex="20%" class="form-field"></o-date-input>
+      
+    </div>
+  </o-row>
+      
+      <mat-tab-group fxFill>
+        
+      </mat-tab-group>
+      
+    </o-form>
+  </o-form-container>
+</div>

@@ -1,0 +1,1303 @@
+about:
+  date: July 07, 2026 19:49:04
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+application:
+  app:
+    description: generated Ontimize application
+    menu_group:
+      data:
+        icon: edit_square
+        menu_item:
+          Category:
+            icon: edit_square
+            menu_name: Category
+            menu_title: Category
+            page:
+              detail:
+                columns: CategoryName_ColumnName,Description,Id,Client_id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Category
+                typescript_name: detail_component.jinja
+                visible_columns: CategoryName_ColumnName,Description,Id,Client_id
+              home:
+                columns: CategoryName_ColumnName,Description,Id,Client_id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Category
+                typescript_name: home_template.jinja
+                visible_columns: CategoryName_ColumnName,Description,Id,Client_id
+              new:
+                columns: CategoryName_ColumnName,Description,Id,Client_id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Category
+                typescript_name: new_component.jinja
+                visible_columns: CategoryName_ColumnName,Description,Id,Client_id
+            template_name: module.jinja
+          Customer:
+            icon: edit_square
+            menu_name: Customer
+            menu_title: Customer
+            page:
+              detail:
+                columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,Balance,CreditLimit,OrderCount,UnpaidOrderCount,Id,Client_id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Customer
+                typescript_name: detail_component.jinja
+                visible_columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,Balance,CreditLimit,OrderCount,UnpaidOrderCount,Id,Client_id
+              home:
+                columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,Balance,CreditLimit,OrderCount,UnpaidOrderCount,Id,Client_id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Customer
+                typescript_name: home_template.jinja
+                visible_columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,Balance,CreditLimit,OrderCount,UnpaidOrderCount,Id,Client_id
+              new:
+                columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,Balance,CreditLimit,OrderCount,UnpaidOrderCount,Id,Client_id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Customer
+                typescript_name: new_component.jinja
+                visible_columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,Balance,CreditLimit,OrderCount,UnpaidOrderCount,Id,Client_id
+            template_name: module.jinja
+          CustomerDemographic:
+            icon: edit_square
+            menu_name: CustomerDemographic
+            menu_title: CustomerDemographic
+            page:
+              detail:
+                columns: Id,CustomerDesc
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: CustomerDemographic
+                typescript_name: detail_component.jinja
+                visible_columns: Id,CustomerDesc
+              home:
+                columns: Id,CustomerDesc
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: CustomerDemographic
+                typescript_name: home_template.jinja
+                visible_columns: Id,CustomerDesc
+              new:
+                columns: Id,CustomerDesc
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: CustomerDemographic
+                typescript_name: new_component.jinja
+                visible_columns: Id,CustomerDesc
+            template_name: module.jinja
+          Department:
+            icon: edit_square
+            menu_name: Department
+            menu_title: Department
+            page:
+              detail:
+                columns: DepartmentName,DepartmentId,SecurityLevel,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Department
+                typescript_name: detail_component.jinja
+                visible_columns: DepartmentName,DepartmentId,SecurityLevel,Id
+              home:
+                columns: DepartmentName,DepartmentId,SecurityLevel,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Department
+                typescript_name: home_template.jinja
+                visible_columns: DepartmentName,DepartmentId,SecurityLevel,Id
+              new:
+                columns: DepartmentName,DepartmentId,SecurityLevel,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Department
+                typescript_name: new_component.jinja
+                visible_columns: DepartmentName,DepartmentId,SecurityLevel,Id
+            template_name: module.jinja
+          Employee:
+            icon: edit_square
+            menu_name: Employee
+            menu_title: Employee
+            page:
+              detail:
+                columns: LastName,OnLoanDepartmentId,UnionId,WorksForDepartmentId,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Notes,ReportsTo,PhotoPath,EmployeeType,Salary,Dues,Email,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Employee
+                typescript_name: detail_component.jinja
+                visible_columns: LastName,OnLoanDepartmentId,UnionId,WorksForDepartmentId,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Notes,ReportsTo,PhotoPath,EmployeeType,Salary,Dues,Email,Id
+              home:
+                columns: LastName,OnLoanDepartmentId,UnionId,WorksForDepartmentId,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Notes,ReportsTo,PhotoPath,EmployeeType,Salary,Dues,Email,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Employee
+                typescript_name: home_template.jinja
+                visible_columns: LastName,OnLoanDepartmentId,UnionId,WorksForDepartmentId,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Notes,ReportsTo,PhotoPath,EmployeeType,Salary,Dues,Email,Id
+              new:
+                columns: LastName,OnLoanDepartmentId,UnionId,WorksForDepartmentId,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Notes,ReportsTo,PhotoPath,EmployeeType,Salary,Dues,Email,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Employee
+                typescript_name: new_component.jinja
+                visible_columns: LastName,OnLoanDepartmentId,UnionId,WorksForDepartmentId,FirstName,Title,TitleOfCourtesy,BirthDate,HireDate,Address,City,Region,PostalCode,Country,HomePhone,Extension,Notes,ReportsTo,PhotoPath,EmployeeType,Salary,Dues,Email,Id
+            template_name: module.jinja
+          EmployeeAudit:
+            icon: edit_square
+            menu_name: EmployeeAudit
+            menu_title: EmployeeAudit
+            page:
+              detail:
+                columns: LastName,EmployeeId,Title,Salary,FirstName,CreatedOn,UpdatedOn,CreatedBy,UpdatedBy,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: EmployeeAudit
+                typescript_name: detail_component.jinja
+                visible_columns: LastName,EmployeeId,Title,Salary,FirstName,CreatedOn,UpdatedOn,CreatedBy,UpdatedBy,Id
+              home:
+                columns: LastName,EmployeeId,Title,Salary,FirstName,CreatedOn,UpdatedOn,CreatedBy,UpdatedBy,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: EmployeeAudit
+                typescript_name: home_template.jinja
+                visible_columns: LastName,EmployeeId,Title,Salary,FirstName,CreatedOn,UpdatedOn,CreatedBy,UpdatedBy,Id
+              new:
+                columns: LastName,EmployeeId,Title,Salary,FirstName,CreatedOn,UpdatedOn,CreatedBy,UpdatedBy,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: EmployeeAudit
+                typescript_name: new_component.jinja
+                visible_columns: LastName,EmployeeId,Title,Salary,FirstName,CreatedOn,UpdatedOn,CreatedBy,UpdatedBy,Id
+            template_name: module.jinja
+          EmployeeTerritory:
+            icon: edit_square
+            menu_name: EmployeeTerritory
+            menu_title: EmployeeTerritory
+            page:
+              detail:
+                columns: Id,EmployeeId,TerritoryId
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: EmployeeTerritory
+                typescript_name: detail_component.jinja
+                visible_columns: Id,EmployeeId,TerritoryId
+              home:
+                columns: Id,EmployeeId,TerritoryId
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: EmployeeTerritory
+                typescript_name: home_template.jinja
+                visible_columns: Id,EmployeeId,TerritoryId
+              new:
+                columns: Id,EmployeeId,TerritoryId
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: EmployeeTerritory
+                typescript_name: new_component.jinja
+                visible_columns: Id,EmployeeId,TerritoryId
+            template_name: module.jinja
+          Location:
+            icon: edit_square
+            menu_name: Location
+            menu_title: Location
+            page:
+              detail:
+                columns: country,city,notes
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Location
+                typescript_name: detail_component.jinja
+                visible_columns: country,city,notes
+              home:
+                columns: country,city,notes
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Location
+                typescript_name: home_template.jinja
+                visible_columns: country,city,notes
+              new:
+                columns: country,city,notes
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Location
+                typescript_name: new_component.jinja
+                visible_columns: country,city,notes
+            template_name: module.jinja
+          Order:
+            icon: edit_square
+            menu_name: Order
+            menu_title: Order
+            page:
+              detail:
+                columns: ShipName,CloneFromOrder,Country,CustomerId,EmployeeId,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry,AmountTotal,City,Ready,OrderDetailCount,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Order
+                typescript_name: detail_component.jinja
+                visible_columns: ShipName,CloneFromOrder,Country,CustomerId,EmployeeId,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry,AmountTotal,City,Ready,OrderDetailCount,Id
+              home:
+                columns: ShipName,CloneFromOrder,Country,CustomerId,EmployeeId,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry,AmountTotal,City,Ready,OrderDetailCount,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Order
+                typescript_name: home_template.jinja
+                visible_columns: ShipName,CloneFromOrder,Country,CustomerId,EmployeeId,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry,AmountTotal,City,Ready,OrderDetailCount,Id
+              new:
+                columns: ShipName,CloneFromOrder,Country,CustomerId,EmployeeId,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry,AmountTotal,City,Ready,OrderDetailCount,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Order
+                typescript_name: new_component.jinja
+                visible_columns: ShipName,CloneFromOrder,Country,CustomerId,EmployeeId,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry,AmountTotal,City,Ready,OrderDetailCount,Id
+            template_name: module.jinja
+          OrderDetail:
+            icon: edit_square
+            menu_name: OrderDetail
+            menu_title: OrderDetail
+            page:
+              detail:
+                columns: Id,OrderId,ProductId,UnitPrice,Quantity,Discount,Amount,ShippedDate
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: OrderDetail
+                typescript_name: detail_component.jinja
+                visible_columns: Id,OrderId,ProductId,UnitPrice,Quantity,Discount,Amount,ShippedDate
+              home:
+                columns: Id,OrderId,ProductId,UnitPrice,Quantity,Discount,Amount,ShippedDate
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: OrderDetail
+                typescript_name: home_template.jinja
+                visible_columns: Id,OrderId,ProductId,UnitPrice,Quantity,Discount,Amount,ShippedDate
+              new:
+                columns: Id,OrderId,ProductId,UnitPrice,Quantity,Discount,Amount,ShippedDate
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: OrderDetail
+                typescript_name: new_component.jinja
+                visible_columns: Id,OrderId,ProductId,UnitPrice,Quantity,Discount,Amount,ShippedDate
+            template_name: module.jinja
+          Product:
+            icon: edit_square
+            menu_name: Product
+            menu_title: Product
+            page:
+              detail:
+                columns: ProductName,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Id,SupplierId,Discontinued,UnitsShipped
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Product
+                typescript_name: detail_component.jinja
+                visible_columns: ProductName,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Id,SupplierId,Discontinued,UnitsShipped
+              home:
+                columns: ProductName,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Id,SupplierId,Discontinued,UnitsShipped
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Product
+                typescript_name: home_template.jinja
+                visible_columns: ProductName,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Id,SupplierId,Discontinued,UnitsShipped
+              new:
+                columns: ProductName,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Id,SupplierId,Discontinued,UnitsShipped
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Product
+                typescript_name: new_component.jinja
+                visible_columns: ProductName,CategoryId,QuantityPerUnit,UnitPrice,UnitsInStock,UnitsOnOrder,ReorderLevel,Id,SupplierId,Discontinued,UnitsShipped
+            template_name: module.jinja
+          Region:
+            icon: edit_square
+            menu_name: Region
+            menu_title: Region
+            page:
+              detail:
+                columns: RegionDescription,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Region
+                typescript_name: detail_component.jinja
+                visible_columns: RegionDescription,Id
+              home:
+                columns: RegionDescription,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Region
+                typescript_name: home_template.jinja
+                visible_columns: RegionDescription,Id
+              new:
+                columns: RegionDescription,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Region
+                typescript_name: new_component.jinja
+                visible_columns: RegionDescription,Id
+            template_name: module.jinja
+          SampleDBVersion:
+            icon: edit_square
+            menu_name: SampleDBVersion
+            menu_title: SampleDBVersion
+            page:
+              detail:
+                columns: Id,Notes
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: SampleDBVersion
+                typescript_name: detail_component.jinja
+                visible_columns: Id,Notes
+              home:
+                columns: Id,Notes
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: SampleDBVersion
+                typescript_name: home_template.jinja
+                visible_columns: Id,Notes
+              new:
+                columns: Id,Notes
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: SampleDBVersion
+                typescript_name: new_component.jinja
+                visible_columns: Id,Notes
+            template_name: module.jinja
+          Shipper:
+            icon: edit_square
+            menu_name: Shipper
+            menu_title: Shipper
+            page:
+              detail:
+                columns: CompanyName,Phone,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Shipper
+                typescript_name: detail_component.jinja
+                visible_columns: CompanyName,Phone,Id
+              home:
+                columns: CompanyName,Phone,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Shipper
+                typescript_name: home_template.jinja
+                visible_columns: CompanyName,Phone,Id
+              new:
+                columns: CompanyName,Phone,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Shipper
+                typescript_name: new_component.jinja
+                visible_columns: CompanyName,Phone,Id
+            template_name: module.jinja
+          Supplier:
+            icon: edit_square
+            menu_name: Supplier
+            menu_title: Supplier
+            page:
+              detail:
+                columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,HomePage,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Supplier
+                typescript_name: detail_component.jinja
+                visible_columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,HomePage,Id
+              home:
+                columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,HomePage,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Supplier
+                typescript_name: home_template.jinja
+                visible_columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,HomePage,Id
+              new:
+                columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,HomePage,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Supplier
+                typescript_name: new_component.jinja
+                visible_columns: CompanyName,ContactName,ContactTitle,Address,City,Region,PostalCode,Country,Phone,Fax,HomePage,Id
+            template_name: module.jinja
+          Territory:
+            icon: edit_square
+            menu_name: Territory
+            menu_title: Territory
+            page:
+              detail:
+                columns: TerritoryDescription,Id,RegionId
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Territory
+                typescript_name: detail_component.jinja
+                visible_columns: TerritoryDescription,Id,RegionId
+              home:
+                columns: TerritoryDescription,Id,RegionId
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Territory
+                typescript_name: home_template.jinja
+                visible_columns: TerritoryDescription,Id,RegionId
+              new:
+                columns: TerritoryDescription,Id,RegionId
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Territory
+                typescript_name: new_component.jinja
+                visible_columns: TerritoryDescription,Id,RegionId
+            template_name: module.jinja
+          Union:
+            icon: edit_square
+            menu_name: Union
+            menu_title: Union
+            page:
+              detail:
+                columns: Name,Id
+                include_children: true
+                page_name: detail
+                template_name: detail_template.html
+                title: Union
+                typescript_name: detail_component.jinja
+                visible_columns: Name,Id
+              home:
+                columns: Name,Id
+                include_children: true
+                page_name: home
+                template_name: home_template.html
+                title: Union
+                typescript_name: home_template.jinja
+                visible_columns: Name,Id
+              new:
+                columns: Name,Id
+                include_children: true
+                page_name: new
+                template_name: new_template.html
+                title: Union
+                typescript_name: new_component.jinja
+                visible_columns: Name,Id
+            template_name: module.jinja
+        menu_name: data
+        menu_title: data
+        opened: true
+    name: app
+authentication: '{system-default}'
+entities:
+  Category:
+    columns:
+    - label: ' Category Name_ Column Name*'
+      name: CategoryName_ColumnName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: Description
+      template: text
+      type: VARCHAR
+    - name: Id
+      template: integer
+      type: INTEGER
+    - name: Client_id
+      template: integer
+      type: INTEGER
+    favorite: CategoryName_ColumnName
+    hidden: {}
+    label: Category
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - CategoryId
+      name: ProductList
+      resource: Product
+    type: Category
+  Customer:
+    columns:
+    - label: ' Company Name*'
+      name: CompanyName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: ContactName
+      template: text
+      type: VARCHAR
+    - name: ContactTitle
+      template: text
+      type: VARCHAR
+    - name: Address
+      template: text
+      type: VARCHAR
+    - name: City
+      template: text
+      type: VARCHAR
+    - name: Region
+      template: text
+      type: VARCHAR
+    - name: PostalCode
+      template: text
+      type: VARCHAR
+    - name: Country
+      template: text
+      type: VARCHAR
+    - name: Phone
+      template: text
+      type: VARCHAR
+    - name: Fax
+      template: text
+      type: VARCHAR
+    - name: Balance
+      type: DECIMAL
+    - name: CreditLimit
+      type: DECIMAL
+    - default: '0'
+      name: OrderCount
+      template: integer
+      type: INTEGER
+    - default: '0'
+      name: UnpaidOrderCount
+      template: integer
+      type: INTEGER
+    - name: Id
+      required: true
+      template: text
+      type: VARCHAR
+    - name: Client_id
+      template: integer
+      type: INTEGER
+    favorite: CompanyName
+    hidden: {}
+    label: Customer
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - CustomerId
+      name: OrderList
+      resource: Order
+    type: Customer
+  CustomerDemographic:
+    columns:
+    - label: ' Id*'
+      name: Id
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: CustomerDesc
+      template: text
+      type: VARCHAR
+    favorite: Id
+    hidden: {}
+    label: CustomerDemographic
+    primary_key:
+    - Id
+    type: CustomerDemographic
+  Department:
+    columns:
+    - label: ' Department Name*'
+      name: DepartmentName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: DepartmentId
+      template: integer
+      type: INTEGER
+    - default: '0'
+      name: SecurityLevel
+      template: integer
+      type: INTEGER
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: DepartmentName
+    hidden: {}
+    label: Department
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - DepartmentId
+      name: DepartmentList
+      resource: Department
+    - direction: tomany
+      fks:
+      - OnLoanDepartmentId
+      name: EmployeeList
+      resource: Employee
+    - direction: tomany
+      fks:
+      - WorksForDepartmentId
+      name: WorksForEmployeeList
+      resource: Employee
+    - direction: toone
+      fks:
+      - DepartmentId
+      name: Department
+      resource: Department
+    type: Department
+  Employee:
+    columns:
+    - label: ' Last Name*'
+      name: LastName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: OnLoanDepartmentId
+      template: integer
+      type: INTEGER
+    - name: UnionId
+      template: integer
+      type: INTEGER
+    - name: WorksForDepartmentId
+      template: integer
+      type: INTEGER
+    - name: FirstName
+      template: text
+      type: VARCHAR
+    - name: Title
+      template: text
+      type: VARCHAR
+    - name: TitleOfCourtesy
+      template: text
+      type: VARCHAR
+    - name: BirthDate
+      template: text
+      type: VARCHAR
+    - name: HireDate
+      template: text
+      type: VARCHAR
+    - name: Address
+      template: text
+      type: VARCHAR
+    - name: City
+      template: text
+      type: VARCHAR
+    - name: Region
+      template: text
+      type: VARCHAR
+    - name: PostalCode
+      template: text
+      type: VARCHAR
+    - name: Country
+      template: text
+      type: VARCHAR
+    - name: HomePhone
+      template: text
+      type: VARCHAR
+    - name: Extension
+      template: text
+      type: VARCHAR
+    - name: Notes
+      template: text
+      type: VARCHAR
+    - name: ReportsTo
+      template: integer
+      type: INTEGER
+    - name: PhotoPath
+      template: text
+      type: VARCHAR
+    - default: Salaried
+      name: EmployeeType
+      template: text
+      type: VARCHAR
+    - name: Salary
+      type: DECIMAL
+    - name: Dues
+      type: DECIMAL
+    - name: Email
+      template: text
+      type: TEXT
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: LastName
+    hidden: {}
+    label: Employee
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - EmployeeId
+      name: EmployeeAuditList
+      resource: EmployeeAudit
+    - direction: tomany
+      fks:
+      - EmployeeId
+      name: EmployeeTerritoryList
+      resource: EmployeeTerritory
+    - direction: tomany
+      fks:
+      - EmployeeId
+      name: OrderList
+      resource: Order
+    - direction: toone
+      fks:
+      - OnLoanDepartmentId
+      name: OnLoanDepartment
+      resource: Department
+    - direction: toone
+      fks:
+      - UnionId
+      name: Union
+      resource: Union
+    - direction: toone
+      fks:
+      - WorksForDepartmentId
+      name: WorksForDepartment
+      resource: Department
+    type: Employee
+  EmployeeAudit:
+    columns:
+    - label: ' Last Name*'
+      name: LastName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: EmployeeId
+      template: integer
+      type: INTEGER
+    - name: Title
+      template: text
+      type: VARCHAR
+    - name: Salary
+      type: DECIMAL
+    - name: FirstName
+      template: text
+      type: VARCHAR
+    - name: CreatedOn
+      template: text
+      type: TEXT
+    - name: UpdatedOn
+      template: text
+      type: TEXT
+    - name: CreatedBy
+      template: text
+      type: TEXT
+    - name: UpdatedBy
+      template: text
+      type: TEXT
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: LastName
+    hidden: {}
+    label: EmployeeAudit
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: toone
+      fks:
+      - EmployeeId
+      name: Employee
+      resource: Employee
+    type: EmployeeAudit
+  EmployeeTerritory:
+    columns:
+    - label: ' Id*'
+      name: Id
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: EmployeeId
+      required: true
+      template: integer
+      type: INTEGER
+    - name: TerritoryId
+      template: text
+      type: VARCHAR
+    favorite: Id
+    hidden: {}
+    label: EmployeeTerritory
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: toone
+      fks:
+      - EmployeeId
+      name: Employee
+      resource: Employee
+    - direction: toone
+      fks:
+      - TerritoryId
+      name: Territory
+      resource: Territory
+    type: EmployeeTerritory
+  Location:
+    columns:
+    - label: ' country*'
+      name: country
+      required: true
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: city
+      required: true
+      template: text
+      type: VARCHAR
+    - name: notes
+      template: text
+      type: VARCHAR
+    favorite: country
+    hidden: {}
+    label: Location
+    primary_key:
+    - country
+    - city
+    tab_groups:
+    - direction: tomany
+      fks:
+      - Country
+      - City
+      name: OrderList
+      resource: Order
+    type: Location
+  Order:
+    columns:
+    - label: ' Ship Name*'
+      name: ShipName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: CloneFromOrder
+      template: integer
+      type: INTEGER
+    - name: Country
+      template: text
+      type: VARCHAR
+    - name: CustomerId
+      required: true
+      template: text
+      type: VARCHAR
+    - name: EmployeeId
+      required: true
+      template: integer
+      type: INTEGER
+    - name: OrderDate
+      template: text
+      type: VARCHAR
+    - name: RequiredDate
+      type: DATE
+    - name: ShippedDate
+      template: text
+      type: VARCHAR
+    - name: ShipVia
+      template: integer
+      type: INTEGER
+    - name: Freight
+      type: DECIMAL
+    - name: ShipAddress
+      template: text
+      type: VARCHAR
+    - name: ShipCity
+      template: text
+      type: VARCHAR
+    - name: ShipRegion
+      template: text
+      type: VARCHAR
+    - name: ShipPostalCode
+      template: text
+      type: VARCHAR
+    - name: ShipCountry
+      template: text
+      type: VARCHAR
+    - name: AmountTotal
+      template: real
+      type: DECIMAL
+    - name: City
+      template: text
+      type: VARCHAR
+    - name: Ready
+      type: Boolean
+    - default: '0'
+      name: OrderDetailCount
+      template: integer
+      type: INTEGER
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: ShipName
+    hidden: {}
+    label: Order
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - CloneFromOrder
+      name: OrderList
+      resource: Order
+    - direction: tomany
+      fks:
+      - OrderId
+      name: OrderDetailList
+      resource: OrderDetail
+    - direction: toone
+      fks:
+      - CloneFromOrder
+      name: Order
+      resource: Order
+    - direction: toone
+      fks:
+      - Country
+      - City
+      name: Location
+      resource: Location
+    - direction: toone
+      fks:
+      - CustomerId
+      name: Customer
+      resource: Customer
+    - direction: toone
+      fks:
+      - EmployeeId
+      name: Employee
+      resource: Employee
+    type: Order
+  OrderDetail:
+    columns:
+    - label: ' Id*'
+      name: Id
+      search: true
+      sort: true
+      template: integer
+      type: INTEGER
+    - name: OrderId
+      required: true
+      template: integer
+      type: INTEGER
+    - name: ProductId
+      required: true
+      template: integer
+      type: INTEGER
+    - name: UnitPrice
+      type: DECIMAL
+    - default: '1'
+      name: Quantity
+      required: true
+      template: integer
+      type: INTEGER
+    - default: '0'
+      name: Discount
+      template: real
+      type: DOUBLE
+    - name: Amount
+      type: DECIMAL
+    - name: ShippedDate
+      template: text
+      type: VARCHAR
+    favorite: Id
+    hidden: {}
+    label: OrderDetail
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: toone
+      fks:
+      - OrderId
+      name: Order
+      resource: Order
+    - direction: toone
+      fks:
+      - ProductId
+      name: Product
+      resource: Product
+    type: OrderDetail
+  Product:
+    columns:
+    - label: ' Product Name*'
+      name: ProductName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: CategoryId
+      required: true
+      template: integer
+      type: INTEGER
+    - name: QuantityPerUnit
+      template: text
+      type: VARCHAR
+    - name: UnitPrice
+      required: true
+      type: DECIMAL
+    - name: UnitsInStock
+      required: true
+      template: integer
+      type: INTEGER
+    - name: UnitsOnOrder
+      required: true
+      template: integer
+      type: INTEGER
+    - name: ReorderLevel
+      required: true
+      template: integer
+      type: INTEGER
+    - name: Id
+      template: integer
+      type: INTEGER
+    - name: SupplierId
+      required: true
+      template: integer
+      type: INTEGER
+    - name: Discontinued
+      required: true
+      template: integer
+      type: INTEGER
+    - name: UnitsShipped
+      template: integer
+      type: INTEGER
+    favorite: ProductName
+    hidden: {}
+    label: Product
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - ProductId
+      name: OrderDetailList
+      resource: OrderDetail
+    - direction: toone
+      fks:
+      - CategoryId
+      name: Category
+      resource: Category
+    type: Product
+  Region:
+    columns:
+    - label: ' Region Description*'
+      name: RegionDescription
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: RegionDescription
+    hidden: {}
+    label: Region
+    primary_key:
+    - Id
+    type: Region
+  SampleDBVersion:
+    columns:
+    - label: ' Id*'
+      name: Id
+      search: true
+      sort: true
+      template: integer
+      type: INTEGER
+    - name: Notes
+      template: text
+      type: VARCHAR
+    favorite: Id
+    hidden: {}
+    label: SampleDBVersion
+    primary_key:
+    - Id
+    type: SampleDBVersion
+  Shipper:
+    columns:
+    - label: ' Company Name*'
+      name: CompanyName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: Phone
+      template: text
+      type: VARCHAR
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: CompanyName
+    hidden: {}
+    label: Shipper
+    primary_key:
+    - Id
+    type: Shipper
+  Supplier:
+    columns:
+    - label: ' Company Name*'
+      name: CompanyName
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: ContactName
+      template: text
+      type: VARCHAR
+    - name: ContactTitle
+      template: text
+      type: VARCHAR
+    - name: Address
+      template: text
+      type: VARCHAR
+    - name: City
+      template: text
+      type: VARCHAR
+    - name: Region
+      template: text
+      type: VARCHAR
+    - name: PostalCode
+      template: text
+      type: VARCHAR
+    - name: Country
+      template: text
+      type: VARCHAR
+    - name: Phone
+      template: text
+      type: VARCHAR
+    - name: Fax
+      template: text
+      type: VARCHAR
+    - name: HomePage
+      template: text
+      type: VARCHAR
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: CompanyName
+    hidden: {}
+    label: Supplier
+    primary_key:
+    - Id
+    type: Supplier
+  Territory:
+    columns:
+    - label: ' Territory Description*'
+      name: TerritoryDescription
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: Id
+      required: true
+      template: text
+      type: VARCHAR
+    - name: RegionId
+      required: true
+      template: integer
+      type: INTEGER
+    favorite: TerritoryDescription
+    hidden: {}
+    label: Territory
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - TerritoryId
+      name: EmployeeTerritoryList
+      resource: EmployeeTerritory
+    type: Territory
+  Union:
+    columns:
+    - label: ' Name*'
+      name: Name
+      search: true
+      sort: true
+      template: text
+      type: VARCHAR
+    - name: Id
+      template: integer
+      type: INTEGER
+    favorite: Name
+    hidden: {}
+    label: Union
+    primary_key:
+    - Id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - UnionId
+      name: EmployeeList
+      resource: Employee
+    type: Union
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    api_endpoint: http://localhost:5656/api
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: YYYY-MM-DD
+    decimal_max: '1000000000'
+    decimal_min: '0'
+    decimal_separator: .
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: false
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    mode: tab
+    pick_style: list
+    serviceType: JSONAPI
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: false

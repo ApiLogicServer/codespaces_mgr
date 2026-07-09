@@ -1,0 +1,53 @@
+<o-form-layout-manager attr="Supplier" mode="dialog" title="SUPPLIER">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="SupplierTable" 
+            service="Supplier" 
+            entity="Supplier" 
+            title="SUPPLIER"
+            keys="Id"
+            columns="CompanyName;ContactName;ContactTitle;Address;City;Region;PostalCode;Country;Phone;Fax;HomePage;Id" 
+            header-actions="R;D"
+            visible-columns="CompanyName;ContactName;ContactTitle;Address;City;Region;PostalCode;Country;Phone;Fax;HomePage;Id"  
+            sort-columns="CompanyName" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #CompanyName attr="CompanyName" title=" Company Name" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #ContactName attr="ContactName" title="ContactName" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #ContactTitle attr="ContactTitle" title="ContactTitle" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #Address attr="Address" title="Address" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #City attr="City" title="City" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #Region attr="Region" title="Region" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #PostalCode attr="PostalCode" title="PostalCode" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #Country attr="Country" title="Country" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #Phone attr="Phone" title="Phone" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #Fax attr="Fax" title="Fax" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #HomePage attr="HomePage" title="HomePage" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-column #Id attr="Id" title="Id" type="integer" editable="no" required="no" content-align="center"></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>

@@ -1,0 +1,35 @@
+<o-form-layout-manager attr="Location" mode="tab" title="LOCATION">
+    <div fxFill fxLayout="column" fxLayoutAlign="start">
+        <o-table 
+            attr="LocationTable" 
+            service="Location" 
+            entity="Location" 
+            title="LOCATION"
+            keys="country;city"
+            columns="country;city;notes" 
+            header-actions="R;D"
+            visible-columns="country;city;notes"  
+            sort-columns="country" 
+            query-rows="20" 
+            quick-filter="yes"
+            row-height="medium" 
+            select-all-checkbox="true" 
+            pageable="yes"  
+            auto-adjust="true" 
+            virtual-scroll="yes" 
+            edition-mode="dblclick"
+            horizontal-scroll="yes"
+            show-title="yes"
+            export-button="yes">
+            
+            <o-table-column #country attr="country" title=" country" editable="no" required="yes" content-align="left"></o-table-column>
+            
+            <o-table-column #city attr="city" title="city" editable="no" required="yes" content-align="left"></o-table-column>
+            
+            <o-table-column #notes attr="notes" title="notes" editable="no" required="no" content-align="left"></o-table-column>
+            
+            <o-table-context-menu></o-table-context-menu>
+            <o-table-paginator page-size-options="24;48;96"></o-table-paginator>
+        </o-table>
+    </div>
+</o-form-layout-manager>
