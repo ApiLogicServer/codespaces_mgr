@@ -2,7 +2,7 @@
 title: Welcome - see end for instructions to hide this
 Description: Instant mcp-enabled microservices, standard projects, declarative business logic
 Source: docs/Manager-readme
-version info: 17.00.12 (06/18/2026)
+version info: 17.02.06 (07/09/2026)
 do_process_code_block_titles: True
 Used: Manager Readme (via copy_md())
 demo_customs: Customs-readme
@@ -42,9 +42,9 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 &nbsp;
 
-We get consistently good results with **Claude Sonnet 4.6** (GitHub Copilot or Claude Code extension). "Ask" mode will not work — use **Agent mode**.
+We get consistently good results with **Claude Sonnet 5.0/4.6** (GitHub Copilot or Claude Code extension). "Ask" mode will not work — use **Agent mode**.
 
-To select Sonnet 4.6 in the Copilot chat panel: click **Agent** → the **gear icon** → choose **Claude Sonnet 4.6**.
+To select Sonnet 5.0 in the Copilot chat panel: click **Agent** → the **gear icon** → choose **Claude Sonnet 5.0**.
 
 For more information, see [AI-Enabled Projects](https://apilogicserver.github.io/Docs/Project-AI-Enabled/) or [click here](https://apilogicserver.github.io/Docs/Manager-readme/).
 
@@ -97,7 +97,7 @@ The prompt above starts from an existing database — the common real-world case
 
 &nbsp;
 
-> **Running in Codespaces?** Once the project's built, a browser tab auto-opens showing it running — that's not a quirk to dismiss, that's how you get going here.
+> **Running in Codespaces?** During project creation, a browser tab may auto-open showing it running — it's safe to dismiss.
 
 The goal here isn't a demo — it's an **enterprise-class** system you can trust and maintain. That's exactly what gets tested next.
 
@@ -106,9 +106,9 @@ The goal here isn't a demo — it's an **enterprise-class** system you can trust
 &nbsp;
 
 <details markdown>
-<summary>AI great — but logic as code is hard to Read, Trust, and Maintain — here's why</summary>
+<summary>AI is great — but logic-as-code is hard to Read, Trust, and Maintain — here's why</summary>
 
-<br>Most agree, even if only informally, that business logic runs about **half the development and debugging effort** on a real system. Not a side concern.
+<br>Most developers estimate business logic requires about **half the development and debugging effort** on a real system. Not a side concern.
 
 AI is genuinely good at UI, data mapping, and boilerplate — no argument there. **Business logic is the exception.** Left unguided, any AI assistant — including the one that just built Step 0 for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
 
@@ -192,7 +192,7 @@ Every rule is a plain Python function or lambda. Set a breakpoint on any `callin
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;3. Iterate — no calling, no ordering to manage</summary>
+<summary>&emsp;&emsp;3. Iterate — 1 AI prompt adds table, relationship, 2 rules</summary>
 
 <br>Ask your AI assistant for a new rule, in plain English:
 
@@ -211,12 +211,17 @@ Without the engine, an AI rewriting procedural code from scratch would have to r
 <details markdown>
 <summary>&emsp;&emsp;4. Important Observations — no calling, no ordering, since rules are declarative</summary>
 
-<br>Iterate needed no calling, no ordering to manage — two things about what you just did explain why:
+<br>Iteration was remarkably similar to traditional maintenance, because **rules are declarative:**
 
-- **Order doesn't matter.** Open `check_credit.py` and shuffle the five rules into any order you like. Rerun — still correct. Try that with 200 lines of procedural code.
-- **You asked for less than you got.** The requirement said *"On Placing Orders, Check Credit"* — insert time. But the save that failed was an *edit* to an existing order. Nobody wrote an update-time check.
+- **No need to call the new logic.** Rules are invoked automatically - regardless of the originating path.  You can **trust** that they'll always run.
+- **Order doesn't matter.** Open `check_credit.py` and shuffle the five rules into any order you like. Rerun — still correct. Try that with 200 lines of procedural code.  You can **trust** that they'll run in the right order.
+- **You got more than you asked for.** The original requirement said *"On Placing Orders, Check Credit"* — insert time. But the save that failed was an *edit* to an existing order. Nobody wrote an update-time check.
 
-Functions don't behave like that. These look more like *declarations* than procedures — but why does that matter? Ask your AI assistant — *"What are rules?"* — or keep reading.
+Functions don't behave like that. So why is that?
+
+**Traditional logic is procedural — you own *how*:** when it's called, and in what order. **Declarative logic — rules — is about *what*, not how:** you state the fact, and the system takes responsibility for invocation and ordering. That's why the new rule didn't need to be called, and why order didn't matter.
+
+The next section explores this in detail. Ask your AI assistant — *"What are rules?"* — or keep reading.
 
 </details>
 
@@ -288,7 +293,7 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 <details markdown>
 <summary>Scaling to the Enterprise — here's how</summary>
 
-<br>The business logic above is *rules*, not procedures. A procedure answers "what happens when X?" — so every new path needs a new procedure. A rule declares a fact about data — it's automatically re-used over every path, including ones that don't exist yet. **That property is what scales.**
+<br>With logic off its plate, AI can create remarkable results — solid enterprise systems, from requirements, not just demos that become tech debt.
 
 **We add key *enterprise architecture* integration:**
 
@@ -403,462 +408,6 @@ python -m venv venv            # may require python3 -m venv venv
 &nbsp;
 
 
-# Appendices
-
-## GenAI CLI (requires an OpenAI key)
-
-Everything above — the walkthrough, the samples, Demo Catalog — runs through your AI assistant (Copilot/Claude), no separate signup. The `genai-logic genai` CLI commands below predate that: they call OpenAI's API directly, which means you need your own OpenAI account and key (see *Get an OpenAI Key*, below) and pay for usage.
-
-That's real friction most readers don't need to take on — the AI-assistant path covers the same ground. This section is kept for completeness: scripted/CI use, or specific model-iteration workflows the AI-assistant path doesn't (yet) replicate.
-
-<br>
-
-<details markdown>
-
-<summary>1. New Database - using GenAI Microservice Automation (Experiment with AI - Signup optional)</summary>
-
-<br>You can do this with or without signup:
-
-1. If you have signed up (see *Get an OpenAI Key*, below), this will create a new database and project called `genai_demo`, and open the project.  It's created using `genai_demo.prompt`, visible in left Explorer pane:
-
-```bash
-genai-logic genai --using=system/genai/examples/genai_demo/genai_demo.prompt --project-name=genai_demo
-```
-
-
-2. ***Or,*** you can simulate the process (no signup) using:
-
-
-```bash
-genai-logic genai --repaired-response=system/genai/examples/genai_demo/genai_demo.response_example --project-name=genai_demo
-```
-
-Verify it's operating properly:
-
-1. Run Configurations are provided to start the server
-2. Verify the logic by navigating to a Customer with an unshipped order, and altering one of the items to have a very large quantity
-3. Observe the constraint operating on the rollup of order amount_totals.
-    * View the logic in `logic/declare_logic.py`
-    * Put a breakpoint on the `as_condition`.  Observe the console log to see rule execution for this multi-table transaction.
-
-</br>
-
-<details markdown>
-
-<summary> What Just Happened? &nbsp;&nbsp;&nbsp;Next Steps...</summary>
-
-<br>`genai` processing is shown below (internal steps denoted in grey):
-
-1. You create your.prompt file, and invoke `genai-logic genai --using=your.prompt`.  genai then creates your project as follows:
-
-    a. Submits your prompt to the `ChatGPT API`
-
-    b. Writes the response to file, so you can correct and retry if anything goes wrong
-
-    c. Extracts model.py from the response
-
-    d. Invokes `genai-logic create-from-model`, which creates the database and your project
-
-2. Your created project is opened in your IDE, ready to execute and customize.  
-
-    a. Review `Tutorial`, Explore Customizations.
-
-![GenAI Automation](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/genai.png?raw=true)
-
-</details>
-</br>
-
-<details markdown>
-
-<summary> You can iterate the logic and data model</summary>
-
-<br>The approach for an iteration is to create a new project from an existing one:
-
-1. add another prompt to an existing projects `docs` directory, specifying your changes
-2. use `genai-logic genai`, specifying 
-    * `--using` existing projects `docs` directory, and 
-    * `--project-name` as the output project
- 
- **Logic iterations** are particularly useful.  For example, here we take the basic check-credit logic, and add:
-
-> Provide a 10% discount when buying more than 10 carbon neutral products.<br><br>The Item carbon neutral is copied from the Product carbon neutral
-
-Explore [genai_demo_iteration_discount](system/genai/examples/genai_demo/genai_demo_iteration_discount).  It's an iteration of basic_demo (see system/genai/examples/genai_demo/genai_demo_iteration_discount/002_create_db_models.prompt).  This will add carbon_neutral to the data model, and update the logic to provide the discount:
-
-**Iterate Business Logic:**
-```bash title='Iterate Business Logic'
-# Iterate with data model and logic
-genai-logic genai --project-name='genai_demo_with_discount' --using=system/genai/examples/genai_demo/genai_demo_iteration_discount
-# open Docs/db.dbml
-```
-
-<br>
-
-You can perform **model iterations:** add new columns/tables, while keeping the prior model intact.  First, we create a project with no logic, perhaps just to see the screens (this step is optional, provided just to illustrate that iterations create new projects from existing ones):
-
-**Iterate Without Logic:**
-```bash title='Iterate Without Logic'
-# Step 1 - create without logic
-genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/examples/genai_demo/genai_demo_no_logic.prompt
-# open Docs/db.dbml
-```
-
-Then, we would create another prompt in the docs directory with our model changes. We've already created these for you in `system/genai/examples/genai_demo/genai_demo_iteration` - we use that to alter the data model (see `system/genai/examples/genai_demo/genai_demo_iteration/004_iteration_renames_logic.prompt`):
-
-**Iterate With Logic:**
-```bash title='Iterate With Logic'
-# Iterate with data model and logic
-genai-logic genai --project-name='genai_demo_with_logic' --using=system/genai/examples/genai_demo/genai_demo_iteration
-# open Docs/db.dbml
-```
-
-Explore [genai_demo_iteration](system/genai/examples/genai_demo/genai_demo_iteration) - observe the `--using` is a *directory* of prompts.  These include the prompts from the first example, plus an *iteration prompt* (`004_iteration_renames_logic.prompt`) to rename tables and add logic.
-
-
-</details>
-</br>
-
-<details markdown>
-
-<summary> You can declare informal logic</summary>
-
-<br>You can declare rules using dot notation, or more informally:
-
-**Informal Logic (no dot notation):**
-```bash title="Informal Logic (no dot notation)"
-genai-logic genai --using=system/genai/examples/genai_demo/genai_demo_informal.prompt --project-name=genai_demo_informal
-```
-</details>
-</br>
-
-
-<details markdown>
-
-<summary> Multi-Rule Logic</summary>
-
-<br>You can add new columns/tables, while keeping the prior model intact:
-
-**Multi-Rule Logic:**
-```bash title="Multi-Rule Logic"
-genai-logic genai --using=system/genai/examples/emp_depts/emp_dept.prompt
-```
-</details>
-</br>
-
-<details markdown>
-
-<summary> You can ask AI to suggest logic (great way to learn!)</summary>
-
-<br>You can create a project, and ask GenAI for logic suggestions:
-
-**1. Create Project, without Rules:**
-```bash title='1. Create Project, without Rules'
-# 1. Create Project, without Rules
-genai-logic genai --project-name='genai_demo_no_logic' --using=system/genai/examples/genai_demo/genai_demo_no_logic.prompt
-```
-
-**2. Request Rule Suggestions:**
-```bash title="2. Request Rule Suggestions"
-# 2. Request Rule Suggestions
-cd genai_demo_no_logic
-genai-logic genai-logic --suggest
-```
-
-You can review the [resultant logic suggestions](genai_demo_no_logic/docs/logic_suggestions) in the `genai_demo_no_logic` project:
-
- * See and edit: `docs/logic_suggestions/002_logic_suggestions.prompt` (used in step 3, below)
-    * This corresponds to the Logic Editor - Logic View in the WebGenAI web app
-
-**3. See the rules for the logic:**
-```bash title="3. See the rules for the logic"
-# 3. See the rule code for the logic
-genai-logic genai-logic --suggest --logic='*'
-```
-
-Important notes about suggestions and generated code:
-* `--suggest --logic='*'` is intended to enable you to identify logic that does not translate into proper code
-* The example above was pretty good, but sometimes the results are downright silly:
-    * Just run suggest again, or
-    * Repair `docs/logic_suggestions/002_logic_suggestions.prompt`
-
-Also...
-* It is not advised to paste the code into `logic/declare_logic.py`
-    * The suggested logic may result in new data model attributes
-    * These are created automatically by running `genai-logic genai` (next step)
-
-The [logic suggestions directory](genai_demo_no_logic/docs/logic_suggestions) now contains the prompts to create a new project with the suggested logic.  
-When you are ready to proceed:
-1. Execute the following to create a *new project* (iteration), with suggested logic:
-
-**4. Create a new project with the Rule Suggestions:**
-```bash title="4. Create a new project with the Rule Suggestions"
-# 4. Create a new project with the Rule Suggestions
-cd ..  # important - back to manager root dir
-genai-logic genai --project-name='genai_demo_with_logic' --using=genai_demo_no_logic/docs/logic_suggestions
-```
-
-Observe:
-1. The created project has the rule suggestions in `logic/declare_logic.py`
-2. A revised Data Model in `database/models.py` that includes attributes introduced by the logic suggestions
-3. Revised test database, initialized to reflect the derivations in the suggested logic
-
-Internal Note: this sequence available in the run configs (s1/s4).
-
-</details>
-
-</br>
-
-<details markdown>
-
-<summary>Fixup - update data model with new attributes from rules</summary>
-
-<br>Fixes project issues by updating the Data Model and Test Data:
-when adding rules, such as using suggestions, you may introduce new attributes.
-If these are missing, you will see exceptions when you start your project.
-
-The `genai-utils --fixup` fixes such project issues by updating the Data Model and Test Data:
-
-1. Collects the latest model, rules, and test data from the project. 
-2. Calls ChatGPT (or similar) to resolve missing columns or data in the project.
-3. Saves the fixup request/response under a 'fixup' folder.
-4. You then use this to create a new project
-
-***Setup***
-
-After starting the [Manager](https://apilogicserver.github.io/Docs/Manager): 
-
-**0. Create Project Requiring Fixup:**
-```bash title="0. Create Project Requiring Fixup"
-# 0. Create a project requiring fixup
-genai-logic genai --repaired-response=system/genai/examples/genai_demo/genai_demo_fixup_required.json --project-name=genai_demo_fixup_required
-```
-
-If you run this project, you will observe that it fails with:
-```bash
-Logic Bank Activation Error -- see https://apilogicserver.github.io/Docs/WebGenAI-CLI/#recovery-options
-Invalid Rules:  [AttributeError("type object 'Customer' has no attribute 'balance'")]
-Missing Attrs (try genai-logic genai-utils --fixup): ['Customer.balance: constraint']
-```
-&nbsp;
-
-***Fixup***
-
-To Fix it:
-**1. Run FixUp to add missing attributes to the fixup response data model:**
-```bash title="1. Run FixUp to add missing attributes to the fixup response data model"
-# 1. Run FixUp to add missing attributes to the data model
-cd genai_demo_fixup_required
-genai-logic genai-utils --fixup
-```
-
-Finally, use the created [fixup files](genai_demo_fixup_required/docs/fixup/) to rebuild the project:
-**2. Rebuild the project from the fixup response data model:**
-```bash title="2. Rebuild the project from the fixup response data model"
-# 2. Rebuild the project from the fixup response data model
-cd ../
-genai-logic genai --repaired-response=genai_demo_fixup_required/docs/fixup/response_fixup.json --project-name=fixed_project
-```
-    
-&nbsp;
-The created project may still report some attributes as missing.  
-(ChatGPT seems to often miss attributes mentioned in sum/count where clauses.)  To fix:
-
-1. Note the missing attributes(s) from the log
-2. Add them to `docs/003_suggest.prompt`
-3. Rebuild the project: `genai-logic genai --project-name='genai_demo_with_logic' --using=genai_demo_no_logic/docs`
-
-
-Internal Note: this sequence available in the run configs (f1/f2).
-
-</details>
-
-
-</br>
-
-<details markdown>
-
-<summary>Create from WebGenAI, and import (merge) subsequent changes</summary>
-
-<br>You can use [WebGenAI](https://apilogicserver.github.io/Docs/WebGenAI/) to create a project, and export it.  
-
-You (or colleagues) can make changes to both the WebGenAI project (on the web), and your downloaded project.  You can import the WebGenAI project, and the system will merge changes to the data model and rules automatically.  
-
-This is possible since the logic is declarative, so ordering is automatic.  This eliminates the troublesome merge issues so prevalent in procedural code.  For more on import, [click here](https://apilogicserver.github.io/Docs/IDE-Import-WebGenAI/).
-
-The Manager pre-installs a sample project you can use to explore import:
-
-```bash
-cd system/genai/examples/genai_demo/wg_dev_merge/dev_demo_no_logic_fixed
-genai-logic genai-utils --import-genai --using=../wg_demo_no_logic_fixed
-```
-Observe:
-1. The [data model](system/genai/examples/genai_demo/wg_dev_merge/dev_demo_no_logic_fixed/database) contains `Customer.balance` and `Product.carbon_neutral`
-2. The test data has been updated to include these attributes, with proper values
-
-</details>
-
-</br>
-
-<details markdown>
-
-<summary>Rebuild the test data</summary>
-
-<br>Fixes project issues by rebuilding the database to conform to the derivation rules:
-
-1. Create genai_demo: 
-```
-genai-logic genai --using=system/genai/examples/genai_demo/genai_demo.prompt --project-name=genai_demo
-```
-2. Rebuild:
-```
-cd genai_demo
-genai-logic genai-utils --rebuild-test-data
-```
-
-</details>
-</br>
-
-<details markdown>
-
-<summary> You can also execute directly, and iterate</summary>
-
-<br>You can add new columns/tables, while keeping the prior model intact:
-
-**Iterate:**
-```bash title="Iterate"
-# create project without creating a file...
-genai-logic genai-create --project-name='customer_orders' --using='customer orders'
-
-genai-logic genai-iterate --using='add Order Details and Products'
-# open Docs/db.dbml
-```
-
-</details>
-</br>
-
-<details markdown>
-
-<summary> AI sometimes fails - here's how to recover</summary>
-
-<br>AI results are not consistent, so the model file may need corrections.  You can find it at `system/genai/temp/model.py`.  You can correct the model file, and then run:
-
-```bash
-genai-logic create --project-name=genai_demo --from-model=system/genai/temp/create_db_models.py --db-url=sqlite
-```
-
-Or, correct the chatgpt response, and
-
-```bash
-genai-logic genai --repaired-response=system/genai/examples/genai_demo/genai_demo.response_example --project-name=genai_demo
-```
-
-We have seen failures such as:
-
-* duplicate definition of `DECIMAL`
-* unclosed parentheses
-* data type errors in test data creation
-* wrong engine import: from logic_bank import Engine, constraint
-* bad test data creation: with Engine() as engine...
-* Bad load code (no session)
-
-</details>
-</br>
-
-<details markdown>
-
-<summary> Postgresql Example </summary>
-
-You can test this as follows:
-
-1. Use [our docker image](https://apilogicserver.github.io/Docs/Database-Docker/):
-2. And try:
-
-```bash
-genai-logic genai --using=system/genai/examples/postgres/genai_demo_pg.prompt --db-url=postgresql://postgres:p@localhost/genai_demo
-```
-
-Provisos:
-
-* You have to create the database first; we are considering automating that: https://stackoverflow.com/questions/76294523/why-cant-create-database-if-not-exists-using-sqlalchemy
-
-</details>
-</details>
-</br>
-
-<details markdown>
-
-<summary> 2. New Database - using Copilot (Signup optional) </summary>
-
-<br>You can use Copilot chat (if extension installed; if not, skip to step 3):
-
-1. Create a model, eg:
-
-<details markdown>
-
-<summary> Show Me How to Use Copilot </summary>
-
-<br>>Paste this into the Copilot prompt:
-
-```
-Use SQLAlchemy to create a sqlite database named sample_ai.sqlite, with customers, orders, items and product
-
-Hints: use autonum keys, allow nulls, Decimal types, foreign keys, no check constraints.
-
-Include a notes field for orders.
-
-Create a few rows of only customer and product data.
-
-Enforce the Check Credit requirement (do not generate check constraints):
-
-1. Customer.Balance <= CreditLimit
-2. Customer.Balance = Sum(Order.AmountTotal where date shipped is null)
-3. Order.AmountTotal = Sum(Items.Amount)
-4. Items.Amount = Quantity * UnitPrice
-5. Store the Items.UnitPrice as a copy from Product.UnitPrice
-```
-
-![copilot](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/copilot.png?raw=true)
-</details>
-
-<br>
-
-2. Paste the copilot response into a new `sample_ai.py` file
-
-3. Create your project:
-
-```bash
-genai-logic create --project-name=sample_ai --from-model=sample_ai.py --db-url=sqlite
-```
-
-4. This will create your database, create an API Logic Project from it, and launch your IDE.
-
-5. Create business logic
-
-    * You can create logic with either your IDE (and code completion), or Natural Language
-    * To use Natural Language:
-
-        1. Use the CoPilot chat,
-        2. Paste the logic above
-        3. Copy it to `logic/declare_logic.py` after `discover_logic()`
-        
-            * Alert:  Table and Column Names may require correction to conform to the model
-            * Alert: you may to apply [defaulting](https://apilogicserver.github.io/Docs/Logic-Use/#insert-defaulting), and initialize derived attributes in your database
-
-</details>
-</br>
-
-<details markdown>
-
-<summary> 3. New Database - using ChatGPT in the Browser (Signup not required)</summary>
-
-<br>A final option for GenAI is to use your Browser with ChatGPT.
-
-Please see [this doc](https://apilogicserver.github.io/Docs/Sample-AI-ChatGPT/)
-
-</details>
-
-<br>
-
 ## Procedures
 
 <br>
@@ -942,46 +491,6 @@ To explore our new logic for green products:
 1. Access the previous order, and `ADD NEW ITEM`
 
 2. Enter quantity 11, lookup product `Green`, and click `Save`.
-
-</details>
-
-&nbsp;
-
-### Setup Codespaces
-
-Codespaces enables you to run in the cloud: VSCode via your Browser, courtesy GitHub.  
-
-<details markdown>
-
-<summary> Using codespaces on your GenAI project</summary>
-
-__1. Open your project on GitHub__
-
-![API Logic Server Intro](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/sample-ai/genai/open-github.png?raw=true)
-
-__2. Open it in Codespaces (takes a minute or 2):__
-
-![API Logic Server Intro](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/sample-ai/genai/start-codespaces.png?raw=true)
-
-> You'll see your project running in VSCode, in the browser. Behind the scenes, Codespaces requisitioned a cloud machine and loaded your project with a complete development environment — Python, dependencies, git — and attached your browser to it.
-
-__3. Start the Server and open the App in the Browser__
-
-* Use the pre-defined Launch Configuration
-
-![API Logic Server Intro](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/git-codespaces/start-codespaces.png?raw=true)
-
-</details>
-
-&nbsp;
-
-### Get an OpenAI ApiKey
-
-<br>GenAI-Logic uses OpenAI, which requires an OpenAI Key:
-
-1. Obtain one from [here](https://platform.openai.com/account/api-keys) or [here](https://platform.openai.com/api-keys)
-
-2. Authorize payments [here](https://platform.openai.com/settings/organization/billing/overview)
 
 </details>
 
