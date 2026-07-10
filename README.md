@@ -108,9 +108,11 @@ The goal here isn't a demo — it's an **enterprise-class** system you can trust
 <details markdown>
 <summary>AI is great — but logic-as-code is hard to Read, Trust, and Maintain — here's why</summary>
 
-<br>Most developers estimate business logic requires about **half the development and debugging effort** on a real system. Not a side concern.
+<br>AI is genuinely good at UI, data mapping, boilerplate, etc — no argument there. **Business logic is the exception.**
 
-AI is genuinely good at UI, data mapping, and boilerplate — no argument there. **Business logic is the exception.** Left unguided, any AI assistant — including the one that just built Step 0 for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
+Most developers estimate it requires about **half the development and debugging effort** on a real system — not a side concern.
+
+Left unguided, any AI assistant — including the one that just built Step 0 for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
 
 - **Not readable.** [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — ~200 lines for those same 5 requirements. Open it and judge for yourself.
 - **Not trustworthy.** The procedural version shipped 2 real bugs — found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
@@ -142,18 +144,18 @@ That's not a capability gap. No amount of AI capability fixes a representation p
 
 <br>You've probably used AI to generate code before — so what's different here?
 
-**Difference 1: it produces models, not code.** Run the Step 0 prompt above, and instead of a pile of procedural code, you get artifacts that declare structure or policy rather than procedure — same 5 requirements, same AI, but as **5 lines**, a **~40X reduction** from the ~200 you just saw:
+**Difference 1: it produces models, not code.** Run the Step 0 prompt above, and instead of a pile of procedural code, you get artifacts that declare structure or policy rather than procedure — same 5 requirements, same AI:
 
 1. **Data model** — `database/models.py`
 2. **Full JSON:API** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
-3. **Admin App** — multi-table, with navigations and lookups (`ui/admin/admin.yaml`)
-4. **Business logic** — [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — 5 rules, same requirements, same AI, 0 bugs
+3. **Admin App** — multi-table, with navigations and lookups (`ui/admin/admin.yaml` — simple YAML, not HTML/JS)
+4. **Business logic** — [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — 5 rules (~40X less), same requirements, same AI, 0 bugs
 
 **Difference 2: the logic itself is declarative** — more on why that matters below.
 
 Each small, readable, yours. Plain Python — standard tooling applies. Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add-auth`.
 
-Press F5 using "API Logic Server Run (run project from manager)", and open the Admin App. Explore the API via Swagger, browse the data, and follow the relationships — all auto-generated from the data model.
+**See it running:** Press F5 using "API Logic Server Run (run project from manager)", and open the Admin App. Explore the API via Swagger, browse the data, and follow the relationships — all auto-generated from the data model.
 
 Now trigger it: open an **unshipped** Order for Alice, edit the Widget item:
 
@@ -185,11 +187,13 @@ The save fails — note the dialog. Why? Let's look.
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;2. Debug it — your own logging, your own debugger</summary>
+<summary>&emsp;&emsp;2. Debug it — standard logging, standard debugger</summary>
 
-<br>No new tools required. The rule chain that just fired is in the log — plain text, readable in your terminal or editor: [sample trace](samples/basic_demo_logic_gov/logs/als-sample.log). A live run writes the same thing to `logs/als.log`.
+<br>No new tools required. The rule chain that just fired is in the log — plain text, readable in your terminal or editor: [sample trace](samples/basic_demo_logic_gov/logs/als-sample.log). A live run writes the same thing to the standard log, `logs/als.log`.
 
 Every rule is a plain Python function or lambda. Set a breakpoint on any `calling=` function or `as_condition=` lambda in your IDE, exactly like you would anywhere else in the codebase — no proprietary debugger, no special UI.
+
+![logic-debug](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/logic/logic-debug.png?raw=true)
 
 </details>
 
@@ -223,7 +227,7 @@ Without the engine, an AI rewriting procedural code from scratch would have to r
 
 Functions don't behave like that. So why is that?
 
-**Traditional logic is procedural — you own *how*:** when it's called, and in what order. **Declarative logic — rules — is about *what*, not how:** you state the fact, and the system takes responsibility for invocation and ordering. That's why the new rule didn't need to be called, and why order didn't matter.
+> **Traditional logic is procedural** — you own *how*: when it's called, and in what order. **Declarative logic — rules** — is about *what*, not how: you state the fact, and the system takes responsibility for invocation and ordering. That's why the new rule didn't need to be called, and why order didn't matter.
 
 The next section explores this in detail. Ask your AI assistant — *"What are rules?"* — or keep reading.
 
@@ -234,7 +238,11 @@ The next section explores this in detail. Ask your AI assistant — *"What are r
 <details markdown>
 <summary>&emsp;&emsp;5. What Rules Are — and how they make logic easy to Read, Trust, and Maintain</summary>
 
-<br>Rules enforce business policy — multi-table derivations, constraints, and actions like messaging. **LogicBank**, the rule engine, hooks SQLAlchemy's commit event to run them on every transaction — authored as plain Python functions in `logic/logic_discovery/`, readable, version-controlled, owned like any other source file.
+<br>**Rules** enforce business policy — multi-table derivations, constraints, and actions like messaging. **LogicBank**, the rule engine, hooks SQLAlchemy's commit event to run them on every transaction — authored as plain Python functions in `logic/logic_discovery/`, readable, version-controlled, owned like any other source file.
+
+**How it works:**
+1. **At startup** — rules load, and the engine computes their dependency graph once.
+2. **At commit** — for each transaction, the engine finds the rules relevant to what changed, and fires them in the right order.
 
 Unlike procedural code, they're **declarative** — solving exactly the three problems raised above (AI great, but hard to Read, Trust, and Maintain):
 
@@ -242,16 +250,16 @@ Unlike procedural code, they're **declarative** — solving exactly the three pr
 |---|---|---|
 | **Readable** | 5 lines, one per requirement — declared once, e.g. `Customer.balance = sum of unpaid orders` | No archaeology needed to see what it does |
 | **Trustworthy** | Rules fire at every commit, from every caller — you never call them | Can't be forgotten, can't be bypassed |
-| **Maintainable** | The engine computes dependency order at startup | Add a rule anywhere, it finds its place |
+| **Maintainable** | Dependency order is computed once, automatically | Add a rule anywhere, it finds its place |
 
-> Think of a spreadsheet: `B10 = SUM(B1:B9)` isn't called, it *reacts* — change any input cell, it recalculates. Rules react the same way to changes in what they depend on.
+> Think of a **spreadsheet:** `B10 = SUM(B1:B9)` isn't called, it *reacts* — change any input cell, it recalculates. Rules react the same way to changes in what they depend on.
 
 That's why order didn't matter — the engine computes it, not your source file — and why the edit was caught: it fires at every commit, from every caller, not just the one you wrote it for.
 
 > With procedural code, even if you find the right passage — how do you know it's called for *every* transaction source? API, MCP, agent, Kafka, a future caller you haven't written yet? With thousands of code paths, you can't know. That's not a testing gap; it's a representation problem. Rules solve it structurally — declared once, fired at one commit point, from every caller, with no bypass possible. The 40x reduction in code isn't the point. The verifiable coverage is: ***you can read the rules, and trust they are being enforced. Always.***
 
 <details markdown>
-<summary>How does the AI know to write rules, not code? And how do the rules run?</summary>
+<summary>How this works: Context Engineering (CE) + a commit-time rules engine</summary>
 
 <br>Two things have to be true for this to work:
 
@@ -280,7 +288,7 @@ That's why order didn't matter — the engine computes it, not your source file 
 
 Put together: once the AI knows how the system works, it doesn't just generate rules instead of code — it helps you debug them, and helps you understand them. A design assistant, not just a coding assistant.
 
-**Step 2 — the rules engine runs the rules.** Rules aren't called from your code — they're wired into a single SQLAlchemy `before_flush` listener, installed once at server start. Every write, from any path — API, custom endpoint, Kafka consumer, agent — passes through that one listener before it commits. No bypass — there's no second door.
+**Step 2 — the rules engine runs the rules.** Rules aren't called from your code — they're wired into a single SQLAlchemy `before_flush` listener, loaded once at server start as described above. Every write, from any path — API, custom endpoint, Kafka consumer, agent — passes through that one listener before it commits. No bypass — there's no second door.
 
 </details>
 
