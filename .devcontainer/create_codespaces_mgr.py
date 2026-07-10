@@ -326,8 +326,11 @@ def main():
 
     # Strip YAML front matter (--- fenced, legacy style)
     readme = re.sub(r"^---\n.*?\n---\n", "", readme, count=1, flags=re.DOTALL)
-    # Strip HTML-comment front matter (current style: <!-- ... -->  at the very top)
-    readme = re.sub(r"^<!--\n.*?\n-->\n", "", readme, count=1, flags=re.DOTALL)
+    # NOTE: HTML-comment front matter (current style: <!-- ... --> at the very top) is
+    # intentionally NOT stripped for cs-mgr — confirmed (Jul 2026) it was never the cause
+    # of a Codespaces README-preview truncation bug; that was Safari's VS Code-in-browser
+    # renderer, unrelated to this file's content. Leave the HTML-comment front matter in
+    # place; it's inert (renders as nothing, both on GitHub and in VS Code preview).
     # Strip <style>...</style>
     readme = re.sub(r"<style>.*?</style>\n?", "", readme, count=1, flags=re.DOTALL)
     # Strip any leading blank lines left by the above

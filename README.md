@@ -1,3 +1,28 @@
+<!--
+title: Welcome - see end for instructions to hide this
+Description: Instant mcp-enabled microservices, standard projects, declarative business logic
+Source: docs/Manager-readme
+version info: 17.02.06 (07/09/2026)
+do_process_code_block_titles: True
+Used: Manager Readme (via copy_md())
+demo_customs: Customs-readme
+demo_customs_surtax: Customs-readme-surtax
+demo_kafka: Sample-Integration
+demo_allo: Sample_Allo_Dept_GL_readme
+demo_ai_rules: Sample-ai-rules
+demo_mcp_send: Sample-Basic-Demo-MCP-Send-Email
+demo_emp_types: Sample-Types
+demo_eai: Sample-Basic-EAI
+demo_vibe: Sample-Basic-Demo-Vibe
+demo_copilot_mcp_discovery: Sample-ai-mcp
+basic_demo: Sample-Basic-Demo
+codespaces_patch: |
+  create_codespaces_mgr.py injects a Codespaces-only browser note immediately after
+  the "## 🚀 First Time Here?" heading (sentinel: do not rename that heading without
+  updating the matching logic in create_codespaces_mgr.py). The note warns Safari users to
+  switch to Chrome/Edge. This avoids forking the README for Codespaces.
+-->
+
 # Welcome to GenAI-Logic
 
 One prompt — or your existing database — builds a working API and Admin App, then you declare business logic in **5 readable rules instead of ~200 lines of AI-generated code** to enforce it.
@@ -72,7 +97,7 @@ The prompt above starts from an existing database — the common real-world case
 
 &nbsp;
 
-> **Running in Codespaces?** During project creation, a browser tab may auto-open showing it running — it's safe to dismiss.
+> **Running in Codespaces?** During project creation, a browser tab may auto-open (or offer to) showing it running — safe to decline or dismiss.
 
 The goal here isn't a demo — it's an **enterprise-class** system you can trust and maintain. That's exactly what gets tested next.
 
