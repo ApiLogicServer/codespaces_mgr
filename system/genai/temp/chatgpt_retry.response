@@ -1,4 +1,13 @@
-from sqlalchemy.sql import func  # end imports from api_logic_server_cli/fragments/create_db_models_prefix.py
+To create a SQLite database and its schema as per the given requirements using SQLAlchemy, you need to follow these steps:
+
+1. Install SQLAlchemy if you haven't already.
+2. Define the database models with the necessary fields and constraints.
+3. Create the database schema.
+4. Insert some test data.
+
+Here is the Python code for achieving this:
+
+```python
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Numeric, CheckConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -93,3 +102,13 @@ session.commit()
 
 # Close the session
 session.close()
+```
+
+### Explanation:
+1. **Model Definitions:** Defines `Customer`, `Order`, `Product`, and `Item` classes with attributes specified. Autoincrement primary keys are used (via `primary_key=True, autoincrement=True`).
+2. **Relationships:** Foreign keys establish relationships between orders, items, customers, and products.
+3. **Calculations:** Amounts are calculated using Python logic to ensure values are correctly set.
+4. **Test Data:** Adds sample data for customers, products, orders, and items.
+5. **Engine and Session:** Creates the SQLite database and uses `session` to handle database operations.
+
+This Python script should meet the requirements specified and correctly create the necessary tables and relationships. Be sure to run this script in an environment where SQLAlchemy is installed.

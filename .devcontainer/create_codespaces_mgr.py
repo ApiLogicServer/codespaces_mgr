@@ -324,8 +324,10 @@ def main():
     readme_path = target / "README.md"
     readme      = readme_path.read_text()
 
-    # Strip YAML front matter
+    # Strip YAML front matter (--- fenced, legacy style)
     readme = re.sub(r"^---\n.*?\n---\n", "", readme, count=1, flags=re.DOTALL)
+    # Strip HTML-comment front matter (current style: <!-- ... -->  at the very top)
+    readme = re.sub(r"^<!--\n.*?\n-->\n", "", readme, count=1, flags=re.DOTALL)
     # Strip <style>...</style>
     readme = re.sub(r"<style>.*?</style>\n?", "", readme, count=1, flags=re.DOTALL)
     # Strip any leading blank lines left by the above
