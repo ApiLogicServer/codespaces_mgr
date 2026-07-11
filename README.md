@@ -27,7 +27,7 @@ codespaces_patch: |
 
 ### Governed Executable Requirements
 
-One prompt, or your existing database, builds a working API and Admin App, then you declare business logic you can read, trust, and maintain: **5 rules instead of ~200 lines of code**.
+One prompt, or your existing database, **builds a working API and Admin App**, then you declare business logic **you can read, trust, and maintain** — *5 rules instead of ~200 lines of code*.
 
 <details markdown>
 <summary>The Key Idea: Combine AI with Declarative Logic</summary>
