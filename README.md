@@ -123,7 +123,7 @@ The goal here isn't a demo — it's an **enterprise-class** system you can trust
 
 Most developers estimate it requires about **half the development and debugging effort** on a real system — not a side concern.
 
-Left unguided, any AI assistant — including the one that just built Step 0 for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
+Left unguided, any AI assistant — including the one that just built basic_demo for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
 
 - **Not readable.** [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — ~200 lines for those same 5 requirements. Open it and judge for yourself.
 - **Not trustworthy.** The procedural version shipped 2 real bugs — found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
@@ -155,7 +155,7 @@ That's not a capability gap. No amount of AI capability fixes a representation p
 
 <br>You've probably used AI to generate code before — so what's different here?
 
-**Difference 1: it produces models, not code.** Run the Step 0 prompt above, and instead of a pile of procedural code, you get artifacts that declare structure or policy rather than procedure — same 5 requirements, same AI:
+**Difference 1: it produces models, not code.** Run the basic_demo prompt above, and instead of a pile of procedural code, you get artifacts that declare structure or policy rather than procedure — same 5 requirements, same AI:
 
 1. **Data model** — `database/models.py`
 2. **Full JSON:API** — Swagger, pagination, optimistic locking (`api/expose_api_models.py` — 52 lines, zero per-table code)
