@@ -73,7 +73,7 @@ Please load `.github/.copilot-instructions.md`.
 <!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.py injects browser note here — do not rename this heading -->
 
 <details markdown>
-<summary>⚡ The Ideal — executable business prompts, held to an enterprise standard</summary>
+<summary>The Ideal — executable business prompts, held to an enterprise standard</summary>
 &nbsp;
 
 You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
@@ -360,7 +360,7 @@ The architecture that makes this work: two funnels, converging on one engine. Al
 &nbsp;
 
 <details markdown>
-<summary>🔨 Go deeper — 30-45 min guided tour</summary>
+<summary>Go deeper — 30-45 min guided tour</summary>
 
 &nbsp;
 
