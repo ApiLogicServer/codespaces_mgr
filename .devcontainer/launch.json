@@ -1,8 +1,9 @@
 {
     // Codespaces launch configs — trimmed to what works in the single-workspace layout.
     // Two configs only:
-    //   1. "API Logic Server Run" — F5 default; prompts for project folder name
-    //      e.g. type "samples/basic_demo_sample" at the prompt
+    //   1. "API Logic Server Run" — F5 default; prompts for project folder name,
+    //      defaulting to "basic_demo" (the project the tutorial/Method-4 flow builds).
+    //      Type e.g. "samples/basic_demo_sample" instead to run a pre-built sample.
     //   2. "Python: Current File" — open any api_logic_server_run.py in Explorer, hit F5
     //
     // "python" is hardcoded to /usr/local/bin/python (NOT ${command:python.interpreterPath}
@@ -49,7 +50,7 @@
             "id": "runProjectName",
             "type": "promptString",
             "description": "Project folder to run (e.g. samples/basic_demo_sample)",
-            "default": "samples/basic_demo_sample"
+            "default": "basic_demo"
         }
     ]
 }
