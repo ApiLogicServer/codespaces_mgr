@@ -71,13 +71,13 @@ Please load `.github/.copilot-instructions.md`.
 
 ## 🚀 First Time Here?
 <!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.py injects browser note here — do not rename this heading -->
-
-<details markdown>
-<summary>The Ideal — executable business prompts, held to an enterprise standard</summary>
 &nbsp;
 
 You're already running in GitHub Codespaces — a cloud VS Code environment in your browser. Nothing to install. (Use Chrome or Edge — Safari has known compatibility issues with VS Code in the browser.)
 
+
+<details markdown>
+<summary>The Ideal — executable business prompts, held to an enterprise standard</summary>
 
 <br>Say this to your AI assistant (allow several minutes):
 
@@ -548,9 +548,9 @@ To explore our new logic for green products:
 1. Open a terminal window (**Terminal > New Terminal**), and paste the following CLI command:
 
 ```bash
-ApiLogicServer create --project-name=samples/tutorial --db-url=
-ApiLogicServer create --project-name=samples/nw_sample --db-url=nw+
-ApiLogicServer create --project-name=samples/nw_sample_nocust --db-url=nw
+genai-logic create --project-name=samples/tutorial --db-url=
+genai-logic create --project-name=samples/nw_sample --db-url=nw+
+genai-logic create --project-name=samples/nw_sample_nocust --db-url=nw
 ```
 </details>
 

@@ -1,20 +1,9 @@
 {
     // Codespaces launch configs — trimmed to what works in the single-workspace layout.
     // Two configs only:
-    //   1. "API Logic Server Run" — F5 default; prompts for project folder name,
-    //      defaulting to "basic_demo" (the project the tutorial/Method-4 flow builds).
-    //      Type e.g. "samples/basic_demo_sample" instead to run a pre-built sample.
+    //   1. "API Logic Server Run" — F5 default; prompts for project folder name
+    //      e.g. type "samples/basic_demo_sample" at the prompt
     //   2. "Python: Current File" — open any api_logic_server_run.py in Explorer, hit F5
-    //
-    // "python" is hardcoded to /usr/local/bin/python (NOT ${command:python.interpreterPath}
-    // like prototypes/base/.vscode/launch.json uses). Deliberate deviation, confirmed Jul 2026:
-    // unlike a local/generated project (venv path varies by where the Manager lives on disk),
-    // every Codespace is built FROM apilogicserver/api_logic_server, which always installs to
-    // this exact path — verified live with `which python`. ${command:...} depends on VS Code's
-    // cached interpreter selection, which went stale after a stray .venv/ was deleted in a live
-    // session (F5 kept resolving to the deleted venv's python until "Developer: Reload Window").
-    // Hardcoding removes that cache dependency entirely for Codespaces. Do not "fix" this back
-    // to match prototypes/base — that file serves other platforms where the path truly varies.
     "version": "0.2.0",
     "configurations": [
         {
@@ -28,7 +17,7 @@
                 "OPT_LOCKING": "optional"},
             "justMyCode": false,
             "program": "api_logic_server_run.py",
-            "python": "/usr/local/bin/python",
+            "python": "${command:python.interpreterPath}",
             "redirectOutput": true,
             "console": "integratedTerminal",
             "internalConsoleOptions": "openOnSessionStart"
@@ -39,7 +28,7 @@
             "request": "launch",
             "program": "${file}",
             "cwd": "${fileDirname}",
-            "python": "/usr/local/bin/python",
+            "python": "${command:python.interpreterPath}",
             "redirectOutput": true,
             "justMyCode": false,
             "console": "integratedTerminal"
@@ -50,7 +39,7 @@
             "id": "runProjectName",
             "type": "promptString",
             "description": "Project folder to run (e.g. samples/basic_demo_sample)",
-            "default": "basic_demo"
+            "default": "samples/basic_demo_sample"
         }
     ]
 }
