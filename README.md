@@ -48,24 +48,32 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 ## 🤖 AI Assistance
 
+**Using GitHub Copilot? In the Copilot Chat panel, type this and press Enter:**
+
+```
+/agent .github/agents/genai-logic-manager.agent.md
+```
+
+That's it — GenAI-Logic Manager will greet you and ask what you want to build. No "Please load" needed; the model is picked automatically.
+
 <details markdown>
-<summary>First select your AI assistant, then paste the prompt below</summary>
+<summary>Why: pins the model to Claude Sonnet 5 and pre-loads instructions</summary>
 
 &nbsp;
 
-We get consistently good results with **Claude Sonnet 5.0/4.6** (GitHub Copilot or Claude Code extension). "Ask" mode will not work — use **Agent mode**.
+This workspace ships a custom **GenAI-Logic Manager** agent — it prefers **Claude Sonnet 5** (falling back automatically to 4.6, then 4.5, if 5 isn't on your plan yet) and pre-loads the project's instructions automatically, no extra step needed. "Ask" mode will not work — GenAI-Logic Manager needs to create files and run commands.
 
-To select Sonnet 5.0 in the Copilot chat panel: click **Agent** → the **gear icon** → choose **Claude Sonnet 5.0**.
+You may also see **GenAI-Logic Manager** listed directly in the chat mode dropdown (bottom of the input box, where Ask/Edit/Agent live) — selecting it there works too, when it shows up. It's been inconsistent across VS Code versions, so the typed command above is the reliable path for now.
+
+Neither working, or using the **Claude Code extension** instead? Use **Agent mode** (or Claude Code), select **Claude Sonnet 5.0/4.6** from the model picker, then paste:
+
+```
+Please load `.github/copilot-instructions.md`.
+```
 
 For more information, see [AI-Enabled Projects](https://apilogicserver.github.io/Docs/Project-AI-Enabled/) or [click here](https://apilogicserver.github.io/Docs/Manager-readme/).
 
 </details>
-
-&nbsp;
-
-```
-Please load `.github/.copilot-instructions.md`.
-```
 
 &nbsp;
 
