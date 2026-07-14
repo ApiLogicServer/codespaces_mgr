@@ -48,7 +48,7 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 ## 🤖 AI Assistance
 
-**Using GitHub Copilot?** VS Code's Chat panel can be backed by different extensions (Copilot, Claude Code, Gemini, Codex, etc.) — check the panel's title bar or model picker actually says **Copilot** before continuing; `/agent` is a Copilot-only command and other extensions will silently ignore it and fall back to their own default model instead of erroring.
+**Check the Chat panel's title bar or model picker actually says Copilot** before continuing — VS Code's Chat panel can be backed by different extensions (Copilot, Claude Code, Gemini, Codex, etc.), and `/agent` is a Copilot-only command; other extensions will silently ignore it and fall back to their own default model instead of erroring.
 
 **Once you've confirmed Copilot Chat is active, type this and press Enter:**
 
@@ -56,18 +56,16 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 /agent .github/agents/genai-logic-manager.agent.md
 ```
 
-That's it — GenAI-Logic Manager will greet you and ask what you want to build. No "Please load" needed; the model is picked automatically.
+That's it — GenAI-Logic Manager will greet you and ask what you want to build, using Claude Sonnet 5 (falling back to 4.6, then 4.5, if 5 isn't on your plan yet). No "Please load" needed; the model is picked automatically.
 
 <details markdown>
 <summary>Why: pins the model to Claude Sonnet 5 and pre-loads instructions</summary>
 
 &nbsp;
 
-This workspace ships a custom **GenAI-Logic Manager** agent — it prefers **Claude Sonnet 5** (falling back automatically to 4.6, then 4.5, if 5 isn't on your plan yet) and pre-loads the project's instructions automatically, no extra step needed. "Ask" mode will not work — GenAI-Logic Manager needs to create files and run commands.
+This workspace ships a custom **GenAI-Logic Manager** agent — it prefers **Claude Sonnet 5** and pre-loads the project's instructions automatically, no extra step needed. "Ask" mode will not work — GenAI-Logic Manager needs to create files and run commands.
 
-You may also see **GenAI-Logic Manager** listed directly in the chat mode dropdown (bottom of the input box, where Ask/Edit/Agent live) — selecting it there works too, when it shows up. It's been inconsistent across VS Code versions, so the typed command above is the reliable path for now.
-
-Neither working, or using the **Claude Code extension** instead? Use **Agent mode** (or Claude Code), select **Claude Sonnet 5.0/4.6** from the model picker, then paste:
+If `/agent` isn't recognized by your Copilot version, select **Agent** mode, pick **Claude Sonnet 5.0/4.6** from the model picker, then paste:
 
 ```
 Please load `.github/copilot-instructions.md`.
