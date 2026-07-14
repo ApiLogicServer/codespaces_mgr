@@ -48,11 +48,15 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 ## 🤖 AI Assistance
 
-In the Copilot Chat panel, click the **Auto** pill at the bottom of the chat box and pick **Claude Sonnet 5** from the list (if it's not there, leave it on Auto), then type and Enter:
+In the Copilot Chat panel, click the **Auto** pill at the bottom of the chat box and pick **Claude Sonnet 5** from the list. **Don't see it?** Click **Other Models** near the bottom of that same list to reveal it. Still not there (Free/Student plans), leave it on **Auto**. Then type and Enter:
 
 ```
 Please load `.github/.copilot-instructions.md`.
 ```
+
+> **See "Quota reached" in the status bar?** Safe to ignore — it doesn't mean anything is broken or unavailable.
+
+> **This takes 20-30 seconds.** You'll see "Working" the whole time with no other feedback — that's normal, not stuck.
 
 <details markdown>
 <summary>Detailed steps, model/cost info, and why we recommend a frontier model</summary>
