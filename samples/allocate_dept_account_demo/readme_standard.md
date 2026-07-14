@@ -22,7 +22,7 @@ See readme files under api, logic and security.
 
 **Bootstrap Copilot by pasting the following into the chat:**
 ```
-Please load `.github/.copilot-instructions.md`.
+Please load `.github/copilot-instructions.md`.
 ```
 
 <br>

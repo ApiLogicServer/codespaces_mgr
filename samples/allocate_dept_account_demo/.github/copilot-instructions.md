@@ -1,16 +1,62 @@
+---
+version: 3.8
+---
+
+---
+
+## What is this?
+This is Context Engineering for GenAI-Logic Projects (created into each project) - version 3.6. 
+
+It is AI-generated technical documentation for AI assistants, created_by: AI (Claude 4.5) through code inspection, system operation analysis, and Socratic training with Val Huber.
+
+It is used as bootstrap context for both developers (in IDE), and evaluators (AI-driven evaluation).
+
+<br>
+
+## 🏗️ What You Get (Auto-Generated Infrastructure)
+
+The created project came from: `genai-logic create --project_name=... --db_url=...`
+
+**It's a complete, production-ready microservice:**
+
+✅ **Enterprise JSON:API** - Standard REST with filtering, sorting, pagination, and relationships  
+✅ **Production Admin UI** - Full CRUD interface at `/admin-app` with multi-table forms  
+✅ **SQLAlchemy Models** - Auto-generated from database schema in `database/models.py`  
+✅ **API Endpoints** - Auto-discovered REST endpoints for all tables in `api/customize_api.py`  
+✅ **Containerized** - Docker/Kubernetes ready with `devops/docker/` configuration  
+✅ **MCP-Ready (Model Context Protocol)** - Full MCP server with discovery, client executor, and natural language query support  
+
+**Created in ~5 seconds** - Working API server + Admin UI + Models from the database.
+
+---
+
+## 🎨 What You Do (Customization & Extension)
+
+Now extend this generated foundation:
+
+**Business Logic** - Add declarative rules (5 lines, not 200+ procedural code)  
+**Custom APIs** - Add endpoints in `api/api_discovery/` for complex business transactions  
+**Security** - Add RBAC with `genai-logic add-auth`  
+**React Apps** - Create custom UIs with `genai-logic genai-add-app --vibe`  
+**Integration** - Add Kafka events, webhooks, B2B APIs  
+**Testing** - Create Behave tests with requirements traceability  
+**MCP Integration** - Natural language queries, orchestration, AI agent integration via Model Context Protocol  
+
+---
+
 <!-- 
 ═══════════════════════════════════════════════════════════════════════════════
 🚨 MANDATORY: READ THIS FIRST - NO EXCEPTIONS 🚨
 ═══════════════════════════════════════════════════════════════════════════════
 
-⚠️ IF USER SAYS: "load .github/.copilot-instructions.md" OR ANY ACTIVATION PHRASE
+⚠️ IF USER SAYS: "load .github/copilot-instructions.md" OR ANY ACTIVATION PHRASE
 ⚠️ YOU MUST EXECUTE THIS EXACT SEQUENCE - NO DEVIATIONS:
 
-1. Read .github/.copilot-instructions.md COMPLETELY (silently - internalize all instructions)
+1. Read .github/copilot-instructions.md COMPLETELY (silently - internalize all instructions)
 2. Read .github/welcome.md (silently - do not mention this action)
 3. Display ONLY the content from welcome.md
 4. DO NOT say "I've loaded the instructions"
-5. DO NOT display this .copilot-instructions.md file
+5. DO NOT display this copilot-instructions.md file
 6. DO NOT explain what you're doing
 
 THIS IS NOT A SUGGESTION - THIS IS A MANDATORY COMMAND
@@ -22,7 +68,7 @@ THIS IS NOT A SUGGESTION - THIS IS A MANDATORY COMMAND
 ## 🚨 CRITICAL: User Activation Protocol
 
 **ACTIVATION TRIGGERS:**
-- "load .github/.copilot-instructions.md"
+- "load .github/copilot-instructions.md"
 - "load copilot instructions"
 - "help me get started"
 - "activate copilot"
@@ -31,7 +77,7 @@ THIS IS NOT A SUGGESTION - THIS IS A MANDATORY COMMAND
 **MANDATORY RESPONSE SEQUENCE:**
 
 ```
-STEP 1: Read .github/.copilot-instructions.md COMPLETELY (silently - internalize all instructions)
+STEP 1: Read .github/copilot-instructions.md COMPLETELY (silently - internalize all instructions)
 STEP 2: Read .github/welcome.md (silently)
 STEP 3: Display welcome.md content ONLY
 STEP 4: STOP - do nothing else
@@ -90,9 +136,9 @@ User: "guide me"
 
 **✅ CORRECT EXECUTION:**
 ```
-User: "load .github/.copilot-instructions.md"
+User: "load .github/copilot-instructions.md"
 
-AI: [reads .copilot-instructions.md COMPLETELY - NO OUTPUT - internalizes all instructions]
+AI: [reads copilot-instructions.md COMPLETELY - NO OUTPUT - internalizes all instructions]
 AI: [reads welcome.md silently - NO OUTPUT]
 AI: [displays ONLY this]:
 
@@ -106,18 +152,18 @@ This is a complete, working microservice auto-generated from a database schema..
 
 **❌ FORBIDDEN BEHAVIORS:**
 ```
-User: "load .github/.copilot-instructions.md"
+User: "load .github/copilot-instructions.md"
 
 ❌ AI: "I've loaded the instructions file..." 
-❌ AI: "Here are the contents of .copilot-instructions.md:"
-❌ AI: [displays .copilot-instructions.md]
+❌ AI: "Here are the contents of copilot-instructions.md:"
+❌ AI: [displays copilot-instructions.md]
 ❌ AI: "I'll read the file for you..."
 ❌ AI: Any meta-commentary about loading or reading files
 ```
 
 **RATIONALE:**
 - Users want to see the **welcome message**, not technical instructions
-- This file (.copilot-instructions.md) is for AI context, not user display
+- This file (copilot-instructions.md) is for AI context, not user display
 - Separation of concerns: welcome.md = user-facing, copilot-instructions.md = AI-facing
 - No meta-cognitive confusion about "instructions" vs "content"
 
@@ -129,11 +175,15 @@ User: "load .github/.copilot-instructions.md"
 **PRIMARY ANSWER**: Provide the **"How the Rules Engine Works"** 3-phase overview below:
   1. Authoring (AI-assisted, human-reviewed)
   2. Engine Initialization (Deterministic analysis)
-  3. Runtime Enforcement (Commit-time)
+  3. Runtime Enforcement (3 sub-phases: Row Logic → Commit Logic → After Flush)
 
 **FOLLOW-UP OFFER**: After showing the 3 phases, offer: "Would you like more detail on any specific aspect?"
 
 **NEVER**: Respond with generic "Key Concepts" or custom explanations - use the specific 3-phase content from this file.
+
+**WHEN USER ASKS: "FAQ", "FAQs", "any FAQs", "frequently asked questions", "common questions", "show me FAQs"**
+**DIRECT TO**: The **🪑 The 3-Legged Stool: Rules + AI + Context Engineering** section (in "Detailed Service Documentation" below)
+**BEGIN WITH**: "Here are common questions about GenAI-Logic:" then present the 3-Legged Stool table and key insight.
 
 ---
 
@@ -149,23 +199,31 @@ When user asks "what can I do here", list these capabilities:
 4. **Add security** - Set up role-based access control with `genai-logic add-auth`
 5. **Test your logic** - Create Behave tests with requirements traceability
 6. **Configure Admin UI** - Customize the auto-generated admin interface
-7. **Query via natural language** - Act as MCP client to read/update data
-8. **Create B2B APIs** - Complex integration endpoints with partner systems
-9. **Add events** - Integrate with Kafka, webhooks, or other event systems
-10. **Customize models** - Add tables, attributes, or derived fields
-11. **Discovery systems** - Auto-load logic and APIs from discovery folders
+7. **Query via MCP** - Process natural language queries through Model Context Protocol ("List customers...")
+8. **MCP Integration** - Set up MCP UI client, configure discovery, test orchestrations
+9. **Create B2B APIs** - Complex integration endpoints with partner systems
+10. **Add events** - Integrate with Kafka, webhooks, or other event systems
+11. **Customize models** - Add tables, attributes, or derived fields
+12. **Discovery systems** - Auto-load logic and APIs from discovery folders
+13. **FAQs / Eval info** - Common questions: what is this, why rules matter, 3-legged stool (rules + AI + context engineering)
 
 ---
 
 ---
 title: Copilot Instructions for basic_demo GenAI-Logic Project
 Description: Project-level instructions for working with generated projects
-Source: ApiLogicServer-src/prototypes/base/.github/.copilot-instructions.md
+Source: ApiLogicServer-src/prototypes/base/.github/copilot-instructions.md
 Propagation: CLI create command → created projects (non-basic_demo)
 Instrucions: Changes must be merged from api_logic_server_cli/prototypes/basic_demo/.github - see instructions there
 Usage: AI assistants read this when user opens any created project
-version: 3.1
+version: 3.8
 changelog:
+  - 3.8 (Feb 25, 2026) - Clarified workflow/messaging scope: ❌ user orchestration (Temporal/Airflow) but ✅ ideal for messaging nodes (Kafka producer, consumer, updates with integrity)
+  - 3.7 (Feb 25, 2026) - Added FAQ trigger: maps FAQ/frequently-asked-questions requests to 3-Legged Stool eval content; added capability item 13
+  - 3.6 (Feb 23, 2026) - Added System Creation Services section (starter.sqlite / sys_config pattern, SQL DDL → rebuild-from-database workflow, never-write-models-manually rule)
+  - 3.5 (Feb 24, 2026) - Dev-focused trim: removed evaluator-only content (Quick Start for Evaluators, About This File, Common Developer Questions FAQ - ~366 lines)
+  - 3.4 (Feb 23, 2026) - Added MCP full section, AI-Assisted Dev section, Request Pattern section + 4th training file; merged from customs_app v3.11
+  - 3.3 (Feb 2026) - 3-Legged Stool, evaluation checklist, AI docent pattern
   - 3.1 (Nov 20, 2025) - Improved activation instructions with visual markers and examples
   - 3.0 (Nov 17, 2025) - Major streamlining: removed duplicate sections, consolidated MCP content, simplified workflows
   - 2.9 (Nov 17, 2025) - MANDATORY training file reading workflow (STOP command)
@@ -181,7 +239,7 @@ changelog:
 **Critical Implementation Details:**
 
 1. **Discovery Systems**: 
-   - **Logic Discovery**: Business rules automatically loaded from `logic/logic_discovery/use_case.py` via `logic/logic_discovery/auto_discovery.py`
+   - **Logic Discovery**: Business rules automatically loaded from all `logic/logic_discovery/*.py` files via `logic/logic_discovery/auto_discovery.py` — create one file per use case, named after it (e.g., `check_credit.py`)
    - **API Discovery**: Custom APIs automatically loaded from `api/api_discovery/[service_name].py` via `api/api_discovery/auto_discovery.py`
    - Do NOT manually duplicate rule calls or API registrations
 
@@ -201,9 +259,326 @@ changelog:
 
 ---
 
+## � MCP (Model Context Protocol) Integration
+
+**Every GenAI-Logic project includes comprehensive MCP support out-of-the-box:**
+
+### MCP Server (Automatic)
+- **Discovery API**: `/.well-known/mcp.json` exposes schema + learning documentation
+- **Standard JSON:API**: All endpoints are MCP-compatible (filtering, pagination, relationships)
+- **Business Logic**: Rules automatically execute on all MCP operations
+- **Security**: RBAC enforcement applies to MCP requests
+- **Located in**: `api/api_discovery/mcp_discovery.py`
+
+### MCP Client (Included)
+- **Client Executor**: `integration/mcp/mcp_client_executor.py`
+- **Natural Language**: Process queries like "List customers with credit_limit > 1000"
+- **LLM Integration**: Uses OpenAI GPT-4 to translate natural language → API calls
+- **Example Usage**:
+  ```bash
+  cd basic_demo
+  python integration/mcp/mcp_client_executor.py
+  ```
+
+### MCP UI Client (Generate)
+Create an interactive web interface for MCP queries:
+```bash
+genai-logic genai-add-mcp-client
+```
+
+### MCP Learning Materials
+- **Schema**: `docs/mcp_learning/mcp_schema.json` - OpenAPI schema for AI agents
+- **Prompts**: `docs/mcp_learning/mcp.prompt` - Instructions for LLMs on how to use the API
+- **Discovery Config**: `integration/mcp/mcp_server_discovery.json` - Server connection details
+
+### Use Cases
+1. **AI Agent Integration**: Connect Claude Desktop, Copilot, or ChatGPT
+2. **Natural Language Queries**: Business users ask questions in plain English
+3. **Orchestration**: Chain multiple API calls based on natural language intent
+4. **Testing**: Validate business logic through conversational interaction
+
+---
+
+## 🤖 AI-Assisted Development
+
+**Use AI (Copilot, Claude, ChatGPT) to write Python code for:**
+
+### 1. Business Logic Rules
+Describe requirements in natural language → I generate declarative rules:
+```python
+# You say: "Customer balance is sum of unshipped order totals"
+# I write:
+Rule.sum(derive=models.Customer.balance, 
+         as_sum_of=models.Order.amount_total,
+         where=lambda row: row.date_shipped is None)
+```
+
+### 2. Custom API Endpoints
+Describe API requirements → I generate Python endpoints in `api/api_discovery/`:
+```python
+# You say: "Create an endpoint to place an order with multiple items"
+# I write the complete endpoint with proper session handling
+```
+
+### 3. Event Handlers
+Describe integration needs → I write event handlers:
+```python
+# You say: "Send to Kafka when order ships"
+# I write the event declaration and handler
+```
+
+### 4. Behave Tests
+Describe test scenarios → I generate Behave test files:
+```gherkin
+# You say: "Test that credit limit is enforced on order placement"
+# I write complete scenarios in test/api_logic_server_behave/features/
+```
+
+**Key Principle**: You focus on **what** (requirements), AI writes **how** (Python implementation).
+
+---
+
+## �📚 Learning Curve (Honest Assessment)
+
+**Timeline:**
+- **Week 1:** ~10 hours - Basic rules (sum, count, formula, constraint, copy), see them work
+- **Month 1:** ~30 hours total - Comfortable with 90% of use cases, including events and debugging
+- **Hardest part:** Mental shift from procedural → declarative thinking (1-2 weeks of practice)
+- **AI eliminates the barrier** — see "Think Declarative" below
+
+### The Declarative Mental Shift (Think Spreadsheet)
+
+*Source: [Tech-declarative](https://apilogicserver.github.io/Docs/Tech-declarative/)*
+
+**The Versata Challenge:** Developers instinctively think procedurally. Ask for a credit check and they write: *"When placing an order, multiply price × quantity, add to order total, compare to credit limit, reject if exceeded."*
+
+That's **path-dependent** logic — it solves one use case. Ship an order? Different path, rewrite the logic. Agent updates? Another path, another rewrite. Logic buried in flows, duplicated across every new use case.
+
+**The declarative way:** Instead of "when placing an order, check credit," you declare:
+> *"Customer balance is always the sum of unpaid orders and must never exceed the credit limit."*
+
+One rule. It doesn't know about placing orders, shipping, agents, or Vibe apps. It knows about **data**. Because it knows about data, it applies automatically to every path — including paths that don't exist yet.
+
+**The AI Test:** When asked to demonstrate rules, an AI initially responded procedurally (path-dependent). But then it self-corrected — it *distilled* the procedural intent into proper declarative DSL:
+```python
+Rule.sum(models.Customer.balance, 
+         models.Order.amount_total,
+         where=lambda row: row.ShippedDate is None)
+
+Rule.constraint(models.Customer, 
+                as_condition=lambda row: row.balance <= row.credit_limit)
+```
+The AI had done spontaneously what took years to teach developers at Versata. **The learning curve that blocked declarative adoption for decades just disappeared.**
+
+**Why:** The DSL rule types (`sum`, `formula`, `constraint`, `copy`) are inherently declarative — they describe invariants about data, not steps in a process. When the AI learns the DSL, it absorbs the declarative mental model with the syntax.
+
+**The Spreadsheet Insight:** Every business runs on spreadsheets. Not because finance teams "think declaratively" — but because spreadsheets make declarative natural. `B10 = SUM(B1:B9)` and the system handles every dependency, every change, every edge case. Nobody writes procedural code to recalculate financials.
+
+That same principle — **automatic reuse over all cases, dependencies managed by the system** — is what declarative rules bring to multi-table transactions.
+
+> **Design Once. Govern All Paths. Correct By Construction.**
+
+**When NOT to use rules:**
+- Read-only analytics/reporting (rules enforce writes, not reads)
+- Complex algorithms (graph traversal, optimization, ML - not data relationships)
+- ❌ User/business workflow orchestration (Temporal/Airflow territory) — but ✅ ideal for *nodes within* workflows: send events, handle messages, execute updates with full integrity
+- ❌ Pure stream analytics (Kafka Streams/Flink aggregations) — but ✅ ideal for *initiating* messages (Kafka producer on Order ship) and *handling* incoming messages
+
+**When rules are essential:**
+- Data dependency graphs (X affects Y affects Z)
+- Multiple change paths (insert/update/delete/FK changes)
+- Production systems requiring correctness guarantees
+- Long-term maintained systems with evolving requirements
+
+**The Scale Advantage (Production Evidence):**
+
+**Our A/B test (3-table system):**
+- AI procedural code: 220 lines, 2 bugs (missed 8 change paths)
+- Declarative rules: 5 lines, 0 bugs (engine handles all 9 paths)
+
+**The 9 Transaction Paths** (design once, govern all pathos - automatic re-use- coverage with declarative rules):
+1. **Insert Order** → updates Customer.balance
+2. **Insert Item** → updates Item.amount, Order.amount_total, Customer.balance  
+3. **Update Item.quantity** → recalculates Item.amount, Order.amount_total, Customer.balance
+4. **Update Item.unit_price** → recalculates Item.amount, Order.amount_total, Customer.balance
+5. **Update Item.product_id** → copies new Product.unit_price, recalculates amounts
+6. **Update Item.order_id** → adjusts **both** old and new Order totals, **both** Customers
+7. **Delete Item** → adjusts Order.amount_total, Customer.balance
+8. **Update Order.customer_id** → adjusts **both** old and new Customer.balance
+9. **Update Order.date_shipped** → includes/excludes from Customer.balance calculation
+
+**Why declarative wins:** Rules are defined on the **data** (Customer, Order, Item), not on specific transactions. The engine automatically applies them to ALL change paths. Procedural code must explicitly handle each scenario - easy to miss cases like reassigning items between orders (#6).
+
+**Real enterprise system (100 tables):**
+- 80 tables with business logic
+- 12 rules per table average = **960 rules total**
+- **Procedural approach:** 960 × 44 lines/rule = **42,240 lines to write/maintain**
+- **Declarative approach:** ~960 lines written
+
+**The Versata measurement (production systems, 1995-2010):**
+- Tracked manual code vs. rules-based code across deployments
+- **Result: 97% automation** - developers wrote 3% of equivalent procedural code
+- For 100-table system: Write ~1,250 lines, engine automates the other 41,000 lines of logic
+
+**Not about code golf - about correctness at scale:**
+- 42k lines with multi-table dependencies = unmaintainable
+- When Customer.credit_limit changes, find all 15 places that check it
+- Rules: Update one constraint, engine recalculates all affected transactions automatically
+
+### 🪑 The 3-Legged Stool: Rules + AI + Context Engineering
+
+The [Customs POC full case study](https://apilogicserver.github.io/Docs/Customs-readme-full/) demonstrates that the results are stunning — but only when all three legs work together:
+
+| Leg | What it provides | Without it |
+|-----|-----------------|------------|
+| **Logic Automation** (Rules, API Engines) | Correct, auto-enforced business logic across all write paths; enterprise API; governed AI execution |  • **Procedural Logic:** Dependency bugs, hard to maintain  • **Fat API:** Unshared, Path-dependent logic  • **Demo-class APIs** (no optimistic locking, etc) |
+| **Generative AI** | Rapid creation∂∂, iteration, test generation from natural language | Weeks of manual development |
+| **Context Engineering** | Guides AI to the right architecture (declarative rules, proper data model) | AI defaults to "Fat API" procedural code — works but ungoverned |
+
+**Key insight:** Without Context Engineering, AI generates working demos that lack enterprise architecture. Without rules automation, AI generates procedural code with correctness bugs. Together: a several-week effort became **30 minutes**, producing a correct, enterprise-class, fully tested system.
+
+> *"A/B result: 16 declarative rules vs. equivalent procedural code with 2 critical bugs."*
+
+---
+
 ## Detailed Service Documentation
 
 The sections below provide complete details on each service. I'll reference these as needed when we work together.
+
+### Critical Pattern: Request Pattern
+
+**What it is:** Insert a row (request object) that triggers business logic via an event handler.
+
+**Why it exists:**
+- **Separation of concerns** - Calling code doesn't know implementation details
+- **Automatic audit trail** - Request row captures what/when/why with full context
+- **Testability** - Insert request row in tests, verify results
+- **Reusability** - Same request handler works from API, UI, workflows, tests
+
+**Common use cases:**
+- **Send email** - Insert SysMailReq row → event checks opt-out, sends email, logs activity
+- **Kafka integration** - Insert request row → event publishes message to topic
+- **AI Logic** - Insert SysSupplierReq → event calls AI to find optimal supplier based on cost, lead time, world conditions
+- **Audit trails** - Insert SysAuditReq → event captures operation details
+- **External API calls** - Insert request row → event calls external service, captures response
+
+**Implementation pattern:**
+```python
+def get_supplier_from_ai(product_id: int, logic_row: LogicRow) -> models.SysSupplierReq:
+    """
+    Wrapper that hides Request Pattern complexity.
+    Caller just gets back a populated result object.
+    """
+    # 1. Create request row (pass CLASS not instance)
+    req_logic_row = logic_row.new_logic_row(models.SysSupplierReq)
+    req = req_logic_row.row
+
+    # 2. Set input context
+    req.product_id = product_id
+
+    # 3. Insert triggers event that populates AI results
+    req_logic_row.insert(reason="AI supplier selection")
+
+    # 4. Return populated object (chosen_supplier_id, chosen_unit_price now set)
+    return req
+```
+
+**See:**
+- Implementation details: `docs/training/logic_bank_patterns.md` (PATTERN 3)
+- Real examples: `logic/logic_discovery/place_order/ai_requests/supplier_selection.py`
+- MCP integration: https://apilogicserver.github.io/Docs/Integration-MCP/#3b-logic-request-pattern
+
+### System Creation Services (New Domain Project)
+
+**Trigger:** `database/models.py` contains only the `SysConfig` class — no domain tables yet. The project was created from `starter.sqlite` and is waiting for a domain schema.
+
+**`sys_config` — the settings table pattern:**  
+`starter.sqlite` includes one table: `sys_config` (one row). This is a deliberate pattern — systems often need global configuration values (discount rates, tax rates, thresholds) that users manage via the Admin UI rather than code deploys. **Keep `sys_config`** in your domain schema; add domain-specific columns for any rate, threshold, or regulatory date constant.
+
+**Mandatory wiring steps — do all four or the pattern is incomplete:**
+1. Add domain columns to `SysConfig` in `models.py` (e.g. `gst_rate`, `surtax_rate`, `low_value_threshold`)
+2. Add `sys_config_id = Column(ForeignKey('sys_config.id'), server_default=text("1"))` to the transactional **header** table + mirror columns (`gst_rate`, `surtax_rate`, etc.)
+3. Add `Rule.copy(derive=models.Header.gst_rate, from_parent=models.SysConfig.gst_rate)` for each column
+4. Reference `row.gst_rate` (the copied column) in formulas — **never a numeric literal**
+
+**🚨 FK scan — verification that step 4b was complete:** Before writing any `Rule.copy` or `Rule.formula` that reads a lookup value, confirm that the transactional table has an integer FK column to that lookup table (not a `String` code column). If the column is a `String`, step 4b was skipped — add the FK column via DDL + `rebuild-from-database`, then wire `Rule.copy`.
+
+**🚨 Literal scan — verification that step 4a was complete:** Before finishing logic files, scan every lambda for numeric/date literals (`0.05`, `0.25`, `5000.0`, `'2025-12-26'`). If you find one here, step 4a was skipped — add the column to `SysConfig` via `ALTER TABLE sys_config ADD COLUMN ...` + `rebuild-from-database`, then replace the literal with `row.<copied_column>`. Do not patch it with a hardcoded constant.
+
+**Workflow:**
+
+1. **Get the domain prompt** — from the user, or from `../samples/prompts/<name>.prompt.md`
+
+2. **Read subsystem conventions first** — load `docs/training/implement_requirements.md` before designing the schema:
+   - `id INTEGER PRIMARY KEY AUTOINCREMENT` for all PKs
+   - Include columns for all derived/calculated values (populated by LogicBank rules later)
+   - Follow naming conventions in that file
+
+3. **Check for Request Pattern signals** — apply ONLY for integration side-effects: AI calls, email, Kafka, external APIs. (`docs/training/RequestObjectPattern.md`)
+   - ✅ "send email when..." → `SysEmail` insert + `after_flush_row_event`
+   - ✅ "select supplier using AI" → `SysSupplierReq` insert + `early_row_event`
+   - ❌ **NOT for domain data entry with derived columns** — inserting a `CustomsEntry` and having rules compute `duty_amount` is plain domain insert; no `Sys*` wrapper table needed or correct
+
+4. **Extract domain constants and FK relationships first, then design schema as SQL DDL:**
+
+   **Step 4a — Constant extraction (before writing any DDL):**  
+   Scan the domain prompt for every rate, threshold, and regulatory date that would otherwise become a hardcoded literal in a `Rule.formula` or `Rule.constraint` lambda. Map each to a named `SysConfig` column. Skipping this means `models.py` is generated without those columns — fixing it later requires a DDL alter + another `rebuild-from-database`.
+
+   | Example domain value | SysConfig column to add |
+   |---|---|
+   | Surtax rate of 25% | `surtax_rate REAL DEFAULT 0.25` |
+   | Low-value threshold of $5000 | `low_value_threshold REAL DEFAULT 5000.0` |
+   | Effective date 2025-12-26 | `effective_date TEXT DEFAULT '2025-12-26'` |
+
+   **Step 4b — FK inventory (before writing any DDL):**  
+   Scan the domain prompt for every value that identifies a lookup entity — country, province, HS code, product, classification code, customer. For each one, the transactional table gets an **integer FK column** (`<entity>_id INTEGER REFERENCES <lookup_table>(id)`), not a text code column. Name the FK column explicitly now so it appears in the DDL.
+
+   | Prompt phrase | Transactional FK column | Lookup table |
+   |---|---|---|
+   | "province code" / "province" | `province_id INTEGER REFERENCES province(id)` | `province` |
+   | "HS code" / "tariff code" | `hs_code_id INTEGER REFERENCES hs_code_rate(id)` | `hs_code_rate` |
+   | "country of origin" / "country" | `country_id INTEGER REFERENCES country_rate(id)` | `country_rate` |
+   | "product" / "item" | `product_id INTEGER REFERENCES product(id)` | `product` |
+
+   Without this step, `models.py` is generated with `String` columns instead of FK columns — no SQLAlchemy relationship, no `Rule.copy`, forced `early_row_event + session.query()` fallback.
+
+   **Step 4c — Write and run the DDL:**
+```bash
+sqlite3 database/db.sqlite << 'SQL'
+-- Keep sys_config; add domain columns identified in step 4a:
+ALTER TABLE sys_config ADD COLUMN surtax_rate REAL DEFAULT 0.25;
+ALTER TABLE sys_config ADD COLUMN effective_date TEXT DEFAULT '2025-12-26';
+-- Then create domain tables:
+CREATE TABLE your_table (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ...
+);
+SQL
+```
+**⚠️ Never write `models.py` manually.** Hand-written models miss required boilerplate (`db`, `Base`, `SAFRSBaseX` conditional, `_s_collection_name`) → `discovered models: []` at startup and no JSON:API endpoints registered.
+
+5. **Rebuild models from database:**
+```bash
+source ../venv/bin/activate
+genai-logic rebuild-from-database --db_url=sqlite:///database/db.sqlite
+```
+This auto-generates correct `models.py` with all boilerplate intact.
+
+6. **Add seed data** — use `database/test_data/alp_init.py` (Flask context + LogicBank active → all computed fields auto-populated on insert). See `docs/training/implement_requirements.md` Part 5 for the canonical pattern and common failure/fix pairs. Do **not** run seed scripts outside Flask context (`APILOGICPROJECT_NO_FLASK=1`) — LogicBank is suppressed and all derived fields will be zero.
+
+   **"Create runnable UI with examples"** means: load example data via the seed script, then open the Admin App at `http://localhost:5656`. The Admin App IS the runnable UI — full CRUD, relationships, filtering, sorting. Do NOT create a custom HTML page, Flask template, or calculator endpoint. If a production-quality custom UI is needed, use `genai-logic genai-add-app --vibe` (generates a React app).
+
+7. **Add logic** — declare `Rule.*` rules in `logic/logic_discovery/` using `docs/training/logic_bank_api.md`. Use `Rule.formula`, `Rule.sum`, `Rule.copy`, `Rule.constraint` — never procedural code in endpoints.
+
+8. **Press F5** — full JSON:API + Admin UI + logic enforcement.
+
+**Key rules:**
+- Never write `models.py` manually — always `rebuild-from-database` after SQL DDL
+- Never copy from existing projects — generate fresh from the prompt
+- Never use `genai-logic genai` — write SQL DDL directly
+- **"Create runnable UI"** = seed data + Admin App (`http://localhost:5656`) — never a custom HTML page or Flask template
+
+---
 
 ### `venv` is required
 
@@ -213,7 +588,7 @@ To establish the virtual environment:
 2. If not found, check parent or grandparent directories
 3. **If no venv is found:**
    - Ask the user for the venv location, OR
-   - Offer to create one using `python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt`
+   - Offer to create one using `python3 -m venv ../venv && source ../venv/bin/activate && pip install -r requirements.txt`
 
 ### Starting the server
 
@@ -221,7 +596,7 @@ To establish the virtual environment:
 
 ```bash
 # Activate venv first
-source venv/bin/activate
+source ../venv/bin/activate
 
 # Then start server
 python api_logic_server_run.py
@@ -236,8 +611,21 @@ python api_logic_server_run.py
 - If server fails to start after model changes, check that alembic migrations have been applied
 
 ### Adding Business Logic
-`docs/training` explains how to translate Natural Language logic into LogicBank (Python) rules like:
 
+**For Human Learning:**
+- **Primary Resource:** https://apilogicserver.github.io/Docs/Logic/
+  - Complete rule type reference tables
+  - Pattern tables and best practices
+  - Video tutorials and examples
+  - Learning path recommendations
+- Use this as your main learning resource for understanding rules
+
+**For AI Code Generation:**
+- `docs/training/*.prompt` files contain patterns for AI assistants
+- AI reads these BEFORE implementing logic
+- Not intended as primary human learning materials
+
+**Rule Example:**
 ```python
 # Edit: logic/declare_logic.py
 Rule.sum(derive=Customer.Balance, as_sum_of=Order.AmountTotal)
@@ -250,7 +638,7 @@ The `docs/training/` folder contains ONLY universal, framework-level training ma
 - ✅ **Universal patterns** → `genai_logic_patterns.md`
 - ✅ **Implementation patterns** → `probabilistic_logic_guide.md`
 - ✅ **Code templates** → `probabilistic_template.py`
-- ✅ **API references** → `.prompt` files (logic_bank_api.prompt, etc.)
+- ✅ **API references** → `.prompt` files (logic_bank_api.md, etc.)
 
 **DO NOT add project-specific content to docs/training/**:
 - ❌ Project-specific instructions or configurations
@@ -261,7 +649,7 @@ The `docs/training/` folder contains ONLY universal, framework-level training ma
 **WHY:** This folder's content is designed to be reusable across ANY ApiLogicServer project using GenAI. Project-specific content should live in:
 - Logic implementation → `logic/logic_discovery/`
 - Project docs → `docs/` (outside training/)
-- Copilot instructions → `.github/.copilot-instructions.md`
+- Copilot instructions → `.github/copilot-instructions.md`
 
 See `docs/training/README.md` for complete organization rules.
 
@@ -273,63 +661,104 @@ STOP ✋
 WHEN USER PROVIDES A LOGIC PROMPT:
 
 STEP 1: Read these files (DO THIS FIRST - NOT OPTIONAL):
-   1. docs/training/logic_bank_patterns.prompt           (Foundation - READ FIRST)
-   2. docs/training/logic_bank_api.prompt                (Deterministic rules - READ SECOND)
-   3. docs/training/probabilistic_logic.prompt           (AI/Probabilistic rules - READ THIRD)
+   1. docs/training/logic_bank_patterns.md           (Foundation - READ FIRST)
+   2. docs/training/logic_bank_api.md                (Business Rules - READ SECOND)
+   3. docs/training/allocate.md                      (Allocation/Distribution - READ THIRD)
+   4. docs/training/probabilistic_logic.md           (AI Rules - READ FOURTH)
+   5. docs/training/RequestObjectPattern.md          (Integration services pattern - READ FIFTH)
 
-STEP 2: Parse the prompt following logic_bank_api.prompt instructions:
+STEP 2: Check for Allocate pattern BEFORE anything else:
+   Ask: "Does an insert need to automatically CREATE child rows, each receiving
+         a portion of the parent's amount?"
+   Signal phrases (ANY of these = use Allocate):
+   - "distribute/allocate/split [amount/cost/charge] to [depts/accounts/recipients]"
+   - "when a [charge/cost] is received, distribute to..."
+   - "each [dept/recipient] covers X% of the cost"
+   - "charges flow to departments, then to GL accounts"  ← cascade Allocate
+   - "allocate [payment/budget/bonus] to [orders/employees]"
+   - "apply payment to invoices/orders [oldest/priority] first"
+   IF YES → Read docs/training/allocate.md fully, implement Allocate (not copy+formula)
+   IF NO  → Continue to Step 3
+
+STEP 3: Analyze the prompt for Request Pattern signals:
+   - Does prompt say "calculate/determine/select [X] when [Y] is given"?
+   - Integration service needed (AI, external API, messaging, email)?
+   - Compliance/audit domain (customs, finance, healthcare)?
+   - IF YES → Use Request Pattern (see RequestObjectPattern.md)
+   - IF NO → Continue to Step 4
+
+STEP 4: Parse the prompt following logic_bank_api.md instructions:
    - Identify context phrase ("When X", "For Y", "On Z") → creates directory
    - Identify colon-terminated use cases → creates files
    - Follow directory structure rules EXACTLY as specified
 
-STEP 3: Create the directory structure and files as instructed
+STEP 4: Create the directory structure and logic files as instructed
 
-STEP 4: Implement the rules following the training patterns
+STEP 5: ⛔ Create `docs/requirements/<use_case_name>/requirements.md` — MANDATORY, NO EXCEPTIONS
+   Copy the user's prompt verbatim into this file. Do NOT paraphrase.
+   This is the anchor for the logic diagram and requirements traceability chain:
+     requirements.md → logic file → logic diagram → behave tests → execution trace
+   Use the same directory name as the logic discovery directory.
+   If the use case name is unknown, use `docs/requirements/unknown_use_case/requirements.md`.
+
+STEP 6: Implement the rules following the training patterns
 
 ⚠️ CRITICAL - NO EXCEPTIONS:
-   - You MUST read all three training files before implementing
-   - You MUST follow the directory structure rules in logic_bank_api.prompt
-   - You MUST NOT create flat files when context phrase is present
-   - DO NOT skip files even if you think you know the pattern
-   - These files contain failure patterns learned from production use
+   - Read all five training files before implementing
+   - Identify the Allocate pattern (Step 2) before writing any logic
+   - Identify the Request Pattern (Step 3) before creating any API
+   - Follow the directory structure rules in logic_bank_api.md
+   - Name each logic file after its use case (e.g., `charge_distribution.py`)
+   - STEP 5 is mandatory — always create docs/requirements/<use_case_name>/requirements.md
+   - These files contain patterns learned from production use
 
-FAILURE MODE: Creating flat files in logic/logic_discovery/ when prompt has context phrase
-CORRECT: Create logic/logic_discovery/<context_dir>/{__init__.py, use_case_files.py}
+✅ For integration side-effects (AI, email, Kafka, external APIs): use Request Pattern table + early_row_event + thin API wrapper
 ```
 
 **Training File Contents:**
 
-1. **`docs/training/logic_bank_patterns.prompt`** - Foundation patterns for ALL rule types
+1. **`docs/training/logic_bank_patterns.md`** - Foundation patterns for ALL rule types
    - Event handler signatures (row, old_row, logic_row) - REQUIRED READING
    - Logging with logic_row.log() vs app_logger
    - Request Pattern with new_logic_row()
    - Rule API syntax dos and don'ts
    - Common anti-patterns to avoid
    
-2. **`docs/training/logic_bank_api.prompt`** - Deterministic rules API
+2. **`docs/training/logic_bank_api.md`** - Business Rules API
    - Rule.sum(), Rule.count(), Rule.formula(), Rule.constraint(), etc.
    - Complete API signatures with all parameters
    - References patterns file for implementation details
    
-3. **`docs/training/probabilistic_logic.prompt`** - Probabilistic (AI) rules API
-   - populate_ai_values() utility for AI-driven value computation
+3. **`docs/training/probabilistic_logic.md`** - AI Rules API
+   - AI-driven value computation and intelligent selection
    - Intelligent selection patterns (supplier optimization, dynamic pricing, route selection)
    - Automatic audit trails and graceful fallbacks when API unavailable
    - References patterns file for general implementations
-   - Works seamlessly with deterministic rules
+   - Works seamlessly with Business Rules
+
+4. **`docs/training/RequestObjectPattern.md`** - Integration services pattern
+   - When to use Request Pattern vs other approaches
+   - Request fields (input) + Response fields (output) + early_row_event (integration)
+   - AI Intelligent Selection Pattern (supplier, carrier, pricing, routing)
+   - Wrapper functions for hiding complexity
+   - Anti-pattern: Fat API services with business logic
+   - Works with unified deterministic/probabilistic architecture
 
 **Example Natural Language Logic for basic_demo:**
 
 ```text
-Use case: Check Credit    
-    1. Customer balance ≤ credit limit
-    2. Customer balance = sum of unshipped Order amount_total
-    3. Order amount_total = sum of Item amount
-    4. Item amount = quantity × unit_price
-    5. Item unit_price = copied from Product unit_price
+on Placing Orders, Check Credit:
+
+1. The Customer's balance is less than the credit limit
+2. The Customer's balance is the sum of the Order amount_total where date_shipped is null
+3. The Order's amount_total is the sum of the Item amount
+4. The Item amount is the quantity * unit_price
+5. The Product count suppliers is the sum of the Product Suppliers
+6. Use AI to Set Item field unit_price by finding the optimal Product Supplier 
+                                          based on cost, lead time, and world conditions
 
 Use case: App Integration
-    1. Send Order to Kafka when date_shipped changes to non-null
+1. Send the Order to Kafka topic 'order_shipping' if the date_shipped is not None.
 ```
 
 **How the Rules Engine Works:**
@@ -345,18 +774,28 @@ Use case: App Integration
 
 **2. Engine Initialization (Deterministic analysis)**
 - On startup, the non-RETE rule engine loads all rules
-- It computes dependencies deterministically from Rule types (derivations, constraints, actions)
-- Execution order is derived once, not from code paths
+- **Formula dependencies**: `inspect.getsource()` extracts the lambda/function text; whitespace-split tokens starting with `row.` build the `_dependencies` list
+- **Aggregate dependencies** (`Rule.sum`, `Rule.count`): declared explicitly via `as_sum_of=` — no text parsing needed
+- **Execution order**: topological sort over formulas per class assigns `_exec_order`; circular dependencies raise `LBCircularDependencyException`
+- Order computed once at startup, not inferred from runtime behavior
 
-No compilation. No dependencies-from-pattern-matching. No inference from runtime behavior.
+**3. Runtime Enforcement (Transaction commit — 3 ordered sub-phases)**
 
-**3. Runtime Enforcement (Commit-time)**
-- Rules execute at transaction commit via SQLAlchemy commit events
-- All writes — APIs, workflows, UIs, agents — pass through the same rule set
-- Dependencies are already known; execution is deterministic and efficient
-- **No rule is "called." No path can bypass enforcement.**
-- Non-RETE optimizations: pruning, adjustment logic, delta-based aggregations
-- **Cascading via old_row tracking** - When Order.customer_id changes, adjusts BOTH old and new Customer.balance
+All writes — APIs, workflows, UIs, agents — pass through the same rule set. Dependencies already known from initialization; execution is deterministic and efficient. **No rule is "called." No path can bypass enforcement.** Non-RETE optimizations: pruning, adjustment logic, delta-based aggregations.
+
+**Phase 3a: Row Logic** (`before_flush`)
+Three sub-loops (update, insert, delete) — one conceptual phase. The system creates `logic_row` objects and runs rules (formula, sum, count, copy, constraint), which may cascade: a derived change on one row triggers rules on related rows (e.g., `Item.amount` → adjusts `Order.amount_total` → adjusts `Customer.balance`). **Cascading via old_row tracking** — when `Order.customer_id` changes, adjusts BOTH old and new `Customer.balance`.
+
+**Phase 3b: Commit Logic** (`before_flush`, after Row Logic)
+One loop over all `processed_rows`, firing `CommitRowEvent` and `CommitConstraint` rules. Runs *after* all derivations are complete — these rules see finalized sums/counts. Use this phase for constraints that depend on aggregates.
+
+**Phase 3c: After Flush Logic** (`after_flush`)
+One loop over `processed_rows`, firing `AfterFlushRowEvent`. Database-generated primary keys are now available (autoincrement IDs assigned). Use this phase to publish Kafka messages, send webhooks, or call external APIs where you need the persisted row ID.
+
+**Key implications for rule design:**
+- `Rule.constraint` / `Rule.formula` / `Rule.sum` → Row Logic (Phase 3a)
+- `Rule.commit_row_event` / `CommitConstraint` → after aggregates finalize (Phase 3b)
+- `Rule.after_flush_row_event` → when you need database-assigned PKs, e.g., Kafka publish (Phase 3c)
 
 **The Key Developer Insight:**
 
@@ -364,7 +803,7 @@ You declare invariants on data. You don't wire rules into flows. Invocation is a
 
 **Why Declarative Rules Matter:**
 
-LogicBank provides **44X code reduction** (5 lines vs 220+ procedural) with:
+LogicBank provides **~40X code reduction** (5 lines vs 220+ procedural) with:
 - **Automatic ordering** - add rules anywhere that makes sense, confident they'll run in the right order
 - **Understanding intent** - you see WHAT it does (business rules) vs HOW (procedural steps)
 - **Maintenance** - no need to find insertion points or trace execution paths
@@ -382,7 +821,10 @@ These bugs illustrate why declarative rules are **mandatory, not optional**. Eve
 
 The rules engine eliminates this entire class of bugs by automatically handling all change paths.
 
-See `logic/declarative-vs-procedural-comparison.md` for complete analysis.
+**The Complete A/B Test:**
+
+For the full experiment comparing declarative rules vs AI-generated procedural code, including the 2 bugs Copilot missed and the AI's own analysis of why it failed, see:
+https://github.com/ApiLogicServer/ApiLogicServer-src/blob/main/api_logic_server_cli/prototypes/basic_demo/logic/procedural/declarative-vs-procedural-comparison.md
 
 ### Discovery Systems
 
@@ -403,13 +845,13 @@ See `logic/declarative-vs-procedural-comparison.md` for complete analysis.
 **Do NOT duplicate** by calling them manually. The discovery systems handle this automatically.
 
 **Implementation Locations**:
-- Business rules: `logic/logic_discovery/use_case.py`
+- Business rules: `logic/logic_discovery/[use_case_name].py` — name the file after the use case (e.g., `charge_distribution.py`, `check_credit.py`)
 - Custom APIs: `api/api_discovery/[service_name].py`
-- System automatically discovers and loads both
+- System automatically discovers and loads all `*.py` files in both directories
 
 **Pattern**:
 ```python
-# logic/logic_discovery/use_case.py
+# logic/logic_discovery/check_credit.py  ← name file after the use case
 def declare_logic():
     """Business logic rules for the application"""
     Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total)
@@ -421,11 +863,11 @@ def declare_logic():
 When users provide natural language with multiple use cases like:
 - "on Placing Orders, Check Credit" + "Use case: App Integration"
 
-**ALWAYS create separate files**:
+**Create separate files, each named for its use case**:
 - `logic/logic_discovery/check_credit.py` - for credit checking rules
 - `logic/logic_discovery/app_integration.py` - for integration rules
 
-**NEVER put everything in `use_case.py`** - that defeats the discovery system purpose.
+**Name each file after its use case** — this is how the discovery system organizes and finds your logic.
 
 ### MCP Integration
 
@@ -605,7 +1047,7 @@ THEN create tests following patterns exactly.
 - **Generate documentation** - Auto-create wiki reports showing requirements, tests, rules used, and execution traces
 - **Requirements traceability** - Complete chain from business requirement → test → declarative rule → execution log
 
-**The Innovation:** Unlike traditional testing, Behave Logic Reports show **which declarative rules fired** during each test, providing complete transparency from requirement to execution. This solves the 44X advantage in testing - tests verify "what" (business rules) not "how" (procedural code).
+**The Innovation:** Unlike traditional testing, Behave Logic Reports show **which declarative rules fired** during each test, providing complete transparency from requirement to execution. This solves the ~40X advantage in testing - tests verify "what" (business rules) not "how" (procedural code).
 
 See `test/api_logic_server_behave/` for examples and [published report](https://apilogicserver.github.io/Docs/Behave-Logic-Report/).
 
@@ -671,7 +1113,7 @@ open reports/Behave\ Logic\ Report.md
 - Each scenario gets a `<details>` section with:
   - **Rules Used**: Which declarative rules fired (numbered list)
   - **Logic Log**: Complete trace showing before→after values for all adjustments
-- Demonstrates the 44X code reduction by showing rule automation
+- Demonstrates the ~40X code reduction by showing rule automation
 
 **LOGIC LOG FORMATTING**:
 
@@ -1116,7 +1558,7 @@ class ItemB2BMapper(RowDictMapper):
 - **Related Entities**: Nested RowDictMapper instances for child records
 - **Automatic Joins**: System handles foreign key relationships automatically
 
-**Business Logic Integration**: All generated APIs automatically inherit the full LogicBank rule engine through the discovery systems (`logic/logic_discovery/auto_discovery.py` and `api/api_discovery/auto_discovery.py`), ensuring data integrity, calculations, and constraints without additional code. Rules are automatically loaded from `logic/logic_discovery/use_case.py` and APIs from `api/api_discovery/[service_name].py` at startup.
+**Business Logic Integration**: All generated APIs automatically inherit the full LogicBank rule engine through the discovery systems (`logic/logic_discovery/auto_discovery.py` and `api/api_discovery/auto_discovery.py`), ensuring data integrity, calculations, and constraints without additional code. Rules are automatically loaded from all `*.py` files in `logic/logic_discovery/` and APIs from `api/api_discovery/[service_name].py` at startup.
 
 **Testing B2B APIs**: The project includes comprehensive testing infrastructure:
 - **REST Client Tests**: `test_requests.http` - Test directly in VS Code with REST Client extension
@@ -1151,7 +1593,7 @@ To add tables / columns to the database (highly impactful - request permission):
    ```bash
    alembic upgrade head
    ```
-5. Offer to update ui/admin/admin.yaml to add the new table or column to the Admin UI.
+5. After rebuild, offer the admin.yaml swap: back up `admin.yaml` → `admin.yaml.bak`, copy `admin-merge.yaml` → `admin.yaml`. If user declines, they merge manually.
 
 **General Migration Notes**:
 - Stop the server before running migrations to avoid database locking

@@ -29,7 +29,7 @@ changelog:
     (inserting before the `<h2>`) rather than `getContent()` appending after — matches how
     `nw_sample` actually structures the file, not just a change in append-vs-prepend order.
   - 2.29 (Jul 2026) - **Queries and Dashboards CE shipped** — confirmed intact through a full
-    BLT run (`prototypes/base` v3.32 `.copilot-instructions.md`, `queries_dashboards.md`
+    BLT run (`prototypes/base` v3.32 `copilot-instructions.md`, `queries_dashboards.md`
     v1.3, `welcome.md` sync all present in freshly-reinstalled venv). Summary of the full
     arc (v2.20–2.28 above have the incremental detail): replaces `genai-logic genai-graphics`
     for chart/dashboard requests with direct AI implementation — capability 18, explain-vs-do
@@ -66,8 +66,8 @@ changelog:
     Northwind Category/Product/Order fallback (everyone recognizes customers/orders/products).
   - 2.26 (Jul 2026) - Found and fixed a SEPARATE, pre-existing drift bug while live-testing
     the Queries/Dashboards CE in a freshly created `nw` project: `.github/welcome.md` (shown
-    on "load .github/.copilot-instructions.md") has its OWN hand-maintained 9-item "What can
-    I help you with?" list, entirely separate from `.copilot-instructions.md`'s "Capabilities
+    on "load .github/copilot-instructions.md") has its OWN hand-maintained 9-item "What can
+    I help you with?" list, entirely separate from `copilot-instructions.md`'s "Capabilities
     Reference" section (shown on "show me what you can help me with") — nothing keeps them in
     sync, and welcome.md's list had gone stale: missing Vital Signs, Logic Diagram, MCP, FAQ,
     EAI Consume, and (until now) Queries and Dashboards. This is NOT the v2.24 basic_demo
@@ -76,7 +76,7 @@ changelog:
     updated as capabilities were added over many versions. Fixed by syncing welcome.md's list
     to the current 14 relevant capabilities (base source, propagated to venv). **Open risk,
     accepted for now:** these two lists can drift apart again — every future capability added
-    to `.copilot-instructions.md`'s Capabilities Reference should also be added to
+    to `copilot-instructions.md`'s Capabilities Reference should also be added to
     `welcome.md`'s shorter list, or this bug recurs. No automated check enforces this today.
   - 2.25 (Jul 2026) - Queries/Dashboards CE (v2.23) had a real gap, found by dry-running the
     trigger against the question "how would I create a dashboard?": the mandatory sequence
@@ -85,7 +85,7 @@ changelog:
     Vibe/React `fetch()` consumption) and "full dashboard" (query + Admin App iframe
     embedding) — same underlying query code, different deliverable, and the CE didn't force
     that choice before coding. Fixed in `prototypes/base` v3.32 (both `.github/
-    .copilot-instructions.md` and `docs/training/queries_dashboards.md`, propagated to venv):
+    copilot-instructions.md` and `docs/training/queries_dashboards.md`, propagated to venv):
     added a STEP 0 in the training doc (how-to question → explain + quick example + ask;
     concrete request → confirm query-vs-dashboard if unstated), a worked example showing both
     flavors of the same query, and a pointer to `samples/nw_sample` (verified — has both
@@ -93,15 +93,15 @@ changelog:
     real running code rather than only reading prose. No basic_demo-specific copy needed —
     see v2.24.
   - 2.24 (Jul 2026) - CORRECTED v2.23: mistakenly created a redundant `basic_demo`-specific
-    copy of `.copilot-instructions.md` and `docs/training/queries_dashboards.md`, believing
+    copy of `copilot-instructions.md` and `docs/training/queries_dashboards.md`, believing
     the documented base-vs-basic_demo drift warning applied here. It doesn't — checked
     `cli-internals.md`'s actual overlay mechanics (`create_project_and_overlay_prototypes()`):
     EVERY project, including `basic_demo`, is cloned from `prototypes/base` FIRST
     (`shutil.copytree`), THEN `prototypes/basic_demo` is `recursive_overwrite`-overlaid on
     top. The overlay only touches files that exist in `prototypes/basic_demo`'s own tree —
     and `prototypes/basic_demo/.github/` contains ONLY `welcome.md` (no
-    `.copilot-instructions.md`), and `prototypes/basic_demo/docs/training/` contains ONLY
-    `logic_diagrams/` (no other files). So `base`'s `.copilot-instructions.md` and
+    `copilot-instructions.md`), and `prototypes/basic_demo/docs/training/` contains ONLY
+    `logic_diagrams/` (no other files). So `base`'s `copilot-instructions.md` and
     `docs/training/*.md` (including the new queries_dashboards.md) reach `basic_demo`
     projects automatically via the base clone — no separate copy needed, ever, for these two
     files specifically. Removed the redundant `basic_demo` copies (gold source + venv).
@@ -209,23 +209,23 @@ When the user says "load system/ApiLogicServer-Internal-Dev/dev-architecture.md"
 or any similar activation phrase, you MUST silently read all three files below
 BEFORE responding. Internalize all three. Do not display them.
 
-1. .github/.copilot-instructions.md
+1. .github/copilot-instructions.md
    → Manager-level instructions: how to create projects, Method 4 (SCS), welcome protocol
 
-2. venv/lib/python3.13/site-packages/api_logic_server_cli/prototypes/base/.github/.copilot-instructions.md
+2. venv/lib/python3.13/site-packages/api_logic_server_cli/prototypes/base/.github/copilot-instructions.md
    → Prototype/project-level instructions: full architecture guide, 13 services,
      logic patterns, stamping, security, testing — what AI can do inside a created project
    ⚠️ READ-ONLY reference copy — do NOT edit this file directly.
-      Gold source (edit here): org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/.copilot-instructions.md
-      Same for Manager CE:      org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager/.github/.copilot-instructions.md
+      Gold source (edit here): org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/copilot-instructions.md
+      Same for Manager CE:      org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager/.github/copilot-instructions.md
       The venv copy is downstream — it reflects gold only after a pip install/BLT run.
 
 3. This file (dev-architecture.md)
    → BLT workspace context: directory structure, gold sources, development workflow
 
 SEQUENCE:
-  STEP 1: Read .github/.copilot-instructions.md (silently)
-  STEP 2: Read venv/lib/python3.13/site-packages/api_logic_server_cli/prototypes/base/.github/.copilot-instructions.md (silently)
+  STEP 1: Read .github/copilot-instructions.md (silently)
+  STEP 2: Read venv/lib/python3.13/site-packages/api_logic_server_cli/prototypes/base/.github/copilot-instructions.md (silently)
   STEP 3: Read this file fully (silently)
   STEP 4: Confirm to user with ONE short sentence, e.g.:
           "Context loaded — Manager instructions, prototype CE, and BLT workspace context are active."
@@ -274,7 +274,7 @@ system mirroring this one, entry point `CLAUDE.md` at its root, pointing into
 lineage, release coupling with GenAI-Logic, Executable Requirements context) plus sibling
 bug-investigation docs (`multi-relationship-bug.md`, `dragons-deferred-adjustment.md`) and
 `release-management.md`. That doc explicitly cross-references back into *this* file and
-into `prototypes/base`'s CE (`.copilot-instructions.md`, `docs/training/logic_bank_api.md`
+into `prototypes/base`'s CE (`copilot-instructions.md`, `docs/training/logic_bank_api.md`
 — the "Rosetta Stone") — so the two repos' dev-architecture docs are meant to be read
 together when a bug spans the GL/LB boundary, not independently.
 
@@ -285,8 +285,8 @@ together when a bug spans the GL/LB boundary, not independently.
 - Framework changes happen in `org_git/ApiLogicServer-src/`
 - Rule engine source lives in `org_git/LogicBank/` — related project, sibling clone, same convention
 - **CE gold sources** (edit here, not in venv):
-  - Project CE: `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/.copilot-instructions.md`
-  - Manager CE: `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager/.github/.copilot-instructions.md`
+  - Project CE: `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/copilot-instructions.md`
+  - Manager CE: `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager/.github/copilot-instructions.md`
   - Propagation: org_git → pip install/BLT → venv copy → created projects
 
 **`clean/genai-logic` — also produced by BLT.** Sibling of this BLT Manager, at
@@ -360,16 +360,16 @@ This document contains **everything** you need to understand the system:
 - **`api_logic_server_cli/cli-internals.md`** (gold source) - Internal developer reference: project creation mechanics (base clone + overlay pattern), clone_and_overlay_prototypes file roles, manager.py existing-workspace short-circuit, key files to edit for common tasks. **Read this before working on project creation, prototypes, or manager workspace.**
 
 ### For Creating New Projects:
-- **Manager-level `.copilot-instructions.md`** - How to CREATE projects (in workspace root)
-  - **Location:** `prototypes/manager/.github/.copilot-instructions.md`
+- **Manager-level `copilot-instructions.md`** - How to CREATE projects (in workspace root)
+  - **Location:** `prototypes/manager/.github/copilot-instructions.md`
   - **Size:** ~86 lines
   - **Scope:** Creating projects ONLY (3 methods: existing DB, GenAI, new DB)
   - **Purpose:** Instructions for creating new projects with `genai-logic create` commands
   - **Does NOT contain:** Project customization, logic patterns, testing, security, etc.
 
 ### For Working Within Created Projects:
-- **Project-level `.copilot-instructions.md`** - How to EXTEND/CUSTOMIZE projects (auto-generated in each project)
-  - **Location:** `prototypes/base/.github/.copilot-instructions.md` (template) and `prototypes/basic_demo/.github/.copilot-instructions.md` (tutorial version)
+- **Project-level `copilot-instructions.md`** - How to EXTEND/CUSTOMIZE projects (auto-generated in each project)
+  - **Location:** `prototypes/base/.github/copilot-instructions.md` (template) and `prototypes/basic_demo/.github/copilot-instructions.md` (tutorial version)
   - **Size:** ~740 lines
   - **Scope:** Complete architecture guide for EACH created project
   - **Purpose:** 13 Main Services (what AI can do in a project):
@@ -387,7 +387,7 @@ This document contains **everything** you need to understand the system:
     12. **Adding Events** - Row events for integrations (Kafka, webhooks, etc.)
     13. **Critical Patterns** - React component best practices, null-safe constraints, test repeatability
   - ⚠️ **CRITICAL:** These are TWO DIFFERENT FILES - never replace the per-project version with the manager version!
-  - 🚨 **PROPAGATION PROBLEM:** Changes to project-level instructions must be carefully copied to both `prototypes/base/.github/.copilot-instructions.md` AND `prototypes/basic_demo/.github/.copilot-instructions.md`
+  - 🚨 **PROPAGATION PROBLEM:** Changes to project-level instructions must be carefully copied to both `prototypes/base/.github/copilot-instructions.md` AND `prototypes/basic_demo/.github/copilot-instructions.md`
   - 🪤 **`base` is the one that matters — `basic_demo` is only a testing/tutorial convenience.** Real-world incident (Jun 2026): a governance/A-B-test answer block existed only in `basic_demo` — added there during CE drafting/testing — and was never ported to `base`. Everyone validating the answer kept testing against `basic_demo` (the easy, fast-to-load file) and got "excellent" results for months, while every real customer project (created from `base`) silently lacked the content. **When drafting or testing new CE content, write/verify it in `base` first** — `basic_demo` should only ever be a copy of what's already proven in `base`, never the original.
   - 📋 **OBX PATTERN (v2.3, Oct 2025):** Use **positive instructions** for AI behavior:
     - ✅ **Works:** "When user asks to read instructions, respond with the Welcome section content below"
@@ -465,9 +465,9 @@ This document contains **everything** you need to understand the system:
 
 - **OBX (Out-of-Box Experience) Design** - Manager → Project flow optimization (October 2025):
   - **Manager README:** "🚀 First Time Here? Start with basic_demo" section (clear default path)
-  - **Manager .copilot-instructions.md:** "CRITICAL: ALWAYS start" directive (no choices, single path)
+  - **Manager copilot-instructions.md:** "CRITICAL: ALWAYS start" directive (no choices, single path)
   - **Project README:** "🤖 Ready to Explore? Recommended: Guide me through" (guided tour as primary option)
-  - **Project .copilot-instructions.md:** "🎯 Most Common Next Steps" (5 succinct items at top)
+  - **Project copilot-instructions.md:** "🎯 Most Common Next Steps" (5 succinct items at top)
   - **Goal:** Eliminate friction/choice paralysis, make basic_demo → guided tour the clear default
   - **Problem addressed:** Users didn't automatically know to start with basic_demo, didn't default to guided tour
   - **Solution:** Strengthen every touch point in the journey to push toward the optimal path
@@ -492,10 +492,10 @@ This document contains **everything** you need to understand the system:
 
 ### The Architecture
 
-**The Rosetta Stone (RS)** - LogicBank API reference embedded in project-level `.copilot-instructions.md`:
-- **Source:** `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/.copilot-instructions.md`
+**The Rosetta Stone (RS)** - LogicBank API reference embedded in project-level `copilot-instructions.md`:
+- **Source:** `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/copilot-instructions.md`
 - **Size:** ~740 lines (includes complete LogicBank rule syntax, patterns, testing guide references)
-- **Propagation:** Copied to every created project's `.github/.copilot-instructions.md`
+- **Propagation:** Copied to every created project's `.github/copilot-instructions.md`
 - **Purpose:** Trains AI assistants working within projects to correctly translate NL → LogicBank rules
 
 ### Exporting CE Materials for Online Evaluation
@@ -503,7 +503,7 @@ This document contains **everything** you need to understand the system:
 **Script:** `org_git/Docs/sync_ce_to_docs.sh`
 
 **What it does:**
-1. **Copies bootstrap:** `.copilot-instructions.md` → `Eval-copilot-instructions.md` (includes RS)
+1. **Copies bootstrap:** `copilot-instructions.md` → `Eval-copilot-instructions.md` (includes RS)
 2. **Copies 12 training files:** `docs/training/*.md` → `Eval-*.md`
    - logic_bank_patterns.md, logic_bank_api.md, testing.md, probabilistic_logic.md, etc.
 3. **Transforms references:** Internal links `docs/training/*.md` → `Eval-*.md`
@@ -546,7 +546,7 @@ Help me understand what this actually does - I want facts, not sales pitch.
 ### Maintenance Workflow
 
 **When updating CE materials:**
-1. **Edit source:** `ApiLogicServer-src/prototypes/base/.github/.copilot-instructions.md` or `docs/training/*.md`
+1. **Edit source:** `ApiLogicServer-src/prototypes/base/.github/copilot-instructions.md` or `docs/training/*.md`
 2. **Test locally:** BLT creates projects with updated CE
 3. **Sync to Docs:** Run `cd org_git/Docs && ./sync_ce_to_docs.sh`
 4. **Verify:** Check `git diff docs/Eval-*.md`
@@ -570,7 +570,7 @@ Help me understand what this actually does - I want facts, not sales pitch.
    - Closes with: "I have some key concepts you'll probably want to explore. Just ask."
    - No detailed explanations, FAQs, or resource lists
    
-2. **Evaluation Checklist** (in `.copilot-instructions.md`) - Structured discovery system
+2. **Evaluation Checklist** (in `copilot-instructions.md`) - Structured discovery system
    - 15 items grouped: Core Understanding → Key Features → Hands-On → Deep Dives → Critical Questions
    - First item: "What IS this?" - Explains 4 layers (Infrastructure gen → Rules engine → Context Engineering → AI Codegen)
    - Critical for addressing "is it AI or infrastructure?" confusion
@@ -610,7 +610,7 @@ Help me understand what this actually does - I want facts, not sales pitch.
 
 ### 1. Manager Context Engineering (Claude/Copilot)
 **Purpose:** AI assistance for **creating projects**  
-**Location:** Manager workspace `.copilot-instructions.md` (~86 lines)  
+**Location:** Manager workspace `copilot-instructions.md` (~86 lines)  
 **What it does:** Guides AI to help developers:
 - Create projects from existing databases
 - Create projects from natural language (via GenAI CLI)
@@ -621,7 +621,7 @@ Help me understand what this actually does - I want facts, not sales pitch.
 
 ### 2. Project Context Engineering (Claude/Copilot)
 **Purpose:** AI assistance for **customizing projects** after creation  
-**Location:** Per-project `.copilot-instructions.md` (~740 lines) + `docs/training/` folder  
+**Location:** Per-project `copilot-instructions.md` (~740 lines) + `docs/training/` folder  
 **What it does:** Guides AI to help developers:
 - Add business logic (translate NL → LogicBank rules)
 - Add custom API endpoints
@@ -756,11 +756,11 @@ Rule.formula(
 1. **Read [Architecture-Internals.md](https://apilogicserver.github.io/Docs/Architecture-Internals/)** for complete technical context
 2. Identify which documentation to consult based on task:
    - Framework development → Architecture-Internals.md
-   - Project creation → Manager-level `.copilot-instructions.md` (86 lines, in prototypes/manager/)
-   - Project customization → Project-level `.copilot-instructions.md` (740 lines, in prototypes/base/)
+   - Project creation → Manager-level `copilot-instructions.md` (86 lines, in prototypes/manager/)
+   - Project customization → Project-level `copilot-instructions.md` (740 lines, in prototypes/base/)
    - Adding logic → `docs/training/logic_bank_api.prompt`
    - Creating tests → `docs/training/testing.md`
-3. **CRITICAL:** Never confuse the two `.copilot-instructions.md` files:
+3. **CRITICAL:** Never confuse the two `copilot-instructions.md` files:
    - Manager version = how to CREATE projects (small, workspace-level)
    - Project version = how to CUSTOMIZE projects (large, per-project with architecture details)
 4. When your role is unclear, I'll ask: "Are you simulating an end user or working on internals?"
@@ -1200,18 +1200,18 @@ venv/lib/python3.13/site-packages/api_logic_server_cli/
 ├── prototypes/
 │   ├── base/                    # Template for all projects (genai-logic create)
 │   │   ├── .github/
-│   │   │   └── .copilot-instructions.md    # 740+ lines - Context Engineering
+│   │   │   └── copilot-instructions.md    # 740+ lines - Context Engineering
 │   │   ├── logic/
 │   │   ├── api/
 │   │   ├── database/
 │   │   └── docs/training/       # Universal training materials
 │   ├── basic_demo/              # Special tutorial project template
 │   │   ├── .github/
-│   │   │   └── .copilot-instructions.md    # Tutorial-specific version
+│   │   │   └── copilot-instructions.md    # Tutorial-specific version
 │   │   └── tutor.md             # AI-guided tour
 │   └── manager/                 # Manager workspace template
 │       ├── .github/
-│       │   └── .copilot-instructions.md    # 86 lines - Creating projects
+│       │   └── copilot-instructions.md    # 86 lines - Creating projects
 │       └── samples/basic_demo_sample/      # add-cust content
 ```
 
@@ -1219,7 +1219,7 @@ venv/lib/python3.13/site-packages/api_logic_server_cli/
 1. **Dev Source:** `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/`
 2. **BLT Install:** Copies to `venv/lib/.../api_logic_server_cli/prototypes/`
 3. **Runtime:** `genai-logic create` reads from **venv location**, copies to new project
-4. **Result:** New project contains `.copilot-instructions.md` + `docs/training/` from venv prototypes
+4. **Result:** New project contains `copilot-instructions.md` + `docs/training/` from venv prototypes
 
 **Why This Matters:**
 
@@ -1238,7 +1238,7 @@ Your architectural choices in prototypes become templates for all future project
 
 1. **Quick iteration / venv test (NOW):**
    Edit directly in the installed venv — changes take effect immediately, no BLT required.  This applies to any file under `venv/lib/python3.13/site-packages/api_logic_server_cli/`, including:
-   - Prototypes: `prototypes/base/.github/.copilot-instructions.md`, `prototypes/base/.vscode/launch.json`, `prototypes/base/.vscode/settings.json`, etc.
+   - Prototypes: `prototypes/base/.github/copilot-instructions.md`, `prototypes/base/.vscode/launch.json`, `prototypes/base/.vscode/settings.json`, etc.
    - Generator: `api_logic_server.py`
    - Any other CLI source file
 
@@ -1247,7 +1247,7 @@ Your architectural choices in prototypes become templates for all future project
    ⚠️ **Risk:** Changes in venv are lost on next BLT run.  Propagate back to `org_git/ApiLogicServer-src/` before running BLT.
 
 2. **Permanent propagation (LATER):**
-   - Copy changes to: `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/.copilot-instructions.md`
+   - Copy changes to: `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/.github/copilot-instructions.md`
    - Run BLT: Reinstalls to venv, propagates everywhere
    - Commit to GitHub: Survives future BLT runs
 
@@ -1258,7 +1258,7 @@ Your architectural choices in prototypes become templates for all future project
 
 **Propagating Changes to Source:**
 - **Copilot Instructions:** Use `system/ApiLogicServer-Internal-Dev/propagate_copilot_changes.py`
-  - Copies changes from `tests/ApiLogicProject/.github/.copilot-instructions.md` → source prototype
+  - Copies changes from `tests/ApiLogicProject/.github/copilot-instructions.md` → source prototype
   - Usage: `python3 build_and_test/ApiLogicServer/system/ApiLogicServer-Internal-Dev/propagate_copilot_changes.py`
   - Extracts sections between title and "Key Technical Points"
   - Ensures edits propagate to future project creations

@@ -21,7 +21,7 @@ This illustrates basic [GenAI-Logic](https://www.genai-logic.com/product/key-fea
 
 **🤖 Bootstrap Copilot by pasting the following into the chat:**
 ```bash title='🤖 Bootstrap Copilot by pasting the following into the chat'
-Please load `.github/.copilot-instructions.md`.
+Please load `.github/copilot-instructions.md`.
 ```
 
 <br>
