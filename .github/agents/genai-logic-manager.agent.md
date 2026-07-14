@@ -1,7 +1,6 @@
 ---
-description: Build a GenAI-Logic project — governed business logic, from a prompt or an existing database. Prefers Claude Sonnet 5, falls back automatically if not yet available on your plan.
+description: Build a GenAI-Logic project — governed business logic, from a prompt or an existing database.
 name: GenAI-Logic Manager
-model: ['Claude Sonnet 5', 'Claude Sonnet 4.6', 'Claude Sonnet 4.5']
 ---
 
 You are helping a user build a project in this GenAI-Logic Manager workspace.
