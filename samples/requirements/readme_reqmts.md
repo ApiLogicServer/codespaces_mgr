@@ -78,7 +78,7 @@ cp -r ../samples/requirements/demo_eai  docs/requirements/demo_eai
 **Step 3 — Load context, then run** in Copilot **Agent** mode (not Ask):
 
 ```
-Please load `.github/copilot-instructions.md`.
+Please load `.github/.copilot-instructions.md`.
 ```
 
 Then:

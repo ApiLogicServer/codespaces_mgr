@@ -28,7 +28,7 @@ For example - a business can continue to operate even if a tanker has blocked th
 
 **🤖 Bootstrap Copilot by pasting the following into the chat:**
 ```bash title='🤖 Bootstrap Copilot by pasting the following into the chat'
-Please load `.github/copilot-instructions.md`
+Please load `.github/.copilot-instructions.md`
 ```
 
 <br>

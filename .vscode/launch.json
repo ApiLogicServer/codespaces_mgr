@@ -23,7 +23,7 @@
             "internalConsoleOptions": "openOnSessionStart",
             "serverReadyAction": {
                 "action": "openIntegratedBrowser",
-                "pattern": "http://127\\.0\\.0\\.1:(\\d+)"
+                "pattern": "http://localhost:(\\d+)"
             }
         },
         {
@@ -43,7 +43,7 @@
             "id": "runProjectName",
             "type": "promptString",
             "description": "Project folder to run (e.g. samples/basic_demo_sample)",
-            "default": "basic_demo"
+            "default": "samples/basic_demo_sample"
         }
     ]
 }

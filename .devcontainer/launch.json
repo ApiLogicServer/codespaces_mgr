@@ -20,7 +20,11 @@
             "python": "/usr/local/bin/python",
             "redirectOutput": true,
             "console": "integratedTerminal",
-            "internalConsoleOptions": "openOnSessionStart"
+            "internalConsoleOptions": "openOnSessionStart",
+            "serverReadyAction": {
+                "action": "openIntegratedBrowser",
+                "pattern": "http://localhost:(\\d+)"
+            }
         },
         {
             "name": "Python: Current File",

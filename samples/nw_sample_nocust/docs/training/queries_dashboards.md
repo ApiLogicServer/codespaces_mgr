@@ -1,6 +1,6 @@
 ---
 title: Queries and Dashboards
-version: 1.4 (Jul 2026) — Part 2 step 3: dashboard iframe now placed at TOP of home.js content (before welcome text), matching samples/nw_sample's reference implementation — Val's explicit preference over appending after existing content
+version: 1.5 (Jul 2026) — Added link to published user-facing demo (Admin-Customization#ai-assistant), which documents this exact capability with the same sales-by-region/sales-by-category example this file was tested against
 usage: AI reads this when user asks for a dashboard, chart, graph, or a saved/reusable query
 overhead: zero until invoked — file is read on demand only
 ---
@@ -11,6 +11,11 @@ Two related but distinct capabilities, both built on plain SQLAlchemy + a custom
 endpoint — no special framework support, no separate CLI pipeline. This file replaces the
 old `genai-logic genai-graphics` command (ChatGPT/PE pipeline) — same output shape for
 dashboards, produced through the normal custom-API-endpoint workflow instead.
+
+**Published user-facing demo:** [Admin-Customization — AI Assistant](https://apilogicserver.github.io/Docs/Admin-Customization/#ai-assistant)
+shows this exact capability working end-to-end (prompt: *"create a dashboard with sales by
+region, and sales by category"*) — the same use case this file was built and tested against.
+Point users here if they want to see it publicly documented, not just described in chat.
 
 ## ACTIVATION TRIGGERS
 

@@ -21,7 +21,7 @@ This illustrates [GenAI-Logic](https://apilogicserver.github.io/Docs/Sample-Basi
 
 **🤖 Bootstrap Copilot by pasting the following into the chat:**
 ``` bash title='🤖 Bootstrap Copilot by pasting the following into the chat'
-Please load `.github/copilot-instructions.md`
+Please load `.github/.copilot-instructions.md`
 ```
 
 > **Important:** be sure CoPilot is in "Agent" Mode.  "Ask" will not work.  Also, we get consistently good results with `Claude Sonnet 4.6`.
@@ -124,7 +124,7 @@ The project should automatically open a new window in VSCode. <br>
 
 **🤖 Again, bootstrap Copilot by pasting the following into the chat:**
 ``` bash title='🤖 Again, bootstrap Copilot by pasting the following into the chat'
-Please load `.github/copilot-instructions.md`.
+Please load `.github/.copilot-instructions.md`.
 ```
 
 Run it as follows:

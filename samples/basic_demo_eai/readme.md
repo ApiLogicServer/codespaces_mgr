@@ -41,7 +41,7 @@ Propagation: see api_logic_server_cli/clone_and_overlay_prototypes/create_readme
 
 **🤖 Bootstrap Copilot by pasting the following into the chat:**
 ```bash title="🤖 Bootstrap Copilot by pasting the following into the chat"
-Please load `.github/copilot-instructions.md`
+Please load `.github/.copilot-instructions.md`
 ```
 
 
@@ -133,7 +133,7 @@ The project should automatically open a new window in VSCode. <br>
 
 **🤖 Again, bootstrap Copilot by pasting the following into the chat:**
 ``` bash title='🤖 Again, bootstrap Copilot by pasting the following into the chat'
-Please load `.github/copilot-instructions.md`.
+Please load `.github/.copilot-instructions.md`.
 ```
 
 Run it as follows:
