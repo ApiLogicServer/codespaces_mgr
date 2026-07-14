@@ -48,7 +48,9 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 ## 🤖 AI Assistance
 
-**Using GitHub Copilot? In the Copilot Chat panel, type this and press Enter:**
+**Using GitHub Copilot?** VS Code's Chat panel can be backed by different extensions (Copilot, Claude Code, Gemini, Codex, etc.) — check the panel's title bar or model picker actually says **Copilot** before continuing; `/agent` is a Copilot-only command and other extensions will silently ignore it and fall back to their own default model instead of erroring.
+
+**Once you've confirmed Copilot Chat is active, type this and press Enter:**
 
 ```
 /agent .github/agents/genai-logic-manager.agent.md
