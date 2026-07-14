@@ -54,8 +54,6 @@ In the Copilot Chat panel, click the **Auto** pill at the bottom of the chat box
 Please load `.github/copilot-instructions.md`.
 ```
 
-![Choosing Claude Sonnet 5 from the model picker](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/git-codespaces/genai-logic-web-studio-choose-agent.png?raw=true)
-
 <details markdown>
 <summary>Detailed steps, and what this costs</summary>
 
@@ -69,6 +67,8 @@ Please load `.github/copilot-instructions.md`.
 4. Type the command above and press Enter.
 
 &nbsp;
+
+![Choosing Claude Sonnet 5 from the model picker](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/git-codespaces/genai-logic-web-studio-choose-agent.png?raw=true)
 
 **Which model, and what does this cost?**
 
