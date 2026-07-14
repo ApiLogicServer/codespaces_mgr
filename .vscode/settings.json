@@ -19,5 +19,8 @@
     "python.terminal.activateEnvironment": true,
     "workbench.startupEditor": "readme",
     "workbench.colorTheme": "Arduino Light",
-    "markdown.previewFrontMatter": "hide"
+    "markdown.previewFrontMatter": "hide",
+    "workbench.editorAssociations": {
+        "*.md": "vscode.markdown.preview.editor"
+    }
 }

@@ -30,7 +30,11 @@
 				"ms-python.debugpy"
             ],
             "settings": {
-                "python.defaultInterpreterPath": "/usr/local/bin/python"
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "workbench.secondarySideBar.defaultVisibility": "visible",
+                "workbench.editorAssociations": {
+                    "*.md": "vscode.markdown.preview.editor"
+                }
             }
         }
     },
