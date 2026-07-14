@@ -19,7 +19,6 @@ What the sync does:
        (.devcontainer-codespaces/ IS synced — it becomes .devcontainer/ in step 2)
     2. Apply Codespaces-only overrides:
        - rename .devcontainer-codespaces -> .devcontainer
-       - CLAUDE.md.append  -> prepended to CLAUDE.md (idempotent)
        - gitignore.append  -> appended to .gitignore (idempotent)
        - README.md         -> strip front matter + <style> block; inject browser/CS notes
        - .vscode/settings.json -> python.defaultInterpreterPath -> /usr/local/bin/python
@@ -67,13 +66,11 @@ SRC_ROOT   = SCRIPT_DIR.parent          # Manager root
 OVERRIDES  = SCRIPT_DIR                 # .devcontainer-codespaces/
 
 SYNC_PATHS = [
-    ".claude",
     ".devcontainer-codespaces",
     ".env",
     ".github",
     ".gitignore",
     ".vscode",
-    "CLAUDE.md",
     "CodeSpaces.md",
     "README.md",
     "readme_vibe.md",
@@ -290,20 +287,6 @@ def main():
         shutil.rmtree(dc_dst)
     dc_src.rename(dc_dst)
     print("  ✅ .devcontainer/")
-
-    # CLAUDE.md — prepend Codespaces venv warning after title line
-    print("Step 2b: Applying CLAUDE.md override...")
-    claude_path   = target / "CLAUDE.md"
-    claude_append = (OVERRIDES / "CLAUDE.md.append").read_text()
-    claude_text   = claude_path.read_text()
-    if "ApiLogicServer is pre-installed globally" not in claude_text:
-        lines      = claude_text.splitlines(keepends=True)
-        title_line = lines[0]
-        rest       = "".join(lines[1:])
-        claude_path.write_text(title_line + "\n" + claude_append + "\n" + rest)
-        print("  ✅ CLAUDE.md prepended")
-    else:
-        print("  (already present, skipped)")
 
     # .gitignore — append .venv/ if not present
     print("Step 2c: Applying .gitignore override...")
