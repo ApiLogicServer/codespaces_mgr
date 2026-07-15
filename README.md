@@ -48,7 +48,7 @@ This is the start page for the [GenAI-Logic Manager](https://apilogicserver.gith
 
 ## 🤖 AI Assistance
 
-We get good results with **Claude Sonnet 5** — any AI assistant works (Claude Code, GitHub Copilot, etc.), but pick Sonnet 5 if you can. Then say:
+We get good results with **Claude Sonnet 5**. In this environment, GitHub Copilot is what's available — pick Sonnet 5 if you can. Then say:
 
 ```
 Please load `.github/.copilot-instructions.md`.
@@ -65,7 +65,6 @@ Please load `.github/.copilot-instructions.md`.
 
 &nbsp;
 
-Any AI assistant works here — Claude Code, the Claude Code plugin, GitHub Copilot, etc. The steps below are for **GitHub Copilot in VS Code**; if you're using something else, the same idea applies, just paste the command above into whatever chat/agent interface you have open.
 
 **Step by step:**
 1. Open the **Chat** tab in the right-hand panel.
