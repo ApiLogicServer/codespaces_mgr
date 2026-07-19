@@ -2,7 +2,7 @@
 title: Welcome - see end for instructions to hide this
 Description: Instant mcp-enabled microservices, standard projects, declarative business logic
 Source: docs/Manager-readme
-version info: 17.02.06 (07/09/2026)
+version info: 17.03.03 (07/14/2026)
 do_process_code_block_titles: True
 Used: Manager Readme (via copy_md())
 demo_customs: Customs-readme
@@ -27,14 +27,39 @@ codespaces_patch: |
 
 ### Governed Executable Requirements
 
-One prompt, or your existing database, **builds a working API and Admin App**, then you declare business logic **you can read, trust, and maintain** — *5 rules instead of ~200 lines of code*.
+Describe it, and get a real system:
 
-<details markdown>
-<summary>The Key Idea: Combine AI with Declarative Logic</summary>
+<details markdown open>
+<summary>For <strong>today:</strong> a working API, Admin App, and governed logic, <strong>built from a prompt</strong></summary>
 
-<br>Leverage AI for what it's great at — database design, data mapping, and more. Your AI assistant does the translation: plain English, Gherkin, even actual regulation text — it reads your business logic and translates it into rules, not code.
+<br>Leverage AI for what it's great at — database design, data mapping, and more. Start from a prompt alone and AI designs the database too, or point it at your existing database and skip straight to the logic. Either way, your AI assistant reads whatever you already have — plain English, Gherkin, pseudocode — and hands business logic off as rules, not code.
 
-You'll see the enforcement yourself in a few minutes: those rules run at **one commit point**, no matter which path the transaction came in on — API, MCP, agent, Kafka. **No bypass.**
+</details>
+
+&nbsp;
+
+<details markdown open>
+<summary>And it <strong>fits</strong>: uses your existing org, technology, and practices</summary>
+
+<br>What comes out the other end is exactly what you already run:
+
+1. **A business user can drive it, in the requirements format they already write** — plain English, Gherkin, pseudocode, even actual regulation text; no database design, screen painting, or scripting to learn.
+2. **Standard IDE, standard language** — a project in the IDE and language you already use, ready to extend.
+3. **Standard deploy** — a standard container; cloud or on-prem, no additional charges.
+4. **Standard enterprise infrastructure** — pluggable security (SQL or Keycloak), full REST API, event/messaging integration (Kafka, webhooks) — built in, not bolted on, same as any other enterprise system.
+
+</details>
+
+&nbsp;
+
+<details markdown open>
+<summary>And for <strong>tomorrow</strong>: systems <strong><em>governed</em></strong> by rules you can <strong>Read, Trust, and Maintain</strong></summary>
+
+<br>**The key idea:** that split — AI for executable intent, declarative rules for governance — is the whole point. Here's what "governed" means in practice:
+
+- **Read** — 5 rules, not ~200 lines of code. A rule you can point to and know what it does, at a glance.
+- **Trust** — those rules run at **one commit point**, no matter which path the transaction came in on — API, MCP, agent, Kafka. **No bypass.**
+- **Maintain** — add a rule anywhere, and the engine resolves dependency order automatically. No untangling existing code to find where it belongs.
 
 And you're not alone throughout: ask your AI assistant anything — architecture, rules, debugging, deployment, or how the system works.
 

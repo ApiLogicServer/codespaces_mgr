@@ -1,4 +1,4 @@
-# Manager Workspace — Claude Code Instructions
+@.github/copilot-instructions.md
 
 ## ⚠️ Codespaces: ApiLogicServer is pre-installed globally — no venv
 This devcontainer is built `FROM apilogicserver/api_logic_server`, which already has
@@ -19,21 +19,28 @@ at `/usr/local/bin/python`.
 ---
 
 
-## ⚠️ NEVER run `genai-logic genai`
-Not the preferred approach. Do not run it, even for prompt files.
+## Claude Code — dev-architecture context
 
----
+**Best-effort auto-load:** at the start of this session, check if any ancestor directory
+of the current workspace is literally named `ApiLogicServer-dev` (framework dev checkout
+signal, not an end-user Manager clone or Codespaces workspace). If so, silently read
+`system/ApiLogicServer-Internal-Dev/dev-architecture.md` and follow its own mandatory
+load sequence (see its header) — no need to ask first, just do it. Confirm with ONE
+short line, e.g. "Dev-architecture context loaded." Then continue normally — this
+never suppresses or replaces the `.github/copilot-instructions.md` welcome/activation
+flow above; both can apply to the same first message.
 
-## ⚠️ PATH RULE for Manager root
-All file operations use the project subdirectory as prefix — you are running from the Manager root, not inside the project:
-- sqlite3 commands:    `sqlite3 <name>/database/db.sqlite "..."`
-- genai-logic rebuild: `cd <name> && genai-logic rebuild-from-database --db_url=sqlite:///database/db.sqlite && cd ..`
-- python seed:         `cd <name> && PROJECT_DIR=$(pwd) python database/test_data/alp_init.py && cd ..`
-- file reads/writes:   `<name>/logic/logic_discovery/...`, `<name>/database/...`
+If no such ancestor exists, skip this entirely — do not mention it.
 
----
+**Reliable fallback trigger:** the auto-load above depends on the model treating it as
+an unconditional first action, which doesn't always happen. If the user says "load dev
+architecture", "load dev-architecture.md", or any similar explicit phrase — regardless
+of whether the auto-load above already ran this session — read
+`system/ApiLogicServer-Internal-Dev/dev-architecture.md` now and follow its mandatory
+load sequence. Treat this phrase as a hard trigger, not a suggestion: do it even if you
+believe the file is already in context.
 
-## Follow the Manager CE (Method 4)
-For all domain project creation, follow the Method 4 sequence in `.github/copilot-instructions.md` exactly — STEP 1 through STEP 5, uninterrupted.
-
-⚠️ STEP 5 is mandatory — do not skip it. Write `<name>/docs/requirements/readme.md` (provenance) and `<name>/docs/requirements/ad-libs.md` (every assumption or guess made beyond the prompt spec) before telling the user the project is done.
+**Confirmation must be ONE short line, nothing more** — no summary of what the file
+contains, no list of what was learned, no restating the trigger back to the user.
+Just: "Dev-architecture context loaded." (or equally terse). Do not explain, do not
+elaborate, do not offer next steps unless asked.

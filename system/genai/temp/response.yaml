@@ -8,10 +8,10 @@
 
         id = Column(Integer, primary_key=True, autoincrement=True)
         name = Column(String, nullable=False)
-        balance = Column(Decimal)
-        credit_limit = Column(Decimal)
+        credit_limit = Column(Decimal, nullable=False)
+        balance = Column(Decimal, nullable=False, default=0)
   "description": |-
-    SQLAlchemy model for Customer entity.
+    Model for Customer entity with balance and credit limit
   "name": |-
     Customer
 - "classname": |-
@@ -21,12 +21,12 @@
         __tablename__ = 'order'
 
         id = Column(Integer, primary_key=True, autoincrement=True)
-        customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)
-        amount_total = Column(Decimal)
+        customer_id = Column(Integer, ForeignKey('customer.id'))
         notes = Column(String)
-        date_shipped = Column(DateTime)
+        date_shipped = Column(Date, nullable=True)
+        amount_total = Column(Decimal, nullable=False, default=0)
   "description": |-
-    SQLAlchemy model for Order entity.
+    Model for Order entity with relation to Customer
   "name": |-
     Order
 - "classname": |-
@@ -36,13 +36,13 @@
         __tablename__ = 'item'
 
         id = Column(Integer, primary_key=True, autoincrement=True)
-        order_id = Column(Integer, ForeignKey('order.id'), nullable=False)
-        product_id = Column(Integer, ForeignKey('product.id'), nullable=False)
+        order_id = Column(Integer, ForeignKey('order.id'))
+        product_id = Column(Integer, ForeignKey('product.id'))
         quantity = Column(Integer, nullable=False)
-        unit_price = Column(Decimal)
-        amount = Column(Decimal)
+        unit_price = Column(Decimal, nullable=False)
+        amount = Column(Decimal, nullable=False, default=0)
   "description": |-
-    SQLAlchemy model for Item entity.
+    Model for Item entity with references to Order and Product
   "name": |-
     Item
 - "classname": |-
@@ -53,180 +53,166 @@
 
         id = Column(Integer, primary_key=True, autoincrement=True)
         name = Column(String, nullable=False)
-        unit_price = Column(Decimal)
+        unit_price = Column(Decimal, nullable=False)
   "description": |-
-    SQLAlchemy model for Product entity.
+    Model for Product entity
   "name": |-
     Product
 "name": |-
-  CustomerOrderProductSystem
+  CommerceSystem
 "rules":
 - "code": |-
-    Rule.constraint(validate=Customer, as_condition=lambda row: row.balance <= row.credit_limit, error_msg='Customer balance ({row.balance}) exceeds credit limit ({row.credit_limit})')
+    Rule.constraint(validate=Customer,
+        as_condition=lambda row: row.balance <= row.credit_limit,
+        error_msg="Customer balance ({row.balance}) exceeds credit limit ({row.credit_limit})")
   "description": |-
-    Ensure Customer balance is less than credit limit.
+    Check customer's balance against their credit limit.
   "entity": |-
     Customer
   "name": |-
-    Check Credit Rule 1
+    CustomerBalanceConstraint
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total, where=lambda row: row.date_shipped is None)
   "description": |-
-    Calculate Customer balance as sum of all unpaid Orders.
+    Sum Order.amount_total for Customer balance.
   "entity": |-
     Customer
   "name": |-
-    Check Credit Rule 2
+    CustomerBalanceSumRule
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.sum(derive=Order.amount_total, as_sum_of=Item.amount)
   "description": |-
-    Order amount_total is derived from the sum of its Items amounts.
+    Sum Item.amount for Order amount_total.
   "entity": |-
     Order
   "name": |-
-    Check Credit Rule 3
+    OrderAmountTotalSumRule
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.formula(derive=Item.amount, as_expression=lambda row: row.quantity * row.unit_price)
   "description": |-
-    Calculate Item amount as the product of quantity and unit price.
+    Compute Item amount as quantity * unit_price.
   "entity": |-
     Item
   "name": |-
-    Check Credit Rule 4
+    ItemAmountFormulaRule
   "use_case": |-
     Check Credit
 - "code": |-
     Rule.copy(derive=Item.unit_price, from_parent=Product.unit_price)
   "description": |-
-    Copy unit price for Item from corresponding Product's unit price.
+    Copy Product.unit_price to Item.unit_price.
   "entity": |-
     Item
   "name": |-
-    Check Credit Rule 5
+    ItemUnitPriceCopyRule
   "use_case": |-
     Check Credit
 - "code": |-
-    Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka, if_condition=lambda row: row.date_shipped is not None, with_args={'topic': 'order_shipping'})
+    Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka,
+        if_condition=lambda row: row.date_shipped is not None,
+        with_args={"topic": "order_shipping"})
   "description": |-
-    Send Order to Kafka if date shipped is not null.
+    Send Order data to Kafka if date_shipped is not None.
   "entity": |-
     Order
   "name": |-
-    App Integration Rule
+    OrderKafkaEventRule
   "use_case": |-
     App Integration
-"test_data": |-
-  # Test Data for Customer
-  customer1 = Customer(name="John Doe", balance=500.00, credit_limit=1000.00)
-  customer2 = Customer(name="Jane Smith", balance=650.00, credit_limit=700.00)
-  customer3 = Customer(name="Alice Johnson", balance=300.00, credit_limit=1200.00)
-  customer4 = Customer(name="Bob Brown", balance=100.00, credit_limit=500.00)
+"test_data": |2
 
-  # Test Data for Product
-  product1 = Product(name="Widget A", unit_price=10.00)
-  product2 = Product(name="Widget B", unit_price=15.00)
-  product3 = Product(name="Widget C", unit_price=20.00)
-  product4 = Product(name="Widget D", unit_price=25.00)
+  # Create test customers
+  customer1 = Customer(name="John Doe", credit_limit=10000, balance=0)
+  customer2 = Customer(name="Jane Smith", credit_limit=15000, balance=500)
+  customer3 = Customer(name="Bob Johnson", credit_limit=5000, balance=3000)
+  customer4 = Customer(name="Alice Williams", credit_limit=20000, balance=0)
 
-  # Test Data for Order
-  order1 = Order(customer_id=1, amount_total=150.00, notes="Urgent", date_shipped=None)
-  order2 = Order(customer_id=2, amount_total=90.00, notes="Regular", date_shipped=datetime(2023, 10, 1))
-  order3 = Order(customer_id=3, amount_total=60.00, notes="Delayed", date_shipped=None)
-  order4 = Order(customer_id=4, amount_total=75.00, notes="Fast delivery", date_shipped=datetime(2023, 9, 20))
+  # Create test products
+  product1 = Product(name="Laptop", unit_price=1000)
+  product2 = Product(name="Monitor", unit_price=200)
+  product3 = Product(name="Mouse", unit_price=20)
+  product4 = Product(name="Keyboard", unit_price=50)
 
-  # Test Data for Item
-  item1 = Item(order_id=1, product_id=1, quantity=5, unit_price=10.00, amount=50.00)
-  item2 = Item(order_id=2, product_id=2, quantity=3, unit_price=15.00, amount=45.00)
-  item3 = Item(order_id=3, product_id=3, quantity=2, unit_price=20.00, amount=40.00)
-  item4 = Item(order_id=4, product_id=4, quantity=3, unit_price=25.00, amount=75.00)
+  # Create test orders
+  order1 = Order(customer_id=1, notes="First order", date_shipped=date(2023, 1, 10), amount_total=0)
+  order2 = Order(customer_id=2, notes="Gift", date_shipped=None, amount_total=0)
+  order3 = Order(customer_id=1, notes="Express delivery", date_shipped=None, amount_total=0)
+  order4 = Order(customer_id=3, notes="Bulk order", date_shipped=date(2023, 1, 12), amount_total=0)
+
+  # Create test items
+  item1 = Item(order_id=1, product_id=1, quantity=1, unit_price=1000, amount=1000)
+  item2 = Item(order_id=1, product_id=2, quantity=2, unit_price=200, amount=400)
+  item3 = Item(order_id=2, product_id=3, quantity=5, unit_price=20, amount=100)
+  item4 = Item(order_id=2, product_id=4, quantity=10, unit_price=50, amount=500)
 "test_data_rows":
 - "code": |-
-    customer1 = Customer(name="John Doe", balance=500.00, credit_limit=1000.00)
+    customer1 = Customer(name="John Doe", credit_limit=10000, balance=0)
   "test_data_row_variable": |-
     customer1
 - "code": |-
-    customer2 = Customer(name="Jane Smith", balance=650.00, credit_limit=700.00)
+    customer2 = Customer(name="Jane Smith", credit_limit=15000, balance=500)
   "test_data_row_variable": |-
     customer2
 - "code": |-
-    customer3 = Customer(name="Alice Johnson", balance=300.00, credit_limit=1200.00)
+    customer3 = Customer(name="Bob Johnson", credit_limit=5000, balance=3000)
   "test_data_row_variable": |-
     customer3
 - "code": |-
-    customer4 = Customer(name="Bob Brown", balance=100.00, credit_limit=500.00)
+    customer4 = Customer(name="Alice Williams", credit_limit=20000, balance=0)
   "test_data_row_variable": |-
     customer4
 - "code": |-
-    product1 = Product(name="Widget A", unit_price=10.00)
+    product1 = Product(name="Laptop", unit_price=1000)
   "test_data_row_variable": |-
     product1
 - "code": |-
-    product2 = Product(name="Widget B", unit_price=15.00)
+    product2 = Product(name="Monitor", unit_price=200)
   "test_data_row_variable": |-
     product2
 - "code": |-
-    product3 = Product(name="Widget C", unit_price=20.00)
+    product3 = Product(name="Mouse", unit_price=20)
   "test_data_row_variable": |-
     product3
 - "code": |-
-    product4 = Product(name="Widget D", unit_price=25.00)
+    product4 = Product(name="Keyboard", unit_price=50)
   "test_data_row_variable": |-
     product4
 - "code": |-
-    order1 = Order(customer_id=1, amount_total=150.00, notes="Urgent", date_shipped=None)
+    order1 = Order(customer_id=1, notes="First order", date_shipped=date(2023, 1, 10), amount_total=0)
   "test_data_row_variable": |-
     order1
 - "code": |-
-    order2 = Order(customer_id=2, amount_total=90.00, notes="Regular", date_shipped=datetime(2023, 10, 1))
+    order2 = Order(customer_id=2, notes="Gift", date_shipped=None, amount_total=0)
   "test_data_row_variable": |-
     order2
 - "code": |-
-    order3 = Order(customer_id=3, amount_total=60.00, notes="Delayed", date_shipped=None)
+    order3 = Order(customer_id=1, notes="Express delivery", date_shipped=None, amount_total=0)
   "test_data_row_variable": |-
     order3
 - "code": |-
-    order4 = Order(customer_id=4, amount_total=75.00, notes="Fast delivery", date_shipped=datetime(2023, 9, 20))
+    order4 = Order(customer_id=3, notes="Bulk order", date_shipped=date(2023, 1, 12), amount_total=0)
   "test_data_row_variable": |-
     order4
 - "code": |-
-    item1 = Item(order_id=1, product_id=1, quantity=5, unit_price=10.00, amount=50.00)
+    item1 = Item(order_id=1, product_id=1, quantity=1, unit_price=1000, amount=1000)
   "test_data_row_variable": |-
     item1
 - "code": |-
-    item2 = Item(order_id=2, product_id=2, quantity=3, unit_price=15.00, amount=45.00)
+    item2 = Item(order_id=1, product_id=2, quantity=2, unit_price=200, amount=400)
   "test_data_row_variable": |-
     item2
 - "code": |-
-    item3 = Item(order_id=3, product_id=3, quantity=2, unit_price=20.00, amount=40.00)
+    item3 = Item(order_id=2, product_id=3, quantity=5, unit_price=20, amount=100)
   "test_data_row_variable": |-
     item3
 - "code": |-
-    item4 = Item(order_id=4, product_id=4, quantity=3, unit_price=25.00, amount=75.00)
+    item4 = Item(order_id=2, product_id=4, quantity=10, unit_price=50, amount=500)
   "test_data_row_variable": |-
     item4
-"test_data_sqlite": |-
-  INSERT INTO customer (name, balance, credit_limit) VALUES ('John Doe', 500.00, 1000.00);
-  INSERT INTO customer (name, balance, credit_limit) VALUES ('Jane Smith', 650.00, 700.00);
-  INSERT INTO customer (name, balance, credit_limit) VALUES ('Alice Johnson', 300.00, 1200.00);
-  INSERT INTO customer (name, balance, credit_limit) VALUES ('Bob Brown', 100.00, 500.00);
-
-  INSERT INTO product (name, unit_price) VALUES ('Widget A', 10.00);
-  INSERT INTO product (name, unit_price) VALUES ('Widget B', 15.00);
-  INSERT INTO product (name, unit_price) VALUES ('Widget C', 20.00);
-  INSERT INTO product (name, unit_price) VALUES ('Widget D', 25.00);
-
-  INSERT INTO "order" (customer_id, amount_total, notes, date_shipped) VALUES (1, 150.00, 'Urgent', NULL);
-  INSERT INTO "order" (customer_id, amount_total, notes, date_shipped) VALUES (2, 90.00, 'Regular', '2023-10-01');
-  INSERT INTO "order" (customer_id, amount_total, notes, date_shipped) VALUES (3, 60.00, 'Delayed', NULL);
-  INSERT INTO "order" (customer_id, amount_total, notes, date_shipped) VALUES (4, 75.00, 'Fast delivery', '2023-09-20');
-
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (1, 1, 5, 10.00, 50.00);
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (2, 2, 3, 15.00, 45.00);
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (3, 3, 2, 20.00, 40.00);
-  INSERT INTO item (order_id, product_id, quantity, unit_price, amount) VALUES (4, 4, 3, 25.00, 75.00);
+"test_data_sqlite": ""
