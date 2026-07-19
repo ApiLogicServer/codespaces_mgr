@@ -352,6 +352,9 @@ That's why order didn't matter — the engine computes it, not your source file 
 - **Answers your own questions, too.** Same materials, same AI — ask it directly:
     - Is this really infrastructure, like a database?
     - Is this a black box? How do I debug a rule chain?
+    - Can I verify this with tests, not just take it on faith?
+    - What did the AI decide on its own that I should double-check? (the ad-libs report)
+    - Can I see a governance/health report for this project's logic?
     - What does it take to migrate off this if we ever wanted to?
     - How does this perform at scale?
     - What does this integrate with — APIs, workflows, agents, MCP?
