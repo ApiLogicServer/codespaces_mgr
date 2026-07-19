@@ -29,7 +29,7 @@ codespaces_patch: |
 
 Describe it, and get a real system:
 
-<details markdown open>
+<details markdown>
 <summary>For <strong>today:</strong> a working API, Admin App, and governed logic, <strong>built from a prompt</strong></summary>
 
 <br>Leverage AI for what it's great at — database design, data mapping, and more. Start from a prompt alone and AI designs the database too, or point it at your existing database and skip straight to the logic. Either way, your AI assistant reads whatever you already have — plain English, Gherkin, pseudocode — and hands business logic off as rules, not code.
@@ -38,7 +38,7 @@ Describe it, and get a real system:
 
 &nbsp;
 
-<details markdown open>
+<details markdown>
 <summary>And it <strong>fits</strong>: uses your existing org, technology, and practices</summary>
 
 <br>What comes out the other end is exactly what you already run:
@@ -52,7 +52,7 @@ Describe it, and get a real system:
 
 &nbsp;
 
-<details markdown open>
+<details markdown>
 <summary>And for <strong>tomorrow</strong>: systems <strong><em>governed</em></strong> by rules you can <strong>Read, Trust, and Maintain</strong></summary>
 
 <br>**The key idea:** that split — AI for executable intent, declarative rules for governance — is the whole point. Here's what "governed" means in practice:
