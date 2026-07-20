@@ -148,14 +148,29 @@ You're already running in GitHub Codespaces — a cloud VS Code environment in y
 <details markdown>
 <summary>The Ideal — executable business prompts, held to an enterprise standard</summary>
 
+<br>
+
+> **Heads up:** you're about to switch to the AI chat panel, and back. The browser tab showing this README forgets which sections below are open/closed when you return — so **open the README on GitHub** ([ApiLogicServer/codespaces_mgr](https://github.com/ApiLogicServer/codespaces_mgr)) **in a split-view tab** first (once), and it won't happen again.
+
+<details markdown>
+<summary>&emsp;&emsp;Show me how</summary>
+
+<br>Right-click the GitHub README tab and choose **New Split View with Current Tab**:
+
+<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/git-codespaces/StartSplitView.png?raw=true" alt="Open the README from GitHub, right-click the tab, choose New Split View with Current Tab" width="700">
+
+You'll end up with the Codespace on one side and the README on the other — switch between AI chat and README without losing your place:
+
+<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/git-codespaces/SplitView.png?raw=true" alt="Codespace and README side by side in split view" width="700">
+
+</details>
+
 <br>Say this to your AI assistant (allow several minutes):
 
 ```
-Create basic_demo from samples/dbs/basic_demo.sqlite (customers, orders, products).
+Create basic_demo from samples/dbs/basic_demo.sqlite.
 
-Include a notes field for orders.
-
-On Placing Orders, Check Credit    
+On Placing Orders, Check Credit:    
     1. The Customer's balance is less than the credit limit
     2. The Customer's balance is the sum of the Order amount_total where date_shipped is null
     3. The Order's amount_total is the sum of the Item amount
@@ -171,13 +186,19 @@ Use case: App Integration
 
 &nbsp;
 
-The prompt above starts from an existing database — the common real-world case, and much faster (no schema design step). You *could* have AI design a new database from scratch instead — drop the `from samples/dbs/basic_demo.sqlite` clause from the first line above (allow 8-10 mins).
+The prompt above starts from an existing database — the common real-world case, and much faster (no schema design step). You *could* have AI design a new database from scratch instead:
+
+<br>Say this to your AI assistant (allow several minutes):
+
+```
+Create basic_demo from samples/prompts/genai_demo.prompt
+```
 
 </details>
 
 &nbsp;
 
-> **Running in Codespaces?** During project creation, a browser tab may auto-open (or offer to) showing it running — safe to decline or dismiss.
+> **During project creation, a browser tab may auto-open (or offer to)** showing it running — safe to decline or dismiss.
 
 The goal here isn't a demo — it's an **enterprise-class** system you can trust and maintain. That's exactly what gets tested next.
 
@@ -190,23 +211,21 @@ The goal here isn't a demo — it's an **enterprise-class** system you can trust
 
 <br>AI is genuinely good at UI, data mapping, boilerplate, etc — no argument there. **Business logic is the exception.**
 
-Most developers estimate it requires about **half the development and debugging effort** on a real system — not a side concern.
+On a real system, business logic routinely consumes **half the development and debugging effort** — and it's the half that determines whether the system is actually correct.
 
 Left unguided, any AI assistant — including the one that just built basic_demo for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
 
-- **Not readable.** [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — ~200 lines for those same 5 requirements. Open it and judge for yourself.
-- **Not trustworthy.** The procedural version shipped 2 real bugs — found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
-- **Not maintainable.** Every future change means re-checking every execution path *and* getting the order right, by hand, again. Root causes: **path confusion** and **manual ordering** — the same problem as above, back for round two. Honestly? At some point you'd stop checking and just hope testing catches it.
+- **Not readable.** [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — ~200 lines for those same 5 requirements. Open it and judge for yourself. Now picture a real system: 10-20X the requirements of this example, and proportionally more procedural code to match. Nobody can audit that at a glance — not the next developer, not compliance, not you in six months. At that scale, an auditor can't read it all — they can only sample, and hope. **Unreadable at scale is ungovernable at scale.**
+- **Not trustworthy.** The procedural version shipped **2 real bugs** — found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
+- **Not maintainable.** Two options:
 
-Even when AI generates procedural code that happens to work today, there's a governance problem underneath: nobody can audit ~200 lines of event-handler logic at a glance — not the next developer, not compliance, not you in six months.
+  - **Alter the generated code:** that means **re-checking every execution path** *and* getting the order right, by hand, again. Root causes: **path confusion** and **manual ordering** — the same problem as above, back for round two. Honestly? At some point you'd stop checking and just hope testing catches it.
 
-Even at ~200 lines for just 5 requirements, this wasn't just hard to read — it had bugs in it. Now picture a real system: 10-20X the requirements of this example, and proportionally more procedural code to match. At that scale, an auditor can't read it all — they can only sample, and hope. **Unreadable at scale is ungovernable at scale.**
+  - **Change the prompt and regenerate:** doesn't dodge the risk, it repeats it — the AI is re-deriving all ~200 lines from scratch, with no guarantee it reproduces the paths that already worked. Same odds of a new bug, same review effort, again — and it only gets more expensive as the system grows.
 
-There's a structural problem underneath the bugs, too: procedural code cannot represent transitive dependencies reliably. The AI diagnosed this itself, unprompted:
+There's a structural problem underneath the bugs, too: **AI pattern-matches dependencies, it doesn't compute them** — so the odds of a miss go up as the system grows, no matter how capable the model. [More detail →](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md#the-underlying-problem-dependency-graphs)
 
-> *"Business logic is not a coding problem. It's a dependency graph problem."*
-
-That's not a capability gap. No amount of AI capability fixes a representation problem.
+That's not a capability gap — it's a representation problem, and no amount of AI capability fixes that.
 
 **We're deeply impressed with AI — this is about closing the one gap it has: logic.** That's next.
 
@@ -231,7 +250,7 @@ That's not a capability gap. No amount of AI capability fixes a representation p
 3. **Admin App** — multi-table, with navigations and lookups (`ui/admin/admin.yaml` — simple YAML, not HTML/JS)
 4. **Business logic** — [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — 5 rules (~40X less), same requirements, same AI, 0 bugs
 
-**Difference 2: the logic itself is declarative** — more on why that matters below.
+**Difference 2: the logic itself is declarative.** 5 lines, intent still clear — not ~200 lines of procedural frankencode. That's what declarative buys — more on that below.
 
 Each small, readable, yours. Plain Python — standard tooling applies. Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add-auth`.
 
@@ -288,18 +307,18 @@ Every rule is a plain Python function or lambda. Set a breakpoint on any `callin
 Customers should not be able to create new orders if they have unresolved past due letters.
 ```
 
-There was no `Letter` table in the model — the AI adds it, relates it to `Customer`, and declares a `count` + a `constraint`. One sentence creates a schema change and two new rules — automatically integrated with the 5 already there. No need to open `check_credit.py` to find where this belongs, or trace the other rules to check for conflicts: **maintainable**, demonstrated, not asserted.
+There was no `Letter` table in the model — the AI adds it, relates it to `Customer`, and declares a `count` + a `constraint`. One sentence creates a schema change and two new rules — automatically integrated with the 5 already there. No need to open `check_credit.py` to find where this belongs, or trace the other rules to check for conflicts.
 
-Without the engine, an AI rewriting procedural code from scratch would have to re-read and re-touch every existing rule to check for dependencies — more surface area for a missed path, more tokens spent doing it. At 5 rules that's a nuisance; **at 500, the re-read is the bottleneck and the missed-path risk compounds.** Here, the engine resolves dependencies at load time, so adding this rule doesn't touch the rest — no regeneration, no regression risk, at any scale.
+**A lot just happened here — worth a closer look.**
 
 </details>
 
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;4. Important Observations — no calling, no ordering, since rules are declarative</summary>
+<summary>&emsp;&emsp;4. Why Rules Are Declarative — automatic calling, automatic ordering</summary>
 
-<br>Iteration was remarkably similar to traditional maintenance, because **rules are declarative:**
+<br>This iteration — like maintenance generally — was remarkably simple, because **rules are declarative:**
 
 - **No need to call the new logic.** Rules are invoked automatically - regardless of the originating path.  You can **trust** that they'll always run.
 - **Order doesn't matter.** Open `check_credit.py` and shuffle the five rules into any order you like. Rerun — still correct. Try that with 200 lines of procedural code.  You can **trust** that they'll run in the right order.
@@ -316,7 +335,7 @@ The next section explores this in detail. Ask your AI assistant — *"What are r
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;5. What Rules Are — and how they make logic easy to Read, Trust, and Maintain</summary>
+<summary>&emsp;&emsp;5. How Declarative Rules Make Logic Easy to Read, Trust, and Maintain</summary>
 
 <br>**Rules** enforce business policy — multi-table derivations, constraints, and actions like messaging. **LogicBank**, the rule engine, hooks SQLAlchemy's commit event to run them on every transaction — authored as plain Python functions in `logic/logic_discovery/`, readable, version-controlled, owned like any other source file.
 
@@ -329,14 +348,16 @@ Unlike procedural code, they're **declarative** — solving exactly the three pr
 | Property | What it means | Why it matters |
 |---|---|---|
 | **Readable** | 5 lines, one per requirement — declared once, e.g. `Customer.balance = sum of unpaid orders` | No archaeology needed to see what it does |
-| **Trustworthy** | Rules fire at every commit, from every caller — you never call them | Can't be forgotten, can't be bypassed |
-| **Maintainable** | Dependency order is computed once, automatically | Add a rule anywhere, it finds its place |
+| **Trustworthy** | Rules fire at every commit, from every caller, on every insert *and* edit — you never call them | Can't be forgotten, can't be bypassed |
+| **Maintainable** | Dependency order is computed once, automatically — not written into your source file | Add a rule anywhere, it finds its place |
 
 > Think of a **spreadsheet:** `B10 = SUM(B1:B9)` isn't called, it *reacts* — change any input cell, it recalculates. Rules react the same way to changes in what they depend on.
 
-That's why order didn't matter — the engine computes it, not your source file — and why the edit was caught: it fires at every commit, from every caller, not just the one you wrote it for.
+Procedural code is hard to read — so you can't tell whether it's called from every caller, in the right order. That's not a testing gap; it's a representation problem.
 
-> With procedural code, even if you find the right passage — how do you know it's called for *every* transaction source? API, MCP, agent, Kafka, a future caller you haven't written yet? With thousands of code paths, you can't know. That's not a testing gap; it's a representation problem. Rules solve it structurally — declared once, fired at one commit point, from every caller, with no bypass possible. The 40x reduction in code isn't the point. The verifiable coverage is: ***you can read the rules, and trust they are being enforced. Always.***
+> Declarative rules are easy to read — the intent, now rigorous — and with no bypass and automatic ordering.
+>
+> ***You can read the rules, and trust they are being enforced. Always.***
 
 <details markdown>
 <summary>How this works: Context Engineering (CE) + a commit-time rules engine</summary>
@@ -346,6 +367,8 @@ That's why order didn't matter — the engine computes it, not your source file 
 **Step 1 — Context Engineering trains the AI to write rules, not code.** That same AI, left unguided, would have produced the ~200 buggy lines from earlier. Writing rules instead wasn't its own idea — it was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
 
 - **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
+
+    - **Rules become the default, easy path** — not a discipline a team has to maintain by hand: familiar requirements in, rules — Read, Trust, Maintain — out.
 
 - **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
 
