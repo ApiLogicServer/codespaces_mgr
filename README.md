@@ -359,48 +359,37 @@ Procedural code is hard to read — so you can't tell whether it's called from e
 >
 > ***You can read the rules, and trust they are being enforced. Always.***
 
+Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md).
+
+&nbsp;
+
 <details markdown>
-<summary>How this works: Context Engineering (CE) + a commit-time rules engine</summary>
+<summary>&emsp;&emsp;How this works: Context Engineering (CE) + a commit-time rules engine</summary>
 
 <br>Two things have to be true for this to work:
 
-**Step 1 — Context Engineering trains the AI to write rules, not code.** That same AI, left unguided, would have produced the ~200 buggy lines from earlier. Writing rules instead wasn't its own idea — it was told to, in detail, by **Context Engineering** — the same files driving this conversation right now:
-
-- **Directs rules, not code.** When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training.
-
-    - **Rules become the default, easy path** — not a discipline a team has to maintain by hand: familiar requirements in, rules — Read, Trust, Maintain — out.
-
-- **Trains the AI to automate everything above, and to help you when it breaks.** EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all of it is documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
-
-- **Answers your own questions, too.** Same materials, same AI — ask it directly:
-    - Is this really infrastructure, like a database?
-    - Is this a black box? How do I debug a rule chain?
-    - Can I verify this with tests, not just take it on faith?
-    - What did the AI decide on its own that I should double-check? (the ad-libs report)
-    - Can I see a governance/health report for this project's logic?
-    - What does it take to migrate off this if we ever wanted to?
-    - How does this perform at scale?
-    - What does this integrate with — APIs, workflows, agents, MCP?
-    - Does this work with my existing database?
-
-  More background: [Eval Guide](https://apilogicserver.github.io/Docs/Eval/).
-
-  <details markdown>
-  <summary>The AI was trained on this material — can you trust its answers?</summary>
-
-  <br>Don't take them on faith. Ask the same question a different way, or ask something not covered here — like where this architecture breaks down. If it just recites the same lines back, you've caught it. If it reasons, that's the test passing.
-
-  </details>
-
-Put together: once the AI knows how the system works, it doesn't just generate rules instead of code — it helps you debug them, and helps you understand them. A design assistant, not just a coding assistant.
+**Step 1 — Context Engineering trains the AI to write rules, not code.** That same AI, left unguided, would have produced the ~200 buggy lines from earlier. Writing rules instead wasn't its own idea — it was told to, in detail, by **Context Engineering** — the same files driving this conversation right now. When you ask for business logic, CE steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training — making rules the default, easy path, not a discipline a team has to maintain by hand.
 
 **Step 2 — the rules engine runs the rules.** Rules aren't called from your code — they're wired into a single SQLAlchemy `before_flush` listener, loaded once at server start as described above. Every write, from any path — API, custom endpoint, Kafka consumer, agent — passes through that one listener before it commits. No bypass — there's no second door.
 
 </details>
 
-<br>
+&nbsp;
 
-Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md).
+<details markdown>
+<summary>&emsp;&emsp;<strong>Governance reports</strong> — logic flow, AI alerts, health check</summary>
+
+<br>Rules you can read is only half of it — the AI is also proactive about what it wants *you* to double-check. Three reports, generated from the running system, not hand-written:
+
+- **[Logic flow diagram](samples/basic_demo_logic_gov/docs/requirements/logic_flow_basic_demo_logic_gov.md)** — NL requirement, dependency diagram, and rule summary, for every rule chain
+- **[AI alerts](samples/basic_demo_logic_gov/docs/requirements/ad-libs.md)** — every assumption the AI made beyond the spec, flagged for you to verify, not buried
+- **[Health check](samples/basic_demo_logic_gov/docs/requirements/health_check.md)** — rule adoption, dependency-tracking integrity, missing docstrings, across the whole project
+
+A compliance reviewer can check the implementation in minutes, not by reading code. Here's that report for the basic_demo rules you just ran — the same report generates for any project, including the enterprise-scale ones below:
+
+<img src="samples/basic_demo_logic_gov/docs/requirements/logic_diagrams/logic_diagram.svg" alt="Logic diagram: Item/Order/Customer rule chain, generated from the running rules" width="480">
+
+</details>
 
 </details>
 
@@ -411,12 +400,10 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 <details markdown>
 <summary>Scaling to the Enterprise — here's how</summary>
 
-<br>With logic off its plate, AI can create remarkable results — solid enterprise systems, from requirements, not just demos that become tech debt. Three things make that possible:
-
 &nbsp;
 
 <details markdown>
-<summary><strong>1. We add the enterprise architecture AI usually skips</strong> — EAI, MCP, AI Rules, Custom UIs</summary>
+<summary>&emsp;&emsp;<strong>1. Integrate other enterprise technologies</strong> — EAI, MCP, AI Rules, Custom UIs</summary>
 
 <br>Same governed API and rules engine you just saw — extended with the integration points a real enterprise system needs:
 
@@ -430,49 +417,55 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 &nbsp;
 
 <details markdown>
-<summary><strong>2. Governance you can prove, not just assert</strong></summary>
+<summary>&emsp;&emsp;<strong>2. The Logic Architecture</strong> — any requirement format, one commit point (no bypass)</summary>
 
-<br>Three reports, generated from the running system, not hand-written:
+<br>The **Commit No Bypass** gate described above now also ensures these additional transaction sources — API, MCP, AI Rules, Custom UIs, and EAI's own Kafka producers and consumers all converge on the same enforcement point.
 
-- **[Logic flow diagram](samples/basic_demo_logic_gov/docs/requirements/logic_flow_basic_demo_logic_gov.md)** — NL requirement, dependency diagram, and rule summary, for every rule chain
-- **[Ad-libs report](samples/basic_demo_logic_gov/docs/requirements/ad-libs.md)** — every assumption the AI made beyond the spec, so you know exactly what to verify
-- **[Health check](samples/basic_demo_logic_gov/docs/requirements/health_check.md)** — rule adoption, dependency-tracking integrity, missing docstrings, across the whole project
+<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
-A compliance reviewer can check the implementation in minutes, not by reading code. Here's that report for the basic_demo rules you just ran — the same report generates for any project, including the enterprise-scale ones below:
+That's the architecture: two funnels, converging on one engine. All requirement formats (Design Funnel — NL, Gherkin, pseudocode, formulas) and all transaction sources (Runtime Funnel — APIs, messages, MCP, agents, workflows) pass through **the same commit point. No bypass.**
 
-<img src="samples/basic_demo_logic_gov/docs/requirements/logic_diagrams/logic_diagram.svg" alt="Logic diagram: Item/Order/Customer rule chain, generated from the running rules" width="480">
+Add a new integration tomorrow — another Kafka consumer, another custom endpoint, an MCP tool call — and it inherits every rule already declared, automatically. Nothing to re-wire, nothing to remember to call.
 
 </details>
 
 &nbsp;
 
-#### 3. This is what makes Executable Requirements possible, at enterprise class
+<details open markdown>
+<summary>&emsp;&emsp;<strong>3. This is what makes Executable Requirements possible</strong> — at enterprise class</summary>
 
-That combination — AI, logic automation, and that enterprise architecture — is what enables ***Executable Requirements***: AI building real enterprise-class systems, from formats you already are familiar with, not a new syntax to learn:
+<br>We now have a comprehensive tool set (AI, rules for governance, enterprise integration services). These enable **Governed Enterprise Systems — from prompts**, in formats you already know, not a new syntax to learn:
 
-- **Gherkin-style scenarios** — [business description](samples/demo_customs_clvs/readme.md), and the [actual requirements](samples/demo_customs_clvs/docs/requirements/customs_demo/requirements.md) used by AI to create the system.
-- The **short prompt that built a system straight from an actual government tariff regulation** (Canada, CBSA) — [the prompt](samples/demo_customs_surtax/readme.md), and [the rules it produced](samples/demo_customs_surtax/logic/logic_discovery/cbsa_steel_surtax.py)
+- **This prompt created an entire budget allocation system:**
 
-    > So, simply by referencing the regs, you get a complete enterprise system — including governed logic you can audit, trust, and maintain. AI implements the spec end-to-end and reports an **ad-libs list** — every decision it made beyond what the spec said — so you know exactly where it guessed.
+    - [The prompt](samples/prompts/allocation.prompt.md) that built it.
+    - **Trust:** read [the resultant rules](samples/allocate_dept_account_demo/logic/logic_discovery/charge_distribution.py) (or see the [logic diagram](samples/allocate_dept_account_demo/docs/requirements/logic_diagrams/logic_diagram.svg)) — they'll monitor every transaction.
 
-&nbsp;
+- **Canadian CBSA duty-calculation system:**
 
-<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
+    - Use **actual regulations** — [this prompt](samples/demo_customs_surtax/readme.md) reads them straight off the web, producing [these rules](samples/demo_customs_surtax/logic/logic_discovery/cbsa_steel_surtax.py).
+    - **Proactive Human-in-the-loop:** the [ad-libs report](samples/demo_customs_surtax/docs/requirements/ad-libs.md) lists every low-confidence decision — so you know exactly where it guessed.
 
-The architecture that makes this work: two funnels, converging on one engine. All requirement formats, and all transaction sources, passing through **the same commit point. No bypass.**
+- **Low Value Import Shipments (CLVS)** — screens dangerous goods, using internationally agreed rules:
 
-**What AI delivers, once logic is off its plate: entire, *governed* systems from requirements** — not just code that becomes instant tech debt. It is this approach that **caught an 8-figure compliance exposure** a major logistics company's hand-coded system missed for months. [Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI)
+    - [Business description](samples/demo_customs_clvs/readme.md) and [actual requirements](samples/demo_customs_clvs/docs/requirements/customs_demo/requirements.md), expressed in **Gherkin format** — complex incoming messages need only sample [XML examples](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml).
+    - Rules make it **auditable** — failure would mean hiring 100+ additional staff, an *8-figure exposure*. ([Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI))
+
+</details>
 
 </details>
 
 &nbsp;
 
 <details markdown>
-<summary>Go deeper — 30-45 min guided tour</summary>
+<summary>Go deeper — guided tour, plus your AI as on-call support and consulting</summary>
 
 &nbsp;
 
-**Create basic_demo** (auto-opens with guided tour option):
+<details markdown>
+<summary>&emsp;&emsp;Guided tour — create basic_demo</summary>
+
+<br>**Create basic_demo** (auto-opens with guided tour option):
 ```bash
 genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basic_demo.sqlite
 ```
@@ -480,6 +473,39 @@ genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basi
 **Inside the project:** Say to your AI assistant: *"Guide me through basic_demo"* (30-45 min hands-on tour).
 
 > Teaches API creation, declarative rules, security, and Python customization. Fail-safe — scripts ensure no coding errors.
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;Your AI as on-call consultant — ask it anything, verify it doesn't just recite</summary>
+
+<br>Same materials, same AI you've been using — it doesn't just write rules, it automates everything above and helps when things break: EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
+
+Ask it your own questions directly:
+- Is this really infrastructure, like a database?
+- Is this a black box? How do I debug a rule chain?
+- Can I verify this with tests, not just take it on faith?
+- What did the AI decide on its own that I should double-check? (the ad-libs report)
+- Can I see a governance/health report for this project's logic?
+- What does it take to migrate off this if we ever wanted to?
+- How does this perform at scale?
+- What does this integrate with — APIs, workflows, agents, MCP?
+- Does this work with my existing database?
+
+More background: [Eval Guide](https://apilogicserver.github.io/Docs/Eval/).
+
+Put together: once the AI knows how the system works, it doesn't just generate rules instead of code — it helps you debug them, and helps you understand them. A design assistant, not just a coding assistant.
+
+<details markdown>
+<summary>&emsp;&emsp;&emsp;&emsp;The AI was trained on this material — can you trust its answers?</summary>
+
+<br>Don't take them on faith. Ask the same question a different way, or ask something not covered here — like where this architecture breaks down. If it just recites the same lines back, you've caught it. If it reasons, that's the test passing.
+
+</details>
+
+</details>
 
 </details>
 
