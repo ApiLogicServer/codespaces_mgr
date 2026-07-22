@@ -405,12 +405,21 @@ A compliance reviewer can check the implementation in minutes, not by reading co
 <details markdown>
 <summary>&emsp;&emsp;<strong>1. Integrate other enterprise technologies</strong> — EAI, MCP, AI Rules, Custom UIs</summary>
 
-<br>Same governed API and rules engine you just saw — extended with the integration points a real enterprise system needs:
+<br>We have extended the governed API and rules engine you just saw with the integration points a real enterprise system needs:
 
 - **Enterprise Integration (EAI)** — the demo above showed ***Publish** the Order to Kafka topic*. For the **subscribe** side, see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md): B2B orders from partner systems, via a Custom API or Kafka subscriber, including *lookups* so partners send `"Account": "Alice"` (not internal IDs).
+
+<br>
+
 - **MCP** (Model Context Protocol) — your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`). Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it. There's no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
-- **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes). Such AI "proposals" are governed by the deterministic rules to ensure results conform to business policy — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
-- **Custom UIs, safely** — Vibe tools (Cursor, v0, etc.) generate the UI; it's built against the same governed API, so the logic runs the same regardless of what's calling it — `genai-logic genai-add-app --vibe`.
+
+<br>
+
+- **AI Rules** — rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes). Such AI "proposals" are **governed by the deterministic rules** to ensure results conform to business policy — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
+
+<br>
+
+- **Custom UIs, safely** — Vibe tools (Cursor, v0, etc.) generate the UI; it's built against the same governed API, so the logic runs the same regardless of what's calling it. Quick-start a React app from your (possibly customized) admin app: `Create a new react app named my-app-name from ui/admin/admin.yaml`.
 
 </details>
 
@@ -419,13 +428,17 @@ A compliance reviewer can check the implementation in minutes, not by reading co
 <details markdown>
 <summary>&emsp;&emsp;<strong>2. The Logic Architecture</strong> — any requirement format, one commit point (no bypass)</summary>
 
-<br>The **Commit No Bypass** gate described above now also ensures these additional transaction sources — API, MCP, AI Rules, Custom UIs, and EAI's own Kafka producers and consumers all converge on the same enforcement point.
+<br>The **Commit No Bypass** gate ensures these additional transaction sources — MCP, AI Rules, Custom UIs, and EAI's own Kafka producers and consumers — all converge on the same enforcement point.
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
-That's the architecture: two funnels, converging on one engine. All requirement formats (Design Funnel — NL, Gherkin, pseudocode, formulas) and all transaction sources (Runtime Funnel — APIs, messages, MCP, agents, workflows) pass through **the same commit point. No bypass.**
+That's the architecture: two funnels, converging on one engine, at the **same commit point. No bypass.**
 
-Add a new integration tomorrow — another Kafka consumer, another custom endpoint, an MCP tool call — and it inherits every rule already declared, automatically. Nothing to re-wire, nothing to remember to call.
+* **Design Funnel:** all requirement formats — NL, Gherkin, pseudocode, formulas
+
+* **Runtime Funnel:** all transaction sources — APIs, messages, MCP, agents, workflows
+
+    * **This architecture is future-proofed:** a new integration tomorrow (another broker, custom API, an MCP tool call) inherits every rule already declared, automatically — because rules operate at the ORM layer, the same `before_flush` listener from above. Nothing to re-wire, nothing to remember to call.
 
 </details>
 
@@ -436,7 +449,7 @@ Add a new integration tomorrow — another Kafka consumer, another custom endpoi
 
 <br>We now have a comprehensive tool set (AI, rules for governance, enterprise integration services). These enable **Governed Enterprise Systems — from prompts**, in formats you already know, not a new syntax to learn:
 
-- **This prompt created an entire budget allocation system:**
+- **Budget allocation system:**
 
     - [The prompt](samples/prompts/allocation.prompt.md) that built it.
     - **Trust:** read [the resultant rules](samples/allocate_dept_account_demo/logic/logic_discovery/charge_distribution.py) (or see the [logic diagram](samples/allocate_dept_account_demo/docs/requirements/logic_diagrams/logic_diagram.svg)) — they'll monitor every transaction.
@@ -448,8 +461,11 @@ Add a new integration tomorrow — another Kafka consumer, another custom endpoi
 
 - **Low Value Import Shipments (CLVS)** — screens dangerous goods, using internationally agreed rules:
 
-    - [Business description](samples/demo_customs_clvs/readme.md) and [actual requirements](samples/demo_customs_clvs/docs/requirements/customs_demo/requirements.md), expressed in **Gherkin format** — complex incoming messages need only sample [XML examples](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml).
-    - Rules make it **auditable** — failure would mean hiring 100+ additional staff, an *8-figure exposure*. ([Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI))
+    - [Business description](samples/demo_customs_clvs/readme.md) and [actual requirements](samples/demo_customs_clvs/docs/requirements/customs_demo/requirements.md), expressed in **Gherkin format**.
+    - Complex incoming messages need only sample [XML examples](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml).
+    - Rules make it **auditable** — logistics firms can implement systems *subject to audit*. Failure would mean hiring 100+ additional staff, an *8-figure exposure*. ([Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI))
+
+**By delegating logic — and governance — to the rules engine, AI is free to do what it's great at**: reading any of these requirement formats, and translating intent into real, governed systems.
 
 </details>
 
