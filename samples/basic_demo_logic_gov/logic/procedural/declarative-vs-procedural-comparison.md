@@ -1,7 +1,11 @@
-# Declarative Rules vs. Procedural Logic: A Reproducible Comparison
+---
+title: Declarative Rules vs. Procedural Logic — A Reproducible Comparison
+version: 1.1 (07/22/2026)
+author: Val Huber (Architect, GenAI-Logic and LogicBank)
+companion: shorter summary at prototypes/basic_demo/logic/procedural/declarative-vs-procedural-comparison.md
+---
 
-**Author:** Val Huber (Architect, GenAI-Logic and LogicBank)
-**Date:** May 2026
+# Declarative Rules vs. Procedural Logic: A Reproducible Comparison
 
 ---
 

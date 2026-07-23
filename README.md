@@ -215,17 +215,38 @@ On a real system, business logic routinely consumes **half the development and d
 
 Left unguided, any AI assistant — including the one that just built basic_demo for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
 
-- **Not readable.** [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — ~200 lines for those same 5 requirements. Open it and judge for yourself. Now picture a real system: 10-20X the requirements of this example, and proportionally more procedural code to match. Nobody can audit that at a glance — not the next developer, not compliance, not you in six months. At that scale, an auditor can't read it all — they can only sample, and hope. **Unreadable at scale is ungovernable at scale.**
-- **Not trustworthy.** The procedural version shipped **2 real bugs** — found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
-- **Not maintainable.** Two options:
+<details markdown>
+<summary>&emsp;&emsp;<strong>Not readable</strong> — unreadable at scale is ungovernable at scale</summary>
 
-  - **Alter the generated code:** that means **re-checking every execution path** *and* getting the order right, by hand, again. Root causes: **path confusion** and **manual ordering** — the same problem as above, back for round two. Honestly? At some point you'd stop checking and just hope testing catches it.
+<br>[procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — ~200 lines for those same 5 requirements. Open it and judge for yourself. Now picture a real system: 10-20X the requirements of this example, and proportionally more procedural code to match. Nobody can audit that at a glance — not the next developer, not compliance, not you in six months. At that scale, an auditor can't read it all — they can only sample, and hope.
 
-  - **Change the prompt and regenerate:** doesn't dodge the risk, it repeats it — the AI is re-deriving all ~200 lines from scratch, with no guarantee it reproduces the paths that already worked. Same odds of a new bug, same review effort, again — and it only gets more expensive as the system grows.
+</details>
 
-There's a structural problem underneath the bugs, too: **AI pattern-matches dependencies, it doesn't compute them** — so the odds of a miss go up as the system grows, no matter how capable the model. [More detail →](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md#the-underlying-problem-dependency-graphs)
+&nbsp;
 
-That's not a capability gap — it's a representation problem, and no amount of AI capability fixes that.
+<details markdown>
+<summary>&emsp;&emsp;<strong>Not trustworthy</strong> — the procedural version shipped 2 real bugs</summary>
+
+<br>Found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
+
+There's a structural problem underneath the bugs, too: **AI pattern-matches dependencies, it doesn't compute them** — so the odds of a miss go up as the system grows. [More detail →](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md#the-underlying-problem-dependency-graphs)
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;<strong>Not maintainable</strong> — the cost doesn't scale with the fix</summary>
+
+<br>Hand-editing 200 generated lines isn't a real option — nobody reliably patches the output of a code generator, any more than you'd hand-patch a compiler's output. That leaves one path: **change the prompt and regenerate.**
+
+But that doesn't dodge the risk, it repeats it — the AI re-derives everything from scratch, with no guarantee it reproduces the paths that already worked. Adding one small constraint — a one-line change — means regenerating and re-reviewing the whole system, every time, at every table. On a real system that's not a quick edit. It's hours, real AI cost, and a fresh chance at a new bug — to make a change that should have taken a minute.
+
+</details>
+
+&nbsp;
+
+That's not (only) a capability gap — it's a representation problem: procedural code doesn't carry an explicit dependency graph, so nothing short of building one — inside the AI's process or outside it — closes this gap. A rules engine builds that graph explicitly, once, and checks it. That's the difference this document shows.
 
 **We're deeply impressed with AI — this is about closing the one gap it has: logic.** That's next.
 
@@ -465,7 +486,7 @@ That's the architecture: two funnels, converging on one engine, at the **same co
     - Complex incoming messages need only sample [XML examples](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml).
     - Rules make it **auditable** — logistics firms can implement systems *subject to audit*. Failure would mean hiring 100+ additional staff, an *8-figure exposure*. ([Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI))
 
-**By delegating logic — and governance — to the rules engine, AI is free to do what it's great at**: reading any of these requirement formats, and translating intent into real, governed systems.
+**Unburdened from logic, AI is free to do what it's great at** — reading any of these requirement formats and translating intent — while rules turn that intent into real, governed systems.
 
 </details>
 
@@ -735,5 +756,27 @@ To hide the YAML or JSON front matter (the metadata block at the top of your mar
 The preview will now automatically strip the front matter from the rendered view.
 
 ![hide-front-matter](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/manager/hide-front-matter.png?raw=true)
+
+</details>
+
+&nbsp;
+
+### Appendix
+
+<details markdown>
+
+<summary>Appendix</summary>
+
+#### A Proven Technology
+
+The 40X figure isn't a one-off — it's consistent with two decades of production measurement on a predecessor system (Versata, 1995-2010: 94-99% of logic automated by rules, typically ~97%, across several dozen systems). [Full history →](https://apilogicserver.github.io/Docs/Tech-Proven/)
+
+#### Not a RETE Engine
+
+Purpose-built for transaction processing, not inference/decision logic. [Why this matters →](https://apilogicserver.github.io/Docs/FAQ-RETE/)
+
+#### Events and No Bypass
+
+Hand-written event code can reopen the bug class — if a `row_event`/`commit_row_event` mutates a row directly, that value skips derivation, cascades, and constraints entirely. But this isn't a silent hole: the engine **refuses to start** if it detects a mutating event without an explicit `allow_row_mutation=True` override. The safe alternative (`early_row_event`, or `logic_row.insert()`) gets full rule processing automatically. Net effect: the escape hatch is closed by default, and every place it's deliberately opened is a single `grep` away. [Details →](https://apilogicserver.github.io/Docs/Logic-Type-Events/#events-must-not-mutate-row)
 
 </details>
