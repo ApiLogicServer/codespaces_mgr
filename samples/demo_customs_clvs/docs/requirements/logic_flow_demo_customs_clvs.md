@@ -1,4 +1,4 @@
-# Logic Flow — samples/demo_customs_clvs
+# Logic Flow — demo_customs_clvs
 
 <table>
 <tr valign="top">
@@ -11,15 +11,15 @@
 
 ### Rules
 
-1. `clvs_lvs_threshold = copy(clvs_lvs_threshold)`<br>
-2. `clvs_service_type_cd = copy(clvs_service_type_cd)`<br>
-3. `clvs_eligible = _clvs_eligible(row)` — Derive clvs_eligible: 1 if shipment meets all CLVS criteria, else 0.<br>
+1. `clvs_lvs_threshold_cad = copy(clvs_lvs_threshold_cad)`<br>
+2. `clvs_eligible = 1 if clvs_reason == "" else 0`<br>
+3. `is_prohibited = _is_prohibited(row)` — Derive is_prohibited: 1 if the commodity line carries a hazardous material code, else 0.<br>
 4. `clvs_reason = _clvs_reason(row)` — Derive clvs_reason: comma-delimited list of CLVS ineligibility reasons (blank if eligible).<br>
-5. `controlled_item_count = count(ShipmentCommodity where is_controlled)`<br>
-6. `prohibited_item_count = count(ShipmentCommodity where is_prohibited)`<br>
-E. `ShipmentCommodity` → `_set_commodity_flags` (early) — Set is_controlled and is_prohibited by HS code lookup before Rule.count aggregates.<br>
-E. `Shipment` → `_set_customs_office` (early) — Set customs_office_id by looking up PLANNED_CLEARANCE_LOCATION_CD in customs_office.<br>
-E. `ShipmentXml` → `_publish_isdc_processed` (after_flush) — Publish ShipmentXml.id to isdc_processed topic so Consumer 2 can parse the blob.
+5. `prohibited_commodity_count = count(ShipmentCommodity where is_prohibited)`<br>
+6. `controlled_item_count = count(ShipmentCommodity where controlled_regulated_goods_id)`<br>
+E. `Shipment` → `_set_customs_office` (early) — Shipment event: looks up CustomsOffice by planned_clearance_location_cd == office_code<br>
+E. `ShipmentCommodity` → `_set_controlled_good` (early) — ShipmentCommodity event: looks up ControlledRegulatedGood by the harmonized_tariff_nbr<br>
+E. `ShipmentXml` → `_publish_isdc` (after_flush) — ShipmentXml event: publishes the raw payload to Kafka topic isdc_processed so
 
 </td>
 </tr>
@@ -40,9 +40,11 @@ Scenario: Shipment at or below the LVS threshold is eligible
 ```
 
 ```
-Subscribe to Kafka topic `isdc`. Each message is a CIMCorp shipment XML.
-...
-(Step 1 — EAI row_event bridge: after ShipmentXml insert, publish blob.id to isdc_processed)
+EAI Consume — isdc topic, row-event bridge.
+
+On ShipmentXml insert (Tx 1, from Consumer 1 or /consume_debug), publish the raw
+payload to isdc_processed so Consumer 2 can parse and persist domain rows in Tx 2.
+See integration/kafka/kafka_subscribe_discovery/isdc.py for the full pipeline.
 ```
 
 ```
@@ -61,4 +63,4 @@ ShipmentParty writes atomically with the parent Shipment.
 ```
 
 ---
-_Generated 2026-07-03 07:39_
+_Generated 2026-08-11 18:36_

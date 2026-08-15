@@ -1,9 +1,0 @@
-<div fxLayout="row" fxLayoutAlign="center start" fxFlexFill class="container">
-    <o-tree #tree service="Customer" entity="Customer" 
-            keys="Id" root-title="Customer" columns="Id;CompanyName;Balance;CreditLimit;OrderCount;UnpaidOrderCount;Client_id;ContactName;ContactTitle;Address;City;Region;PostalCode;Country;Phone;Fax"
-            visible-columns="CompanyName" route=":Id" fxFlex="20">
-    </o-tree>
-    <div fxLayout="column" fxLayoutAlign="center stretch" fxFlex="80">
-    <router-outlet></router-outlet>
-    </div>
-</div>

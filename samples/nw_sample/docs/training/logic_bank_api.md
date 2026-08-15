@@ -234,6 +234,54 @@ CRITICAL — DOCSTRING ON EVERY calling= FUNCTION:
   With one it shows: `clvs_eligible = _clvs_eligible(row) — "1 if shipment meets all CLVS criteria"`
   Developers reading the diagram immediately understand intent without opening the file.
 
+CRITICAL — DOCSTRING ON EVERY EVENT (early_row_event, row_event, commit_row_event,
+after_flush_row_event) — SAME REQUIREMENT AS calling= FUNCTIONS, STATED SEPARATELY
+BECAUSE EVENTS ARE EASY TO MISS:
+  Every function wired via Rule.early_row_event / Rule.row_event / Rule.commit_row_event /
+  Rule.after_flush_row_event MUST have a docstring naming, at minimum:
+    1. The object (class/table) it acts on
+    2. Its purpose — what it looks up, sets, or triggers, and why
+
+  Format: """<ClassName> event: <what it looks up/sets/triggers and why>."""
+
+  ✅ CORRECT:
+  ```python
+  def _match_controlled_goods(row, old_row, logic_row):
+      """ShipmentCommodity event: looks up ControlledRegulatedGood by HS-code prefix and
+      sets controlled_regulated_goods_id (FK) before Rule.count aggregates it on Shipment."""
+      ...
+  Rule.early_row_event(on_class=models.ShipmentCommodity, calling=_match_controlled_goods)
+  ```
+
+  ❌ WRONG — no docstring, or a docstring that doesn't say what/why:
+  ```python
+  def _match_controlled_goods(row, old_row, logic_row):
+      # sets the FK
+      ...
+  Rule.early_row_event(on_class=models.ShipmentCommodity, calling=_match_controlled_goods)
+  ```
+
+  WHY THIS MATTERS MORE FOR EVENTS THAN FORMULAS: a `Rule.formula` is self-describing in
+  one sense — its `derive=` parameter already names the column it produces, so even an
+  undocumented formula is locatable from "which rule sets column X?" An event has no such
+  anchor: nothing points from "which event sets ShipmentCommodity.controlled_regulated_goods_id?"
+  back to the function unless the docstring says so. This makes events the most likely place
+  for a required derivation to go silently missing — a second, parallel event that SHOULD
+  exist (e.g. a lookup that should set a second flag/FK) has nothing forcing its own existence
+  to be checked, unlike a formula, which fails loudly (`LBActivateException: Missing Attrs`)
+  when a column it needs doesn't exist. A one-line docstring stating the object and purpose is
+  the cheapest available check: reading the list of event docstrings in a logic file makes it
+  obvious which requirement clauses have a matching event and which don't. Confirmed real case
+  (customs_demo_clvs, Aug 2026): a requirement stated two parallel eligibility clauses —
+  "no prohibited commodity lines (ShipmentCommodity.is_prohibited)" and "no controlled/regulated
+  goods (lookup by HS code)". The AI wrote the early_row_event for the second clause correctly,
+  but never wrote one for the first — `is_prohibited` was declared as a Rule.count `where=`
+  target with nothing ever setting it, permanently stuck at its column default. Docstring
+  discipline alone wouldn't have written the missing event, but a mandatory "object + purpose"
+  docstring on every event makes the existing/missing pattern visible at a glance when
+  reviewing a logic file — an undocumented or absent event for a stated requirement clause is
+  a visible gap, not a silent one.
+
 CRITICAL — ONE VALUE PER FORMULA:
   A Rule.formula calling function must return exactly one value — the column named in derive=.
   Setting other row attributes as side-effects inside the function is WRONG:
@@ -252,15 +300,49 @@ CRITICAL — ONE VALUE PER FORMULA:
   # clvs_reason is never re-derived when inputs change — LogicBank does not know about it
   ```
 
-  ✅ CORRECT — one Rule.formula per derived column:
+  (See also: "DETAIL VALUE + DERIVED FLAG" further below — the general form of the ✅ BEST
+  pattern immediately following this note.)
+
+  ✅ BEST — one Rule.formula per derived column, PREFER 1 LEVEL (no shared helper at all):
+  Real 2-level splits (a helper called from 2+ rule functions) are rare. Before writing a
+  helper, check whether one of the two derived columns can just be a formula over the OTHER
+  derived column — this is usually possible when one value is a detail (a reason string, a
+  computed amount) and the other is a status/flag summarizing it:
+  ```python
+  def _clvs_reason(row, old_row, logic_row):
+      """Derive clvs_reason: comma-delimited list of CLVS ineligibility reasons (blank if eligible)."""
+      reasons = []
+      if float(row.local_customs_value_amt or 0) > 3300:
+          reasons.append("value exceeds threshold")
+      if row.prohibited_commodity_count > 0:
+          reasons.append(f"{row.prohibited_commodity_count} prohibited line(s)")
+      return ", ".join(reasons)
+
+  Rule.formula(derive=models.Shipment.clvs_reason, calling=_clvs_reason)
+  Rule.formula(derive=models.Shipment.clvs_eligible, as_expression=lambda row: 1 if row.clvs_reason == "" else 0)
+  ```
+  No helper, no anchor tuple needed on either rule: `_clvs_reason` references every row.attr
+  it needs directly in its own body, and `clvs_eligible` depends on the real, scannable
+  `row.clvs_reason` column. This is the preferred shape whenever it fits — reach for it first.
+
+  ⚠️ FALLBACK ONLY — a shared helper genuinely called from 2+ independent rule functions
+  (not decomposable into "one derives from the other"): every calling function that delegates
+  to the helper needs a manually-maintained dependency-anchor tuple, since LB does not scan
+  into helpers:
   ```python
   def _clvs_eligible(row, old_row, logic_row):
+      """Derive clvs_eligible: 1 if shipment meets all CLVS criteria, else 0."""
+      # Dependency anchor — LB scans this function's own body only; _reasons() holds the
+      # real reads. Keep this list in sync with every row.attr read inside _reasons().
+      _ = row.local_customs_value_amt, row.prohibited_commodity_count
       return 1 if not _reasons(row) else 0
 
   def _clvs_reason(row, old_row, logic_row):
+      """Derive clvs_reason: comma-delimited list of CLVS ineligibility reasons (blank if eligible)."""
+      _ = row.local_customs_value_amt, row.prohibited_commodity_count
       return ", ".join(_reasons(row))
 
-  def _reasons(row):                          # shared helper — called directly from each function body
+  def _reasons(row):
       reasons = []
       if float(row.local_customs_value_amt or 0) > 3300:
           reasons.append("value exceeds threshold")
@@ -271,11 +353,9 @@ CRITICAL — ONE VALUE PER FORMULA:
   Rule.formula(derive=models.Shipment.clvs_eligible, calling=_clvs_eligible)
   Rule.formula(derive=models.Shipment.clvs_reason,   calling=_clvs_reason)
   ```
-  Both functions reference row.attr DIRECTLY — LB sees the dependencies on both rules.
-  Note: _clvs_eligible calls _reasons(row) — LB scans _clvs_eligible's body and sees
-  row.local_customs_value_amt and row.prohibited_commodity_count via the helper. However,
-  for maximum LB visibility, each function should reference row.attr directly (not via helper).
-  The safe pattern: reference the SAME intermediate columns from each function body directly.
+  Before writing this shape, confirm the helper truly can't be collapsed into the "derive one
+  from the other" form above — that form needs zero anchors and is almost always available
+  when the two values are a detail/flag pair.
 
   ❌ WRONG — shared helper called from as_expression: LB sees zero dependencies on BOTH rules:
   ```python

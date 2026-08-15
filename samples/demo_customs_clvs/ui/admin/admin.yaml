@@ -1,5 +1,14 @@
 about:
-  date: June 29, 2026 12:22:36
+  date: August 11, 2026 18:01:21
+  merged:
+    at: August 11, 2026 18:06:15
+    new_attributes: 'Shipment.customs_office_id Shipment.sys_config_id Shipment.clvs_reason
+      Shipment.clvs_eligible Shipment.prohibited_commodity_count Shipment.controlled_item_count
+      Shipment.authorized_clvs_courier Shipment.clvs_lvs_threshold_cad SysConfig.clvs_lvs_threshold_cad
+      ShipmentCommodity.is_prohibited '
+    new_resources: 'ShipmentXml '
+    new_tab_groups: 'CustomsOffice.ShipmentList Shipment.customs_office Shipment.sys_config
+      SysConfig.ShipmentList '
   recent_changes: works with modified safrs-react-admin
   version: 0.0.0
 api_root: '{http_type}://{swagger_host}:{port}/{api}'
@@ -99,6 +108,11 @@ resources:
       - customs_region_id
       name: customs_region
       resource: CustomsRegion
+    - direction: tomany
+      fks:
+      - customs_office_id
+      name: ShipmentList
+      resource: Shipment
     type: CustomsOffice
     user_key: name
   CustomsRegion:
@@ -358,6 +372,14 @@ resources:
     - name: trprt_bill_to_pymt_method_cd
     - name: iid_master_cd
     - name: iid_classify_cd
+    - name: customs_office_id
+    - name: sys_config_id
+    - name: clvs_reason
+    - name: clvs_eligible
+    - name: prohibited_commodity_count
+    - name: controlled_item_count
+    - name: authorized_clvs_courier
+    - name: clvs_lvs_threshold_cad
     tab_groups:
     - direction: tomany
       fks:
@@ -379,6 +401,16 @@ resources:
       - oid_nbr
       name: SpecialHandlingList
       resource: SpecialHandling
+    - direction: toone
+      fks:
+      - customs_office_id
+      name: customs_office
+      resource: CustomsOffice
+    - direction: toone
+      fks:
+      - sys_config_id
+      name: sys_config
+      resource: SysConfig
     type: Shipment
     user_key: local_shipment_oid_nbr
   ShipmentCommodity:
@@ -418,6 +450,7 @@ resources:
     - name: commodity_currency_cd
     - name: unit_of_measure_cd
     - name: classification_status_cd
+    - name: is_prohibited
     tab_groups:
     - direction: toone
       fks:
@@ -483,6 +516,21 @@ resources:
       resource: Shipment
     type: ShipmentParty
     user_key: shipment_party_oid_nbr
+  ShipmentXml:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: received_at
+      type: DATETIME
+    - name: payload
+      required: true
+      type: textarea
+    - name: is_processed
+      type: Boolean
+    type: ShipmentXml
+    user_key: id
   SpecialHandling:
     attributes:
     - label: ' id*'
@@ -514,6 +562,13 @@ resources:
     - name: tax_rate
     - name: notes
     - name: id
+    - name: clvs_lvs_threshold_cad
+    tab_groups:
+    - direction: tomany
+      fks:
+      - sys_config_id
+      name: ShipmentList
+      resource: Shipment
     type: SysConfig
     user_key: name
   VirtualRouteLeg:
@@ -565,20 +620,6 @@ resources:
     - name: us_process_cd
     - name: carrier_cd
     type: VirtualRouteLeg
-    user_key: id
-  ShipmentXml:
-    attributes:
-    - label: ' id*'
-      name: id
-      search: true
-      sort: true
-    - name: received_at
-      type: DATETIME
-    - name: is_processed
-    - label: Payload (XML)
-      name: payload
-      type: textarea
-    type: ShipmentXml
     user_key: id
 settings:
   HomeJS: /admin-app/home.js

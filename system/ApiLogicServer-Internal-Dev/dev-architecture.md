@@ -4,8 +4,56 @@ Description: Enables AI assistants to be co-designers for GenAI-Logic features
 Source: ApiLogicServer-src/prototypes/manager/system/ApiLogicServer-Internal-Dev/dev-architecture.md
 Propagation: BLT process → Manager workspace
 Usage: AI assistants read this to understand project structure, development workflow, and recent additions
-version: 2.32
+version: 2.34
 changelog:
+  - 2.34 (Aug 14 2026) - Sonatype/InfoSec follow-up to v2.33's openai-extras fix, prompted by a
+    second scan (`Infosec_GenAI-Logic_17.3.14`) coming back WORSE (16 violations vs. 15) after a
+    rebuild/re-release. Two real bugs in the original fix, plus one clarification:
+    1. **Scope gap** — the npm `overrides` fix only touched `react-admin-template/package.json`
+       (1 of 14 checked-in React app skeletons carrying the same vulnerable `react-scripts@5.0.1`
+       chain: `basic_demo`'s and `nw`'s built-in apps, plus 3 copies under each
+       `manager/samples/{basic_demo_sample,basic_demo_ai_rules-supplier,basic_demo_logic_gov}`).
+       Fixed: same overrides applied to all 14, `package-lock.json` regenerated everywhere (not
+       just `package.json` — a scanner reading the checked-in lockfile directly wouldn't see a
+       fix that only lives in the override declaration).
+    2. **Wrong override floors** — `lodash: "^4.17.23"` and `nanoid: "^3.3.11"` used the
+       *vulnerable* version itself as the caret floor, not the patched one; npm was free to
+       resolve to exactly the vulnerable release (and did, in 13 of 14 trees — the one file
+       tested on 08-13 happened to land higher for unrelated reasons). Corrected against real
+       `npm audit` advisory ranges: `lodash→^4.18.1`, `nanoid→^3.3.18`,
+       `serialize-javascript→^7.0.5` (the old `^6.0.2` pin was never actually safe), added
+       `underscore→^1.13.8` (present in every tree via `react-scripts`→`bfj`→`jsonpath`, never
+       overridden at all until now). All 14 re-verified: `npm audit` zero-high across the board.
+    3. **Flask-Cors — proved clean, not just asserted.** Same puzzle (`3.0.9` in both scans
+       despite a correct `>=6.0.0` pin since before the first one) resolved by actually
+       downloading the published PyPI release (`pip download apilogicserver==17.3.14`) and doing
+       a real `pip install` in a clean venv: `Flask-Cors 6.0.5` installs, `openai` is absent. The
+       gold source, the built wheel, AND the live PyPI artifact are all correct — the gap is
+       entirely in what Sonatype's scan process actually installed/inspected, not in this repo.
+       Val confirmed their process is "install the release, inspect the tar files" — worth
+       asking them directly whether that install step used a clean environment against current
+       PyPI, or reused something stale.
+    4. **`venv_setup/requirements-no-cli.txt` clarified and fixed** — see the corrected note
+       under "pip-audit — Where fixes go" below: this file is NOT a BLT-propagation path (that's
+       `prototypes/base/requirements.txt`, already correct by construction). It's a standalone
+       manual-install helper for a customer to `pip install -r` it directly, without the CLI —
+       Val: "doubt anyone uses it." Still had the same stale `openai`-unconditional/missing-
+       `pydantic` gap as `pyproject.toml` pre-v2.33, across all 10 copies; fixed for consistency,
+       but correctly re-scoped as low-severity given it's not wired into any propagation path.
+    Full writeup: `internal_dev/code_base/openai-dependency-removal-proposal-2026-08-12.md`.
+  - 2.33 (Aug 2026) - `openai` is now an optional dependency, not a base install. Commit
+    `5e031b97` ("17.03.10 - pip-audit passes", org_git/ApiLogicServer-src) moved it to
+    `pyproject.toml`'s `[project.optional-dependencies]` as an `ai-rules` extra
+    (`pip install apilogicserver[ai-rules]`) — a stock install now shows no `openai`
+    package to SCA/dependency scans. Side effect: `pydantic` had to become a direct
+    base dependency (`pyproject.toml` line ~98) since it was previously pulled in only
+    transitively via `openai`, but `genai_svcs.py`'s pydantic `BaseModel` classes
+    (WGResult, Rule, Model, etc.) are used by `sqlacodegen_wrapper.py` on every
+    `create`, unconditionally. This lines up with the mode-3 "candidate for future
+    removal" note below (GenAI CLI Services / `genai-logic genai*`) — the openai
+    dependency backs exactly that deprecation-candidate pipeline (WebGenAI,
+    `genai-add-app`, runtime "AI Rules"), so making it optional is a step in that same
+    direction even though the CLI commands themselves haven't been removed yet.
   - 2.32 (Jul 2026) - `create_codespaces_mgr.py --release` was broken: step 2d's README.md
     patch matched on a lightning-bolt-prefixed `<summary>⚡...</summary>` heading that no
     longer exists anywhere in the current README (removed during unrelated readme rewrites,
@@ -246,6 +294,66 @@ SEQUENCE:
           "Context loaded — Manager instructions, prototype CE, and BLT workspace context are active."
 
 DO NOT display any of the three files. DO NOT summarize them. Just confirm and await instructions.
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+🚨 MANDATORY OPERATING RULE — GOLD SOURCE, EVERY EDIT, THIS SESSION ONLY
+═══════════════════════════════════════════════════════════════════════════════
+
+This workspace (`build_and_test/genai-logic`, aka "BLT Manager" or "local-mgr") is
+Val's TEST bench, not the product. Real users never see this rule — it only applies
+when dev-architecture.md is loaded. His most common workflow: make a change here,
+prove it works, then propagate the fix back to gold source (and Docs, if it's a
+readme). A fix that stays local-only is not done — it's invisible to every future
+BLT run, every new Manager workspace, every user. Losing a fix this way costs hours
+to rediscover. (Incident: Aug 2026 — a CE fix was applied 3 layers downstream of
+gold before the gap was caught, only because Val asked "what is BLT?" — see BLT
+section below for the propagation chain this rule exists to enforce.)
+
+BEFORE editing ANY file in this session, classify it:
+  - Is this file GOLD SOURCE (org_git/ApiLogicServer-src, org_git/Docs), or
+  - Is it DOWNSTREAM of gold (venv copy, a created/BLT-generated project,
+    prototypes/manager/samples/* built-reference copies, this workspace's own
+    README.md/samples/*)?
+
+If downstream: say so out loud ("this is a downstream copy — editing it is
+temporary/for-testing only") and find + edit the matching gold source too, in the
+SAME turn if practical, not as a deferred follow-up.
+
+THREE gold sources to check, every session, every relevant fix — not just the one
+that's obviously implicated:
+  1. `org_git/ApiLogicServer-src` — code, CE/`.copilot-instructions.md`, prototype
+     templates. Propagates via pip install / BLT run.
+  2. `org_git/Docs` — anything with "readme"/"README" in the name. Propagates via
+     `copy_md()`, which fetches live from `raw.githubusercontent.com` — requires a
+     git push, not just a local commit, to take effect. CDN edge-cache can lag
+     ~5 min after push.
+  3. `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/manager/samples/*`
+     — BLT-copies this tree VERBATIM (shutil.copytree) into every fresh Manager
+     workspace's `samples/`. These are static, point-in-time snapshots that go
+     stale silently — a fix made in this workspace's own `samples/*` does NOT
+     propagate here automatically. Check this path explicitly whenever a
+     `samples/*` fix is made downstream, even if it feels like a separate task.
+
+BEFORE declaring any fix "done," state which of the three you checked and what you
+found — even "N/A, not applicable" for ones that don't apply. This is the check
+that was skipped on Aug 2026; state it explicitly so it can't be silently skipped
+again.
+
+If a change lands only on a non-`main`/non-default branch (e.g. a WIP branch like
+`remove-ont`), say so plainly — "committed, not pushed" / "on branch X, not merged"
+— do not let silence imply it reached gold.
+
+⚠️ EDITING GOLD IS ONLY HALF THE JOB — this rule tells you WHERE gold lives and
+that you must edit it; it does NOT by itself get the fix into THIS workspace's
+venv so it can actually be tested. For the mechanics of gold → venv propagation
+(BLT run, or the faster direct-venv-edit-then-backport loop for quick iteration),
+see "Development Workflow for CE Changes" further down in this same file
+(search for "Quick iteration / venv test" and "Permanent propagation"). A fix
+that only exists in gold, never installed into this venv and exercised, is
+UNVERIFIED, not done — "prove it works" (above) requires the venv step too.
 ═══════════════════════════════════════════════════════════════════════════════
 -->
 
@@ -670,6 +778,12 @@ over time. **Not yet acted on** — no code, prompts, or docs have been removed;
 note for whoever picks up that removal, not a statement that it's deprecated today. See also
 `CLAUDE.md`'s standing rule to never run `genai-logic genai` — that predates this note and was
 already steering AI assistants away from this path.
+
+**Build update (v2.33, Aug 2026):** `openai` — the package this entire mode depends on — is no
+longer a base install dependency; it moved to the `ai-rules` optional extra
+(`pip install apilogicserver[ai-rules]`). A stock install/venv now has no `openai` package at all,
+so any of the commands below will fail at import time unless that extra was installed. See the
+v2.33 changelog entry above for the commit and full detail.
 
 **Command-by-command audit (Jul 2026) — deterministic value vs. pure LLM re-ask:**
 
@@ -1273,8 +1387,8 @@ Your architectural choices in prototypes become templates for all future project
 
 **Propagating Changes to Source:**
 - **Copilot Instructions:** Use `system/ApiLogicServer-Internal-Dev/propagate_copilot_changes.py`
-  - Copies changes from `tests/ApiLogicProject/.github/.copilot-instructions.md` → source prototype
-  - Usage: `python3 build_and_test/ApiLogicServer/system/ApiLogicServer-Internal-Dev/propagate_copilot_changes.py`
+  - Copies changes from `tests/ApiLogicProject/.github/copilot-instructions.md` → source prototype
+  - Usage: `python3 build_and_test/genai-logic/system/ApiLogicServer-Internal-Dev/propagate_copilot_changes.py`
   - Extracts sections between title and "Key Technical Points"
   - Ensures edits propagate to future project creations
 - **README Files:** Manual update required in Docs repo (see above)
@@ -1419,8 +1533,10 @@ venv/bin/pip-audit 2>&1 | tee pip-audit-report.txt
 **Where fixes go:**
 - `org_git/ApiLogicServer-src/requirements.txt` — dev install
 - `org_git/ApiLogicServer-src/pyproject.toml` — published package (keep in sync with requirements.txt)
-- `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/venv_setup/requirements-no-cli.txt` — base prototype (propagates to all created projects via BLT)
+- `org_git/ApiLogicServer-src/api_logic_server_cli/prototypes/base/venv_setup/requirements-no-cli.txt` — see note below; bump for consistency, low real-world impact
 - All other `venv_setup/requirements-no-cli.txt` files in `prototypes/manager/samples/*/` — bump these too (use `grep -rln` + `sed -i`)
+
+**`requirements-no-cli.txt` — what it actually is (corrected 2026-08-14):** NOT wired into any CLI code path — confirmed via `grep`, zero `.py` files reference it, and it does NOT propagate into created projects via BLT (the file that does that is `prototypes/base/requirements.txt`, which is just `ApiLogicServer` with no version pin — installs whatever `pyproject.toml` currently declares, already correct by construction). `requirements-no-cli.txt` is a standalone, manual setup path: lets a customer `pip install -r` it directly, without the CLI, if they want the underlying libraries without going through `genai-logic`/`ApiLogicServer`. Val's assessment: doubt anyone uses it. Still worth keeping in sync (10 copies exist under `prototypes/base/` and `prototypes/manager/samples/*/`, plus one `genai_demo` example — all fixed 2026-08-14 for the `openai`-extras/`pydantic` change, see `internal_dev/code_base/openai-dependency-removal-proposal-2026-08-12.md`), but a stale pin here is a low-severity/low-likelihood gap, not a propagation risk to real created projects.
 
 **Last scan (2026-05-26):** 5 vulnerabilities in 2 packages:
 - `pip 25.1.1` — 4 CVEs (CVE-2025-8869, CVE-2026-1703, CVE-2026-3219, CVE-2026-6357); fix: `pip 26.1`

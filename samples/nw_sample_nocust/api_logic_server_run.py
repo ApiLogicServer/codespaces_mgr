@@ -32,8 +32,8 @@
 #
 ###############################################################################
 
-api_logic_server__version = '17.03.06'
-api_logic_server_created__on = 'July 23, 2026 17:58:43'
+api_logic_server__version = '17.03.15'
+api_logic_server_created__on = 'August 15, 2026 09:53:59'
 api_logic_server__host = 'localhost'
 api_logic_server__port = '5656'
 
@@ -126,7 +126,7 @@ else:
 
 flask_app = Flask("API Logic Server", template_folder='ui/templates')  # templates to load ui/admin/admin.yaml
 
-CORS(flask_app, resources=[{r"/api/.*": {"origins": "*"}},{r"/ontimizeweb/.*": {"origins": "*"}}],
+CORS(flask_app, resources=[{r"/api/.*": {"origins": "*"}}],
      allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],supports_credentials=True)
 
 args = server_setup.get_args(flask_app)                        # creation defaults
@@ -148,7 +148,7 @@ server_setup.api_logic_server_setup(flask_app, args)
 AdminLoader.admin_events(flask_app = flask_app, args = args, validation_error = ValidationError)
 
 if __name__ == "__main__":
-    msg = f'API Logic Project loaded (not WSGI), version: 17.03.06\n'
+    msg = f'API Logic Project loaded (not WSGI), version: 17.03.15\n'
     msg += f'.. startup message: {start_up_message}\n'
     if server_setup.is_docker():
         msg += f' (running from docker container at flask_host: {args.flask_host} - may require refresh)\n'
@@ -184,7 +184,7 @@ if __name__ == "__main__":
 
     flask_app.run(host=args.flask_host, threaded=True, port=args.port)
 else:
-    msg = f'API Logic Project Loaded (WSGI), version 17.03.06\n'
+    msg = f'API Logic Project Loaded (WSGI), version 17.03.15\n'
     msg += f'.. startup message: {start_up_message}\n'
 
     if server_setup.is_docker():
