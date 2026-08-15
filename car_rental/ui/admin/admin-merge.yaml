@@ -1,0 +1,488 @@
+about:
+  date: August 01, 2026 09:55:51
+  merged:
+    at: August 01, 2026 09:58:02
+    new_attributes: 'SysConfig.max_rental_days SysConfig.max_additional_drivers SysConfig.min_driver_age
+      SysConfig.grace_period_hours SysConfig.location_penalty_amount SysConfig.bad_experience_bar_threshold '
+    new_resources: 'BadExperience Person Rental Branch LocalArea Car CarModel CarGroup
+      CarManufacturer Country OperatingCompany RentalDriver '
+    new_tab_groups: 'SysConfig.PersonList SysConfig.RentalList '
+  recent_changes: works with modified safrs-react-admin
+  version: 0.0.0
+api_root: '{http_type}://{swagger_host}:{port}/{api}'
+authentication: '{system-default}'
+info:
+  number_relationships: 0
+  number_tables: 1
+info_toggle_checked: true
+resources:
+  BadExperience:
+    attributes:
+    - label: ' description*'
+      name: description
+      search: true
+      sort: true
+    - name: driver_id
+      required: true
+    - name: rental_id
+      required: true
+    - name: occurred_datetime
+    - name: notification_datetime
+    - name: id
+    tab_groups:
+    - direction: toone
+      fks:
+      - driver_id
+      name: driver
+      resource: Person
+    - direction: toone
+      fks:
+      - rental_id
+      name: rental
+      resource: Rental
+    type: BadExperience
+    user_key: description
+  Branch:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: local_area_id
+      required: true
+    - name: branch_type
+      required: true
+    - name: car_storage_capacity
+    - name: id
+    - name: is_eu_rent_owned
+    tab_groups:
+    - direction: tomany
+      fks:
+      - branch_id
+      name: CarList
+      resource: Car
+    - direction: tomany
+      fks:
+      - drop_off_branch_id
+      name: RentalList
+      resource: Rental
+    - direction: tomany
+      fks:
+      - pickup_branch_id
+      name: pickupRentalList
+      resource: Rental
+    - direction: tomany
+      fks:
+      - return_branch_id
+      name: returnRentalList
+      resource: Rental
+    - direction: toone
+      fks:
+      - local_area_id
+      name: local_area
+      resource: LocalArea
+    type: Branch
+    user_key: name
+  Car:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: branch_id
+    - name: car_model_id
+      required: true
+    - name: local_area_id
+      required: true
+    - name: vin
+      required: true
+    - name: odometer_reading
+    - name: service_mileage
+    - name: fuel_level
+    tab_groups:
+    - direction: tomany
+      fks:
+      - car_id
+      name: RentalList
+      resource: Rental
+    - direction: toone
+      fks:
+      - branch_id
+      name: branch
+      resource: Branch
+    - direction: toone
+      fks:
+      - car_model_id
+      name: car_model
+      resource: CarModel
+    - direction: toone
+      fks:
+      - local_area_id
+      name: local_area
+      resource: LocalArea
+    type: Car
+    user_key: id
+  CarGroup:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: passenger_capacity
+    - name: large_suitcase_capacity
+    - name: small_suitcase_capacity
+    - name: rental_hour_rate
+      required: true
+    - name: rental_day_rate
+      required: true
+    - name: rental_week_rate
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - car_group_id
+      name: CarModelList
+      resource: CarModel
+    - direction: tomany
+      fks:
+      - car_group_id
+      name: RentalList
+      resource: Rental
+    type: CarGroup
+    user_key: name
+  CarManufacturer:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - car_manufacturer_id
+      name: CarModelList
+      resource: CarModel
+    type: CarManufacturer
+    user_key: name
+  CarModel:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: car_group_id
+      required: true
+    - name: car_manufacturer_id
+      required: true
+    - name: body_style
+    - name: fuel_type
+    - name: passenger_capacity
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - car_model_id
+      name: CarList
+      resource: Car
+    - direction: toone
+      fks:
+      - car_group_id
+      name: car_group
+      resource: CarGroup
+    - direction: toone
+      fks:
+      - car_manufacturer_id
+      name: car_manufacturer
+      resource: CarManufacturer
+    type: CarModel
+    user_key: name
+  Country:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: iso_code
+      required: true
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - country_id
+      name: OperatingCompanyList
+      resource: OperatingCompany
+    type: Country
+    user_key: name
+  LocalArea:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: operating_company_id
+      required: true
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - local_area_id
+      name: BranchList
+      resource: Branch
+    - direction: tomany
+      fks:
+      - local_area_id
+      name: CarList
+      resource: Car
+    - direction: toone
+      fks:
+      - operating_company_id
+      name: operating_company
+      resource: OperatingCompany
+    type: LocalArea
+    user_key: name
+  OperatingCompany:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: country_id
+      required: true
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - operating_company_id
+      name: LocalAreaList
+      resource: LocalArea
+    - direction: toone
+      fks:
+      - country_id
+      name: country
+      resource: Country
+    type: OperatingCompany
+    user_key: name
+  Person:
+    attributes:
+    - label: ' first_name*'
+      name: first_name
+      required: true
+      search: true
+      sort: true
+    - name: sys_config_id
+    - name: last_name
+      required: true
+    - name: email
+    - name: birth_date
+      required: true
+    - name: driver_license_number
+    - name: driver_license_expiry
+    - name: min_driver_age
+    - name: bad_experience_count
+    - name: id
+    - name: bad_experience_bar_threshold
+    - name: is_qualified
+    - name: is_barred
+    tab_groups:
+    - direction: tomany
+      fks:
+      - driver_id
+      name: BadExperienceList
+      resource: BadExperience
+    - direction: tomany
+      fks:
+      - renter_id
+      name: RentalList
+      resource: Rental
+    - direction: tomany
+      fks:
+      - person_id
+      name: RentalDriverList
+      resource: RentalDriver
+    - direction: toone
+      fks:
+      - sys_config_id
+      name: sys_config
+      resource: SysConfig
+    type: Person
+    user_key: first_name
+  Rental:
+    attributes:
+    - label: ' credit_card_name*'
+      name: credit_card_name
+      search: true
+      sort: true
+    - name: car_group_id
+      required: true
+    - name: car_id
+    - name: drop_off_branch_id
+    - name: pickup_branch_id
+      required: true
+    - name: renter_id
+      required: true
+    - name: return_branch_id
+      required: true
+    - name: sys_config_id
+    - name: scheduled_pickup_datetime
+      required: true
+    - name: scheduled_return_datetime
+      required: true
+    - name: actual_pickup_datetime
+    - name: actual_return_datetime
+    - name: status
+      required: true
+    - name: fuel_level_at_pickup
+    - name: max_rental_days
+    - name: max_additional_drivers
+    - name: grace_period_hours
+    - name: location_penalty_amount
+    - name: additional_driver_count
+    - name: barred_driver_count
+    - name: rental_duration_days
+    - name: base_rental_cost
+    - name: late_return_charge
+    - name: location_penalty_charge
+    - name: total_additional_charges
+    - name: rental_price
+    - name: id
+    tab_groups:
+    - direction: tomany
+      fks:
+      - rental_id
+      name: BadExperienceList
+      resource: BadExperience
+    - direction: tomany
+      fks:
+      - rental_id
+      name: RentalDriverList
+      resource: RentalDriver
+    - direction: toone
+      fks:
+      - car_group_id
+      name: car_group
+      resource: CarGroup
+    - direction: toone
+      fks:
+      - car_id
+      name: car
+      resource: Car
+    - direction: toone
+      fks:
+      - drop_off_branch_id
+      name: drop_off_branch
+      resource: Branch
+    - direction: toone
+      fks:
+      - pickup_branch_id
+      name: pickup_branch
+      resource: Branch
+    - direction: toone
+      fks:
+      - renter_id
+      name: renter
+      resource: Person
+    - direction: toone
+      fks:
+      - return_branch_id
+      name: return_branch
+      resource: Branch
+    - direction: toone
+      fks:
+      - sys_config_id
+      name: sys_config
+      resource: SysConfig
+    type: Rental
+    user_key: credit_card_name
+  RentalDriver:
+    attributes:
+    - label: ' id*'
+      name: id
+      search: true
+      sort: true
+    - name: person_id
+      required: true
+    - name: rental_id
+      required: true
+    - name: is_renter
+    tab_groups:
+    - direction: toone
+      fks:
+      - person_id
+      name: person
+      resource: Person
+    - direction: toone
+      fks:
+      - rental_id
+      name: rental
+      resource: Rental
+    type: RentalDriver
+    user_key: id
+  SysConfig:
+    attributes:
+    - label: ' name*'
+      name: name
+      required: true
+      search: true
+      sort: true
+    - name: discount_rate
+    - name: tax_rate
+    - name: notes
+    - name: id
+    - name: max_rental_days
+    - name: max_additional_drivers
+    - name: min_driver_age
+    - name: grace_period_hours
+    - name: location_penalty_amount
+    - name: bad_experience_bar_threshold
+    tab_groups:
+    - direction: tomany
+      fks:
+      - sys_config_id
+      name: PersonList
+      resource: Person
+    - direction: tomany
+      fks:
+      - sys_config_id
+      name: RentalList
+      resource: Rental
+    type: SysConfig
+    user_key: name
+settings:
+  HomeJS: /admin-app/home.js
+  max_list_columns: 8
+  style_guide:
+    applicationLocales:
+    - en
+    - es
+    currency_symbol: $
+    currency_symbol_position: left
+    date_format: LL
+    decimal_max: '1000000000'
+    decimal_min: '2'
+    decimal_separator: .
+    detail_mode: tab
+    edit_on_mode: dblclick
+    exclude_listpicker: false
+    include_translation: 'false'
+    keycloak_client_id: alsclient
+    keycloak_realm: kcals
+    keycloak_url: http://localhost:8080
+    locale: en
+    max_decimal_digits: '4'
+    min_decimal_digits: '2'
+    new_mode: dialog
+    pick_style: list
+    row_height: small,
+    serviceType: JSONAPI
+    startSessionPath: /auth/login
+    style: light
+    thousand_separator: ','
+    use_keycloak: 'false'

@@ -1,0 +1,392 @@
+{
+    "tool_type": "json-api",
+    "schema_version": "1.0",
+    "base_url": "http://localhost:5656/api",
+    "description": "API Logic Project: car_rental",
+    "resources": [
+        {
+            "name": "BadExperience",
+            "path": "/BadExperience",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "rental_id",
+                "driver_id",
+                "description",
+                "occurred_datetime",
+                "notification_datetime"
+            ],
+            "filterable": [
+                "id",
+                "rental_id",
+                "driver_id",
+                "description",
+                "occurred_datetime",
+                "notification_datetime"
+            ]
+        },
+        {
+            "name": "Person",
+            "path": "/Person",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+                "birth_date",
+                "driver_license_number",
+                "driver_license_expiry",
+                "sys_config_id",
+                "min_driver_age",
+                "bad_experience_bar_threshold",
+                "bad_experience_count",
+                "is_qualified",
+                "is_barred"
+            ],
+            "filterable": [
+                "id",
+                "first_name",
+                "last_name",
+                "email",
+                "birth_date",
+                "driver_license_number",
+                "driver_license_expiry",
+                "sys_config_id",
+                "min_driver_age",
+                "bad_experience_bar_threshold",
+                "bad_experience_count",
+                "is_qualified",
+                "is_barred"
+            ]
+        },
+        {
+            "name": "Rental",
+            "path": "/Rental",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "renter_id",
+                "pickup_branch_id",
+                "return_branch_id",
+                "car_group_id",
+                "car_id",
+                "scheduled_pickup_datetime",
+                "scheduled_return_datetime",
+                "actual_pickup_datetime",
+                "actual_return_datetime",
+                "drop_off_branch_id",
+                "status",
+                "credit_card_name",
+                "fuel_level_at_pickup",
+                "sys_config_id",
+                "max_rental_days",
+                "max_additional_drivers",
+                "grace_period_hours",
+                "location_penalty_amount",
+                "additional_driver_count",
+                "barred_driver_count",
+                "rental_duration_days",
+                "base_rental_cost",
+                "late_return_charge",
+                "location_penalty_charge",
+                "total_additional_charges",
+                "rental_price"
+            ],
+            "filterable": [
+                "id",
+                "renter_id",
+                "pickup_branch_id",
+                "return_branch_id",
+                "car_group_id",
+                "car_id",
+                "scheduled_pickup_datetime",
+                "scheduled_return_datetime",
+                "actual_pickup_datetime",
+                "actual_return_datetime",
+                "drop_off_branch_id",
+                "status",
+                "credit_card_name",
+                "fuel_level_at_pickup",
+                "sys_config_id",
+                "max_rental_days",
+                "max_additional_drivers",
+                "grace_period_hours",
+                "location_penalty_amount",
+                "additional_driver_count",
+                "barred_driver_count",
+                "rental_duration_days",
+                "base_rental_cost",
+                "late_return_charge",
+                "location_penalty_charge",
+                "total_additional_charges",
+                "rental_price"
+            ]
+        },
+        {
+            "name": "Branch",
+            "path": "/Branch",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "branch_type",
+                "local_area_id",
+                "car_storage_capacity",
+                "is_eu_rent_owned"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "branch_type",
+                "local_area_id",
+                "car_storage_capacity",
+                "is_eu_rent_owned"
+            ]
+        },
+        {
+            "name": "LocalArea",
+            "path": "/LocalArea",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "operating_company_id"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "operating_company_id"
+            ]
+        },
+        {
+            "name": "Car",
+            "path": "/Car",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "vin",
+                "car_model_id",
+                "local_area_id",
+                "branch_id",
+                "odometer_reading",
+                "service_mileage",
+                "fuel_level"
+            ],
+            "filterable": [
+                "id",
+                "vin",
+                "car_model_id",
+                "local_area_id",
+                "branch_id",
+                "odometer_reading",
+                "service_mileage",
+                "fuel_level"
+            ]
+        },
+        {
+            "name": "CarModel",
+            "path": "/CarModel",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "car_manufacturer_id",
+                "car_group_id",
+                "body_style",
+                "fuel_type",
+                "passenger_capacity"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "car_manufacturer_id",
+                "car_group_id",
+                "body_style",
+                "fuel_type",
+                "passenger_capacity"
+            ]
+        },
+        {
+            "name": "CarGroup",
+            "path": "/CarGroup",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "passenger_capacity",
+                "large_suitcase_capacity",
+                "small_suitcase_capacity",
+                "rental_hour_rate",
+                "rental_day_rate",
+                "rental_week_rate"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "passenger_capacity",
+                "large_suitcase_capacity",
+                "small_suitcase_capacity",
+                "rental_hour_rate",
+                "rental_day_rate",
+                "rental_week_rate"
+            ]
+        },
+        {
+            "name": "CarManufacturer",
+            "path": "/CarManufacturer",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name"
+            ],
+            "filterable": [
+                "id",
+                "name"
+            ]
+        },
+        {
+            "name": "Country",
+            "path": "/Country",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "iso_code"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "iso_code"
+            ]
+        },
+        {
+            "name": "OperatingCompany",
+            "path": "/OperatingCompany",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "country_id"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "country_id"
+            ]
+        },
+        {
+            "name": "SysConfig",
+            "path": "/SysConfig",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "name",
+                "discount_rate",
+                "tax_rate",
+                "notes",
+                "max_rental_days",
+                "max_additional_drivers",
+                "min_driver_age",
+                "grace_period_hours",
+                "bad_experience_bar_threshold",
+                "location_penalty_amount"
+            ],
+            "filterable": [
+                "id",
+                "name",
+                "discount_rate",
+                "tax_rate",
+                "notes",
+                "max_rental_days",
+                "max_additional_drivers",
+                "min_driver_age",
+                "grace_period_hours",
+                "bad_experience_bar_threshold",
+                "location_penalty_amount"
+            ]
+        },
+        {
+            "name": "RentalDriver",
+            "path": "/RentalDriver",
+            "methods": [
+                "GET",
+                "PATCH",
+                "POST",
+                "DELETE"
+            ],
+            "fields": [
+                "id",
+                "rental_id",
+                "person_id",
+                "is_renter"
+            ],
+            "filterable": [
+                "id",
+                "rental_id",
+                "person_id",
+                "is_renter"
+            ]
+        }
+    ]
+}
