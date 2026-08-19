@@ -1,0 +1,2 @@
+Error creating database from model: August 18, 2026 16:34:54
+name 'Sequence' is not defined

@@ -4,7 +4,7 @@ This project was created by `genai-logic create`.
 
 - **Project name:** nw_sample
 - **Database:** `nw+`
-- **Created:** August 15, 2026 09:53:58
+- **Created:** August 18, 2026 16:34:23
 
 ## Scaffold
 
@@ -13,6 +13,7 @@ This project's scaffold:
 
 - **Base template:** `/Users/val/dev/ApiLogicServer/ApiLogicServer-dev/build_and_test/genai-logic/venv/lib/python3.13/site-packages/api_logic_server_cli/prototypes/base` (always the foundation - every project starts here)
 - **Overlay:** none - this project is the unmodified base template
+- **Overlay (Project Context Engineering):** `/Users/val/dev/ApiLogicServer/ApiLogicServer-dev/build_and_test/genai-logic/system/project_context_engineering` (training file additions/overrides copied into `docs/training/` - see this project's `docs/training/$readme.md` for the exact overlay timestamp/version)
 
 The scaffold provides, out of the box:
 
