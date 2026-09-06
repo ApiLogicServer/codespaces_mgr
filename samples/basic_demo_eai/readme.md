@@ -13,9 +13,9 @@ Propagation: see api_logic_server_cli/clone_and_overlay_prototypes/create_readme
 </style>
 
 
-&nbsp;
-**Key Takeways - TL;DR - Kafka Integration: Async Messaging**
-&nbsp;
+!!! pied-piper ":bulb: TL;DR - Kafka Integration: Async Messaging"
+
+    Created by: › genai-logic create --project_name=demo_eai --db_url=sqlite:///samples/dbs/basic_demo.sqlite, then Executable Requirements ("implement reqs")
 
     APIs are useful to application integration, but do not deal with the reality that the receiving system might be down.
 
@@ -67,6 +67,10 @@ $ genai-logic add-auth --provider-type=keycloak --db-url=localhost
 # D - create system from requirements
 implement requirements docs/requirements/demo_eai
 ```
+
+**Using Podman instead of Docker?** Step C's `docker compose up -d` can be `podman compose up -d`
+instead — `devops/keycloak/docker-compose.yml` works unchanged. One-time setup: see
+[DevOps-Podman](https://apilogicserver.github.io/Docs/DevOps-Podman/).
 
 The prompts on this page are the requirements for this system. Execute the steps above to build it.  Thse requirements are not just a description of the system - AI can execute them, directly.
 
@@ -319,6 +323,8 @@ Debug / test (no Kafka required):
 
 Live Kafka:
   1. docker compose -f integration/kafka/dockercompose_start_kafka.yml up -d
+     (Podman instead of Docker? Use `podman compose` — same file, unchanged.
+      See https://apilogicserver.github.io/Docs/DevOps-Podman/)
   2. Enable KAFKA_CONSUMER + KAFKA_PRODUCER in config/default.env
   3. bash integration/kafka/order_b2b_reset.sh       # recreates topics + clears log
   4. Start server; publish sample JSON to order_b2b topic

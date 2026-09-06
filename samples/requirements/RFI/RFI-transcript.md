@@ -26,7 +26,6 @@ Encourage customers to purchase 'green' products with an item discount using a c
 ```
 
 **AI:** To work this out, three questions:
-
 1. How should we flag a product as 'green'? A simple boolean (`is_green`) is the obvious choice — does that work, or did you have a different classification in mind (e.g. a category/tag)?
 2. Where should the discount apply — reduce `Item.unit_price` directly, or leave `unit_price` as the pure copy from `Product.unit_price` and apply the discount only inside the `Item.amount` formula?
 3. The prompt says "a configurable flat percentage" — should this rate live in `sys_config` (alongside the other constants), so it can be changed without a code deploy?
