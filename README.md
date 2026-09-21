@@ -133,6 +133,12 @@ Use case: App Integration
     1. Publish the Order to Kafka topic 'order_shipping' when the date_shipped is not None.
 ```
 
+> **In a hurry, or want zero AI/model dependency?** Skip the wait — copy the finished result instead:
+> ```bash
+> cp -r samples/basic_demo_existing_db basic_demo
+> ```
+> Same prompt, same logic, same rules — [check_credit.py](samples/basic_demo_existing_db/logic/logic_discovery/place_order/check_credit.py) is real, already there. Press F5 and you're looking at a working, governed project in seconds, no AI call required.
+
 <details markdown>
 <summary>Starting from a new database instead?</summary>
 
