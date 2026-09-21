@@ -136,8 +136,6 @@ Use case: App Integration
 <details markdown>
 <summary>Starting from a new database instead?</summary>
 
-&nbsp;
-
 The prompt above starts from an existing database — the common real-world case, and much faster (no schema design step). You *could* have AI design a new database from scratch instead:
 
 <br>Say this to your AI assistant (allow several minutes):
@@ -484,8 +482,6 @@ The native-AI side, in full: [samples/bd_claude_native_ai](samples/bd_claude_nat
 <details markdown>
 <summary>Business Users, Empowered — NL requirements, AI assistance</summary>
 
-&nbsp;
-
 <br>[Requirements From Interview](https://apilogicserver.github.io/Docs/Exec-Reqmts/) — a business user doesn't need to already know how to write a spec. They say what they know; the AI interviews them on what's still ambiguous, confirms before building. [Real transcript, unedited →](samples/requirements/RFI/RFI-transcript.md)
 
 Once it's running, the same access works both directions: ask the AI *"what can you do for me?"* and get a real, project-specific answer — not a canned capabilities list.
@@ -497,11 +493,9 @@ The IDE itself is simplified for this — same AI, same governed output, no deve
 &nbsp;
 
 <details markdown>
-<summary>Business Users and Developers, One Artifact</summary>
+<summary>Promotes Business User and Developer Collaboration — One Artifact, One Toolset</summary>
 
-&nbsp;
-
-<br>The rule a business user reads and the rule a developer debugs are the same five lines, in the same file, in the same IDE. No hand-off where intent gets lost, no second document to keep in sync. A policy change — "or equal to," not just "less than" — is one line of English, then one line of rule. Not a re-spec, not a re-build.
+<br>The rule a business user reads and the rule a developer debugs are the same five lines, in the same file, in the same IDE. No hand-off where intent gets lost, or start-over to utilize enterprise-standard languages, tooling, and deployment. A policy change — "or equal to," not just "less than" — is one line of English, then one line of rule. Not a re-spec, not a re-build.
 
 </details>
 
