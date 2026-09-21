@@ -4,8 +4,93 @@ Description: Enables AI assistants to be co-designers for GenAI-Logic features
 Source: ApiLogicServer-src/prototypes/manager/system/ApiLogicServer-Internal-Dev/dev-architecture.md
 Propagation: BLT process → Manager workspace
 Usage: AI assistants read this to understand project structure, development workflow, and recent additions
-version: 2.36
+version: 2.40
 changelog:
+  - 2.40 (Sep 11 2026) - Added `podman/` as a fourth sibling under `ApiLogicServer-dev/`
+    (alongside `org_git/`, `build_and_test/`, `servers/`) — a persistent host directory for
+    docker/podman bind-mount volumes that must survive a Manager workspace rebuild. Root
+    cause: a routine Manager rebuild wiped `samples/basic_demo_eai`'s Kafka broker volume
+    (mounted project-relative, `./.volumes/kafka/data`, inside `build_and_test/`) — Val
+    caught it live and created an empty `podman/` folder as the fix location. Scope
+    deliberately narrow, per Val's steer against overengineering: no dummy compose file
+    (this workspace may end up hosting non-Kafka volumes too, and an unexecuted example
+    compose file is one more thing to keep in sync for no benefit) — just the directory
+    plus a `readme.md` explaining the pattern, created by `install-ApiLogicServer-dev.sh`/
+    `.ps1` alongside the other three siblings. **Critical boundary, corrected mid-session
+    after an initial mistake:** first pass wrongly redirected gold source
+    (`prototypes/manager/samples/basic_demo_eai/.../dockercompose_start_kafka.yml`) to the
+    new `podman/` path — but that file ships to *every* end-user Manager workspace via the
+    manager-build copytree, and those workspaces aren't repeatedly rebuilt the way this one
+    is, so a hardcoded `${HOME}/dev/genai-logic/...` path would have broken it for everyone
+    else. Reverted; gold source's `basic_demo_eai` template stays on the original
+    `./.volumes/kafka/data` default. Only *this* workspace's local copy of that file points
+    at `podman/kafka/data` — confirmed safe from routine BLT: `manager.py`'s
+    `create_manager()` only re-`shutil.copytree`s `prototypes/manager` (which would
+    overwrite this local fix) when creating a new Manager or when `clean=True` is passed;
+    an existing Manager workspace (this one) short-circuits to refreshing just `.env`. BLT's
+    own driver (`build_load_and_test.py`) doesn't call `create_manager` at all. So this is a
+    one-time-per-workspace fix, not a recurring post-BLT chore — verified live: broker
+    started via `podman compose -f integration/kafka/dockercompose_start_kafka.yml up -d`,
+    `podman inspect broker1` confirmed the mount source is `podman/kafka/data`, clean KRaft
+    boot in the logs. Only `basic_demo_eai` was touched — the same latent problem exists in
+    every other `prototypes/manager/samples/*` project with its own
+    `dockercompose_start_kafka.yml` (library_rfi, basic_demo_logic_gov, demo_customs_clvs,
+    demo_customs_surtax, demo_emp_types, basic_demo_sales_by_month) but was deliberately left
+    alone per Val's "don't fix what isn't broken yet" scope call.
+  - 2.39 (Sep 10 2026) - Val moved and renamed the `genai_demo_sales` project referenced in
+    v2.37/v2.38 below: it's now `samples/basic_demo_sales_by_month` (a `basic_demo`-family ref
+    impl, matching how other reference implementations live under `samples/`) — the earlier
+    root-level workspace name is retired. Renamed the business-capability way, not after the
+    LogicBank mechanism (`insert_parent`) it happens to exercise — with AI increasingly doing
+    the reading, a name that routes "I need a monthly sales rollup" to the right sample matters
+    more than one only meaningful to someone who already knows to look up `insert_parent` by
+    name. All internal references (run configs, alembic.ini, mcp_schema.json, generated logic
+    diagrams, readme.md) updated to the new path; verified server starts and the Behave suite
+    (4/4 scenarios) still passes from the new location. The v2.37/v2.38 entries below are left
+    as-written (accurate history of what the project was called when that work happened) rather
+    than rewritten.
+  - 2.38 (Sep 10 2026) - **LogicBank 1.34.00 released** (Val), closing out v2.37's "NOT yet
+    released" caveat — `pyproject.toml` bumped to `LogicBank>=1.34.00` in gold source
+    (`org_git/ApiLogicServer-src`). Upgraded this workspace's venv from the hand-patched
+    1.33.0 to the real PyPI release (`pip install --upgrade logicbank==1.34.0`); diffed
+    the installed package against `org_git/LogicBank` gold source — `exec_row_logic/logic_row.py`
+    and `rule_type/aggregate.py` are byte-identical, confirming the release genuinely shipped
+    the fix as committed, not just a version bump. Re-ran `genai_demo_sales`'s Behave suite
+    (`test/api_logic_server_behave`, `Feature: Maintain Sales Totals`) against the real
+    release: 4/4 scenarios pass. The hand-patch note in v2.37 is now historical — no venv
+    stands ahead of a real release anymore.
+  - 2.37 (Sep 9 2026) - **LogicBank engine bug fixed: `insert_parent` (Rule.sum/Rule.count)
+    against a composite-natural-key parent silently failed — and silently nulled the child's
+    own composite-FK columns — whenever a component of that key was set LATE (by an
+    `early_row_event`, e.g. a computed year_month bucket key) rather than at row construction
+    time.** Found live building a `SalesRepTotal` monthly-rollup sample (`genai_demo_sales`)
+    to validate exposing `insert_parent` as a documented CE pattern. Initially misdiagnosed as
+    a SAFRS bug (POST silently dropping a composite-FK attribute) — a pure SQLAlchemy +
+    LogicBank insert with zero SAFRS/Flask involved reproduced the identical symptom, isolating
+    it to LogicBank itself. Two real bugs, both now fixed in `org_git/LogicBank` gold source:
+    (1) `LogicRow._get_parent_logic_row()` (`exec_row_logic/logic_row.py`) nulled the child's
+    composite-FK columns as a side effect of `setattr(row, relationship_name, None)` when no
+    parent existed yet — SQLAlchemy's relationship setter syncs FK columns to match; (2)
+    `Aggregate.adjust_from_inserted_child()` (`rule_type/aggregate.py`) — the actual runtime
+    path exercised once the FK is fully known — silently gave up when no parent was found,
+    never calling `_is_inserted_parent()` at all, regardless of `insert_parent=True`. Why the
+    pre-existing `examples/insert_parent` test never caught this: its `Child(parent_1=...,
+    parent_2=...)` sets both composite-key columns directly at construction, so
+    `_load_parents_on_insert()`'s own insert_parent handling succeeds in a single pass before
+    Bug 2's code path is ever reached — the test's own child-construction shape structurally
+    avoided the broken path. New regression test added,
+    `org_git/LogicBank/examples/insert_parent_late_key` (3 tests: create, adjust-not-recreate,
+    separate-bucket-for-different-key) — fails without the fix (confirmed), passes with it.
+    Full LogicBank suite re-run clean (`run_tests.py`, all 15 example dirs incl. 16+ NW tests,
+    ALL PASSED, no regressions). Fixed in `org_git/LogicBank` gold source AND hand-patched into
+    this workspace's venv (`venv/lib/python3.13/site-packages/logic_bank/`) for live testing —
+    **NOT yet released/repackaged**: the pip-installed `logicbank` version is still `1.33.0`
+    with the bug; the venv copy is a direct file-level patch matching gold, ahead of the next
+    real LogicBank release. Full writeup:
+    `internal_dev/composite_key_issue/composite_key_issue.md` (v1.2) in `ApiLogicServer-src`,
+    including the corrected root-cause analysis and reproduction steps
+    (`internal_dev/composite_key_issue/genai_demo_sales/`). Practical effect: `insert_parent` +
+    composite PK is now safe to recommend as a CE pattern — previously blocked pending this fix.
   - 2.36 (Sep 5 2026) - Two real startup bugs found live via F5 in `codespaces_mgr`'s
     `samples/basic_demo_sample` (Val: "it has 2 serious issues"), both fixed in gold source
     same session:
@@ -447,12 +532,29 @@ This is the **BLT Manager** - a nested workspace that gets regenerated by the Bu
 │       ├── venv/                                 # Shared venv for test projects
 │       ├── .github/.copilot-profile.md           # This file
 │       └── docs/training/                        # Training materials
+├── podman/                                       # Persistent docker/podman volumes (survives rebuilds - see below)
 └── org_git/
     ├── ApiLogicServer-src/                       # Framework source (edit here)
     ├── LogicBank/                                 # Rule engine source (sibling, cloned for dev convenience)
     ├── Docs/                                     # Documentation project
     └── codespaces_mgr/                           # Codespaces trial repo (see below)
 ```
+
+**`podman/` — persistent home for docker/podman bind-mount volumes:** sibling of `org_git/`,
+`build_and_test/`, `servers/`. A sample's own compose file default is normally
+project-relative (e.g. `./.volumes/kafka/data`, self-contained, fine for end users) — but
+inside this internal dev checkout, that path lives under `build_and_test/`, which a clean
+Manager rebuild (`genai-logic create-manager --clean`, or a fresh BLT-created workspace)
+wipes. `install-ApiLogicServer-dev.sh`/`.ps1` create this directory (with a `readme.md`
+explaining the pattern) alongside `org_git/`/`build_and_test/`/`servers/` during a fresh dev
+install. Only point a *this-workspace-local* sample's compose `volumes:` entry here when its
+default would otherwise be lost — do not change the gold-source default shipped in
+`prototypes/manager/samples/*` or `prototypes/base` (those ship to every end-user Manager
+workspace, which isn't repeatedly rebuilt the way this one is). Real case (Sep 2026):
+`samples/basic_demo_eai`'s Kafka volume was wiped by a Manager rebuild; fixed by pointing
+that *local* copy's `dockercompose_start_kafka.yml` at
+`${HOME}/dev/genai-logic/ApiLogicServer-dev/podman/kafka/data` — gold source's
+`basic_demo_eai` template was left on the original `./.volumes/kafka/data` default.
 
 **`org_git/` convention — sibling clones of related repos:** `org_git/` exists so every
 git repo related to ApiLogicServer dev lives as a sibling, cloned side-by-side, not buried
