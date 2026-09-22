@@ -188,7 +188,7 @@ The save fails — note the dialog. That's 5 rules — not ~200 lines of code �
 &nbsp;
 
 <details markdown>
-<summary>AI is great — but logic-as-code is hard to Read, Trust, and Maintain — here's why</summary>
+<summary>AI Alone Writes Code You Can't Trust — Here's the Evidence</summary>
 
 <br>AI is genuinely good at UI, data mapping, boilerplate, etc — no argument there. **Business logic is the exception.**
 
@@ -469,15 +469,17 @@ That's the architecture: two funnels, converging on one engine, at the **same co
 &nbsp;
 
 <details markdown>
-<summary>This scales past one project — here's how</summary>
-
-&nbsp;
+<summary>Scales Past One Project — Any Requirement Format Produces Governed Rules</summary>
 
 <br>The three enterprise systems above ([Budget Allocation](samples/prompts/allocation.prompt.md), [CBSA Customs Surtax](samples/demo_customs_surtax/readme.md), [Customs CLVS](samples/demo_customs_clvs/readme.md)) were built from three different input formats — a plain prompt, actual regulation text, Gherkin — by different teams, writing the way they already write. All three came out the same way: governed rules, no bypass.
 
 That's the point. A hand-coded system needs a correct handler for every path on every table — the discipline has to live in each team. Here, the pipeline supplies the paths. The second project doesn't depend on the first team's care, or on anyone learning a new methodology first.
 
 Give us whatever, you get rules — even the hardest case. [A head-to-head test](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs/) fed the same naturally procedural spec to native AI and to this pipeline. Native AI built the insert path and silently dropped update and delete. The pipeline produced 5 governed rules covering every path. Same input, same AI — the difference was the architecture.
+
+![Procedural Spec In, Declarative Rules Out](images/exec_reqmts/proc-to-decl.png)
+
+The GenAI-Logic side of that test, in full: [samples/basic_demo_genai_logic](samples/basic_demo_genai_logic) — the procedurally-phrased prompt, the 5 rules it produced, and confirmation all 9 change paths are governed, not just the one the prompt described.
 
 The native-AI side, in full: [samples/bd_claude_native_ai](samples/bd_claude_native_ai) — the actual code, the prompt, and the [unedited transcript](samples/bd_claude_native_ai/transcript.md).
 
@@ -488,11 +490,42 @@ The native-AI side, in full: [samples/bd_claude_native_ai](samples/bd_claude_nat
 <details markdown>
 <summary>Business Users, Empowered — NL requirements, AI assistance</summary>
 
-<br>[Requirements From Interview](https://apilogicserver.github.io/Docs/Exec-Reqmts/) — a business user doesn't need to already know how to write a spec. They say what they know; the AI interviews them on what's still ambiguous, confirms before building. [Real transcript, unedited →](samples/requirements/RFI/RFI-transcript.md)
+&nbsp;
 
-Once it's running, the same access works both directions: ask the AI *"what can you do for me?"* and get a real, project-specific answer — not a canned capabilities list.
+<details markdown>
+<summary>&emsp;&emsp;Requirements From Interview — a business user doesn't need to already know how to write a spec</summary>
 
-The IDE itself is simplified for this — same AI, same governed output, no developer tooling to learn: [Business-User-Friendly IDE →](https://apilogicserver.github.io/Docs/Introduction/#a-business-user-friendly-ide)
+<br>They say what they know; the AI interviews them on what's still ambiguous, confirms before building.
+
+![RFI](images/exec_reqmts/RFI.png)
+
+[Real transcript, unedited →](samples/requirements/RFI/RFI-transcript.md)
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;"What can you do for me?" — a real, project-specific answer, not a canned capabilities list</summary>
+
+<br>Once it's running, the same access works both directions: ask the AI, and get a concrete, numbered menu grounded in *this* project.
+
+![help-me](images/manager/help-me.png)
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;A Business-User-Friendly IDE — same AI, same governed output, no developer tooling to learn</summary>
+
+<br>
+
+![reg-tech](images/exec_reqmts/reg-tech.png)
+
+*More: [Business-User-Friendly IDE →](https://apilogicserver.github.io/Docs/Introduction/#a-business-user-friendly-ide)*
+
+</details>
 
 </details>
 
@@ -502,6 +535,8 @@ The IDE itself is simplified for this — same AI, same governed output, no deve
 <summary>Promotes Business User and Developer Collaboration — One Artifact, One Toolset</summary>
 
 <br>The rule a business user reads and the rule a developer debugs are the same five lines, in the same file, in the same IDE. No hand-off where intent gets lost, or start-over to utilize enterprise-standard languages, tooling, and deployment. A policy change — "or equal to," not just "less than" — is one line of English, then one line of rule. Not a re-spec, not a re-build.
+
+![collaboration](images/exec_reqmts/collaboration.png)
 
 </details>
 
