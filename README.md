@@ -25,59 +25,14 @@ codespaces_patch: |
 
 # Welcome to GenAI-Logic
 
-GenAI-Logic turns your requirements into enterprise-class database transaction systems, governed by rules that can't be bypassed.
+GenAI-Logic turns your requirements into enterprise-class database transaction systems, **governed** by **no-bypass rules**.
 
-And it uses your methodology, standard tools, and shared artifacts, fostering collaboration between Business Users and Developers.
+It reads whatever form your requirements are already in — **plain English, Gherkin, actual regulation text** — or, you can request an **interview** to discover the requirements.
+
+And it **fits what you already use**: your methodology, standard tools, and shared artifacts, **fostering collaboration** between Business Users and Developers.
 
 This is the start page for the [GenAI-Logic Manager](https://apilogicserver.github.io/Docs/Manager) — where you manage projects, create notes and resources, etc.  It's also your learnng hub.
 (see [codespaces setup here](system/ApiLogicServer-Internal-Dev/setup.gif))
-
-<details markdown>
-<summary>Orientation — first time here? Start with this.</summary>
-
-For a walk-through, see the [docs](https://apilogicserver.github.io/Docs/).
-
-<br>
-
-<details markdown>
-<summary>A working API, Admin App, and governed logic — <strong>built from a prompt</strong></summary>
-
-<br>Leverage AI for what it's great at — database design, data mapping, and more. Start from a prompt alone and AI designs the database too, or point it at your existing database and skip straight to the logic. Either way, your AI assistant reads whatever you already have — plain English, Gherkin, pseudocode — and hands business logic off as rules, not code.
-
-</details>
-
-&nbsp;
-
-<details markdown>
-<summary>It fits: uses your existing org, technology, and practices</summary>
-
-<br>What comes out the other end is exactly what you already run:
-
-1. **A business user can drive it, in the requirements format they already write** — plain English, Gherkin, pseudocode, even actual regulation text; no database design, screen painting, or scripting to learn.
-2. **Standard IDE, standard language** — a project in the IDE and language you already use, ready to extend.
-3. **Standard deploy** — a standard container; cloud or on-prem, no additional charges.
-4. **Standard enterprise infrastructure** — pluggable security (SQL or Keycloak), full REST API, event/messaging integration (Kafka, webhooks) — built in, not bolted on, same as any other enterprise system.
-
-</details>
-
-&nbsp;
-
-<details markdown>
-<summary>Systems governed by rules you can Read, Trust, and Maintain</summary>
-
-<br>The split — AI for executable intent, declarative rules for governance — is the whole point. Here's what "governed" means in practice:
-
-- **Read** — [5 rules](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py), not [~200 lines of code](samples/basic_demo_logic_gov/logic/procedural/credit_service.py). A rule you can point to and know what it does, at a glance.
-- **Trust** — those rules run at **one commit point**, no matter which path the transaction came in on — API, MCP, agent, Kafka. **No bypass.**
-- **Maintain** — add a rule anywhere, and the engine resolves dependency order automatically. No untangling existing code to find where it belongs.
-
-And you're not alone throughout: ask your AI assistant anything — architecture, rules, debugging, deployment, or how the system works.
-
-</details>
-
-</details>
-
-&nbsp;
 
 <details markdown>
 <summary><strong>Say "hi" to your coding assistant</strong> — click to see important notes on models</summary>
@@ -88,7 +43,7 @@ And you're not alone throughout: ask your AI assistant anything — architecture
 
 </details>
 
-<br>
+&nbsp;
 
 ## 🚀 First Time Here?
 <!-- CODESPACES-INSERT-POINT: create_codespaces_mgr.py injects browser note here — do not rename this heading -->
@@ -100,7 +55,7 @@ You're already running in GitHub Codespaces — a cloud VS Code environment in y
 <details markdown>
 <summary>The Ideal — executable business prompts, held to an enterprise standard</summary>
 
-<br>
+<br>Governance — logic that's readable, enforced without bypass, and auditable — isn't a developer nicety; it's a standing CIO concern for any AI-built system. Watch for it below: the same commit that fails in a moment is that property, live.
 
 > **Heads up:** you're about to switch to the AI chat panel, and back. The browser tab showing this README forgets which sections below are open/closed when you return — so **open the README on GitHub** ([ApiLogicServer/codespaces_mgr](https://github.com/ApiLogicServer/codespaces_mgr)) **in a split-view tab** first (once), and it won't happen again.
 
@@ -175,7 +130,7 @@ Change the quantity to a very large number. Save.
 4. Edit the Item
 5. Set the quantity
 
-![credit-check](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/basic_demo/credit-check.png?raw=true?raw=true)
+![credit-check](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/basic_demo/credit-check.png?raw=true)
 
 </details>
 
@@ -188,23 +143,23 @@ The save fails — note the dialog. That's 5 rules — not ~200 lines of code �
 &nbsp;
 
 <details markdown>
-<summary>AI Alone Writes Code You Can't Trust — Here's the Evidence</summary>
+<summary>AI Alone Writes Code You Can't Read or Trust — Here's the Evidence</summary>
 
 <br>AI is genuinely good at UI, data mapping, boilerplate, etc — no argument there. **Business logic is the exception.**
 
-Left unguided, any AI assistant — including the one that just built basic_demo for you — would default to procedural code for logic like this. Ask it directly, and you get three problems:
+Left unguided, any AI assistant — including the one that just built basic_demo for you — would default to procedural code for logic like this. Generate with native AI, and you get these three problems:
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Not readable</strong> — unreadable at scale is ungovernable at scale</summary>
+<summary>&emsp;&emsp;<strong>Not readable</strong> — you can't govern what you can't read (5 vs ~200 lines)</summary>
 
-<br>[procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — ~200 lines for those same 5 requirements. Open it and judge for yourself. Now picture a real system: 10-20X the requirements of this example, and proportionally more procedural code to match. Nobody can audit that at a glance — not the next developer, not compliance, not you in six months. At that scale, an auditor can't read it all — they can only sample, and hope.
+<br>[procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — **~200 lines** for those same **5 requirements**. Open it and judge for yourself. ~200 lines is a demo-scale number — a real system runs 1-2 orders of magnitude more requirements, and proportionally more procedural code to match. That's why business logic ends up as roughly half the total effort on a real system. Nobody can audit that at a glance — not the next developer, not compliance, not you in six months. At that scale, an auditor can't read it all — they can only sample, and hope.
 
 </details>
 
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Not trustworthy (1)</strong> — the procedural version shipped 2 real bugs</summary>
+<summary>&emsp;&emsp;<strong>Not trustworthy (1)</strong> — good spec generated 2 subtle bugs</summary>
 
 <br>Found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
 
@@ -215,18 +170,18 @@ There's a structural problem underneath the bugs, too: **AI pattern-matches depe
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Not trustworthy (2)</strong> — a typical spec produced logic for one path only</summary>
+<summary>&emsp;&emsp;<strong>Not trustworthy (2)</strong> — <em>typical</em> spec omitted entire update and delete paths</summary>
 
-<br>We gave two frontier models a typical requirement — check credit on placing an order, phrased the way a developer naturally writes it — with no ApiLogicServer, and told them explicitly not to use rules. Both produced the same shape of code: one function, wired to order creation. No update path. No delete path.
+<br>The example above presumed an excellent, declarative spec — but specs aren't always so good. We tried it with a *typical* one: check credit on placing an order, phrased the way a developer naturally writes it. We gave that requirement to two frontier models, with no ApiLogicServer, and told them explicitly not to use rules. Both produced the same shape of code: one function, wired to order creation. No update path. No delete path — confirmed in [the actual code](samples/bd_claude_native_ai/app/orders.py).
 
-Probed directly: change an item's quantity, delete an item, reassign an order to a different customer, reassign an item to a different product. Every case, both models, left stale data behind. No error. Nothing to catch it. The logic wasn't buggy so much as absent — it existed for exactly one path and nowhere else. [Full experiment →](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs/)
+Probed directly: change an item's quantity, delete an item, reassign an order to a different customer, reassign an item to a different product. Every case, both models, left stale data behind. No error. Nothing to catch it. The logic wasn't buggy so much as absent — it existed for exactly one path and nowhere else. [Full experiment →](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs)
 
 </details>
 
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Not maintainable</strong> — the cost doesn't scale with the fix</summary>
+<summary>&emsp;&emsp;<strong>Not maintainable</strong> — every regeneration re-exposes you to (1) and (2)</summary>
 
 <br>Hand-editing 200 generated lines isn't a real option — nobody reliably patches the output of a code generator, any more than you'd hand-patch a compiler's output. That leaves one path: **change the prompt and regenerate.**
 
@@ -236,21 +191,21 @@ But that doesn't dodge the risk, it repeats it — the AI re-derives everything 
 
 &nbsp;
 
-That's not (only) a capability gap — it's a representation problem: procedural code doesn't carry an explicit dependency graph, so nothing short of building one — inside the AI's process or outside it — closes this gap. A rules engine builds that graph explicitly, once, and checks it. That's the difference this document shows.
+That's not (only) a capability gap — it's what happens when dependencies are expressed as procedural code: real opportunities for subtle, hard-to-spot bugs. With rules, those same dependencies are handled deterministically by the rules engine — computed once, checked every time. That's the difference this document shows.
 
-**We're deeply impressed with AI — this is about closing the one gap it has: logic.** That's next.
+**We're deeply impressed with AI — this is about closing the gap it has here: logic.** That's next.
 
 </details>
 
 &nbsp;
 
 <details markdown>
-<summary>AI-driven rules are easy to Read, Trust, and Maintain — here's how</summary>
+<summary>Governed Systems You Can Read, Trust, and Maintain — Augment AI with Rules</summary>
 
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;1. What you just ran — see why it's different</summary>
+<summary>&emsp;&emsp;<strong>1. What you just ran</strong> — see why it's different</summary>
 
 <br>You've probably used AI to generate code before — so what's different here?
 
@@ -274,7 +229,7 @@ The save you just saw fail was enforced by exactly one of those 5 rules. Let's l
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;2. Debug it — standard logging, standard debugger</summary>
+<summary>&emsp;&emsp;<strong>2. Debug it</strong> — standard logging, standard debugger</summary>
 
 <br>No new tools required. The rule chain that just fired is in the log — plain text, readable in your terminal or editor: [sample trace](samples/basic_demo_logic_gov/logs/als-sample.log). A live run writes the same thing to the standard log, `logs/als.log`.
 
@@ -287,7 +242,7 @@ Every rule is a plain Python function or lambda. Set a breakpoint on any `callin
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;3. Iterate — 1 AI prompt adds table, relationship, 2 rules</summary>
+<summary>&emsp;&emsp;<strong>3. Iterate</strong> — 1 AI prompt adds table, relationship, 2 rules</summary>
 
 <br>Ask your AI assistant for a new rule, in plain English:
 
@@ -304,7 +259,7 @@ There was no `Letter` table in the model — the AI adds it, relates it to `Cust
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;4. Why Rules Are Declarative — automatic calling, automatic ordering</summary>
+<summary>&emsp;&emsp;<strong>4. Why Rules Are Declarative</strong> — automatic calling, automatic ordering</summary>
 
 <br>This iteration — like maintenance generally — was remarkably simple, because **rules are declarative:**
 
@@ -323,7 +278,7 @@ The next section explores this in detail. Ask your AI assistant — *"What are r
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;5. How Declarative Rules Make Logic Easy to Read, Trust, and Maintain</summary>
+<summary>&emsp;&emsp;<strong>5. How Declarative Rules Make Logic Easy to Read, Trust, and Maintain</strong></summary>
 
 <br>**Rules** enforce business policy — multi-table derivations, constraints, and actions like messaging. **LogicBank**, the rule engine, hooks SQLAlchemy's commit event to run them on every transaction — authored as plain Python functions in `logic/logic_discovery/`, readable, version-controlled, owned like any other source file.
 
@@ -352,7 +307,7 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;How this works: Context Engineering (CE) + a commit-time rules engine</summary>
+<summary>&emsp;&emsp;<strong>How this works: Context Engineering (CE) + a commit-time rules engine</strong></summary>
 
 <br>Two things have to be true for this to work:
 
@@ -386,7 +341,7 @@ A compliance reviewer can check the implementation in minutes, not by reading co
 &nbsp;
 
 <details markdown>
-<summary>Pre-Built Enterprise Architecture — API, MCP, Messages, RBAC</summary>
+<summary>Pre-Built Enterprise Architecture — API, EAI, MCP, Rules, RBAC, Vibe UIs (via Context Engineering)</summary>
 
 &nbsp;
 
@@ -407,11 +362,29 @@ A compliance reviewer can check the implementation in minutes, not by reading co
 
 <br>
 
-- **Custom UIs, safely** — Vibe tools (Cursor, v0, etc.) generate the UI; it's built against the same governed API, so the logic runs the same regardless of what's calling it. Quick-start a React app from your (possibly customized) admin app: `Create a new react app named my-app-name from ui/admin/admin.yaml`.
+- **Custom UIs, safely** — Vibe tools (Cursor, v0, etc.) generate the UI; it's built against the same governed API, so the logic runs the same regardless of what's calling it. More below.
 
 <br>
 
 - **RBAC** (Role Based Access Control) — declare row level security using technologies like Keycloak.
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;<strong>Automatic API and logic — vibe your custom UI</strong></summary>
+
+<br>The API and business logic are already built and governed — that's the part that's hard to get right, and now you don't hand-write it. What's left is the UI, and that's exactly what vibe tools (Cursor, v0, etc.) are great at.
+
+Point yours at the generated API, and it renders against real, governed data — the same logic runs no matter what's calling it. One database, one API, any number of custom front ends: dashboards, tree views, maps, card layouts — all shown below, same backend, all generated in about 15 minutes with no hand-written JavaScript.
+
+<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/ui-vibe/nw/vibe-gallery.png?raw=true" alt="Gallery of vibe-generated UIs — dashboard, tree view, map, cards — all against one governed API" width="700">
+
+Quick-start a React app from your (possibly customized) admin app:
+```
+Create a new react app named my-app-name from ui/admin/admin.yaml
+```
 
 </details>
 
@@ -471,15 +444,17 @@ That's the architecture: two funnels, converging on one engine, at the **same co
 <details markdown>
 <summary>Scales Past One Project — Any Requirement Format Produces Governed Rules</summary>
 
-<br>The three enterprise systems above ([Budget Allocation](samples/prompts/allocation.prompt.md), [CBSA Customs Surtax](samples/demo_customs_surtax/readme.md), [Customs CLVS](samples/demo_customs_clvs/readme.md)) were built from three different input formats — a plain prompt, actual regulation text, Gherkin — by different teams, writing the way they already write. All three came out the same way: governed rules, no bypass.
+<br>The three enterprise systems above (https://apilogicserver.github.io/Docs/[Budget Allocation](samples/prompts/allocation.prompt.md), [CBSA Customs Surtax](samples/demo_customs_surtax/readme.md), [Customs CLVS](samples/demo_customs_clvs/readme.md)) were built from three different input formats — a plain prompt, actual regulation text, Gherkin — by different teams, writing the way they already write. All three came out the same way: governed rules, no bypass.
 
 That's the point. A hand-coded system needs a correct handler for every path on every table — the discipline has to live in each team. Here, the pipeline supplies the paths. The second project doesn't depend on the first team's care, or on anyone learning a new methodology first.
 
-Give us whatever, you get rules — even the hardest case. [A head-to-head test](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs/) fed the same naturally procedural spec to native AI and to this pipeline. Native AI built the insert path and silently dropped update and delete. The pipeline produced 5 governed rules covering every path. Same input, same AI — the difference was the architecture.
+Give us whatever, you get rules — even the hardest case. [A head-to-head test](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs) fed the same naturally procedural spec to native AI and to this pipeline. Native AI built the insert path and silently dropped update and delete. The pipeline produced 5 governed rules covering every path. Same input, same AI — the difference was the architecture.
 
-![Procedural Spec In, Declarative Rules Out](images/exec_reqmts/proc-to-decl.png)
+![Governance by Architecture, Not Discipline](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/proc-decl-simple.png?raw=true)
 
 The GenAI-Logic side of that test, in full: [samples/basic_demo_genai_logic](samples/basic_demo_genai_logic) — the procedurally-phrased prompt, the 5 rules it produced, and confirmation all 9 change paths are governed, not just the one the prompt described.
+
+![Procedural Spec In, Declarative Rules Out](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/exec_reqmts/proc-to-decl.png?raw=true)
 
 The native-AI side, in full: [samples/bd_claude_native_ai](samples/bd_claude_native_ai) — the actual code, the prompt, and the [unedited transcript](samples/bd_claude_native_ai/transcript.md).
 
@@ -488,42 +463,42 @@ The native-AI side, in full: [samples/bd_claude_native_ai](samples/bd_claude_nat
 &nbsp;
 
 <details markdown>
-<summary>Business Users, Empowered — NL requirements, AI assistance</summary>
+<summary>Business Users Empowered — a Friendly IDE, Guided by AI (via Context Engineering)</summary>
 
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;Requirements From Interview — a business user doesn't need to already know how to write a spec</summary>
-
-<br>They say what they know; the AI interviews them on what's still ambiguous, confirms before building.
-
-![RFI](images/exec_reqmts/RFI.png)
-
-[Real transcript, unedited →](samples/requirements/RFI/RFI-transcript.md)
-
-</details>
-
-&nbsp;
-
-<details markdown>
-<summary>&emsp;&emsp;"What can you do for me?" — a real, project-specific answer, not a canned capabilities list</summary>
-
-<br>Once it's running, the same access works both directions: ask the AI, and get a concrete, numbered menu grounded in *this* project.
-
-![help-me](images/manager/help-me.png)
-
-</details>
-
-&nbsp;
-
-<details markdown>
-<summary>&emsp;&emsp;A Business-User-Friendly IDE — same AI, same governed output, no developer tooling to learn</summary>
+<summary>&emsp;&emsp;<strong>A Business-User-Friendly IDE</strong> — same AI, same governed output, no developer tooling to learn</summary>
 
 <br>
 
-![reg-tech](images/exec_reqmts/reg-tech.png)
+![reg-tech](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/exec_reqmts/reg-tech.png?raw=true)
 
 *More: [Business-User-Friendly IDE →](https://apilogicserver.github.io/Docs/Introduction/#a-business-user-friendly-ide)*
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;<strong>No Proprietary Interface, No Rigid Structure</strong> — just ask the AI when you need guidance</summary>
+
+<br>Traditional studios lock you into proprietary, rigid interfaces. Here, AI isn't boxed into a fixed structure — and when you need guidance, just ask.
+
+![help-me](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/manager/help-me.png?raw=true)
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;<strong>And When You Need Even More Guidance</strong> — just ask the system to define Requirements From Interview</summary>
+
+<br>And when you need even more guidance, just ask the system to define the **requirements from an interview** — AI will interview you on what's still ambiguous, then confirm before building. No spec-writing skill required going in.
+
+![RFI](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/exec_reqmts/RFI.png?raw=true)
+
+[Real transcript, unedited →](samples/requirements/RFI/RFI-transcript.md)
 
 </details>
 
@@ -534,21 +509,23 @@ The native-AI side, in full: [samples/bd_claude_native_ai](samples/bd_claude_nat
 <details markdown>
 <summary>Promotes Business User and Developer Collaboration — One Artifact, One Toolset</summary>
 
-<br>The rule a business user reads and the rule a developer debugs are the same five lines, in the same file, in the same IDE. No hand-off where intent gets lost, or start-over to utilize enterprise-standard languages, tooling, and deployment. A policy change — "or equal to," not just "less than" — is one line of English, then one line of rule. Not a re-spec, not a re-build.
+<br>The rule a business user reads and the rule a developer debugs are the same lines, in the same file, in the same IDE — standard Python, standard tooling, your infrastructure, not a proprietary one.
 
-![collaboration](images/exec_reqmts/collaboration.png)
+No paying twice: once for the BU-built version, again when it hits its limit and a developer has to rebuild it to meet corporate standards. No finger-pointing between departments over whose fault the gap was — there's one artifact, one team owns it, from day one.
+
+![collaboration](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/exec_reqmts/collaboration.png?raw=true)
 
 </details>
 
 &nbsp;
 
 <details markdown>
-<summary>Go deeper — beyond credit-check: security, customization, integration,</summary>
+<summary>Go deeper — beyond credit-check: security, customization, integration, logic debugging</summary>
 
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;Guided tour — the full 30-45 min build, past what "The Ideal" showed</summary>
+<summary>&emsp;&emsp;<strong>Guided tour</strong> — the full 30-45 min build, past what "The Ideal" showed</summary>
 
 <br>**Create basic_demo** (auto-opens with guided tour option):
 ```bash
@@ -564,7 +541,7 @@ genai-logic create --project_name=basic_demo --db_url=sqlite:///samples/dbs/basi
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;Your AI as on-call consultant — ask it anything, verify it doesn't just recite</summary>
+<summary>&emsp;&emsp;<strong>Your AI as on-call consultant</strong> — ask it anything, verify it doesn't just recite</summary>
 
 <br>Same materials, same AI you've been using — it doesn't just write rules, it automates everything above and helps when things break: EAI's 2-message Kafka pattern, the AI/Request Pattern wiring, Executable Requirements' pre-coding schema assessment — all documented training material (`docs/training/*`) the AI reads *before* writing your code, not generic knowledge it's guessing from. Ask "what are rules?" or "how do rules work?" — or, without an AI handy, just read [samples/basic_demo_logic_gov/logic/readme_logic.md](samples/basic_demo_logic_gov/logic/readme_logic.md) — same material.
 
@@ -584,7 +561,7 @@ More background: [Eval Guide](https://apilogicserver.github.io/Docs/Eval/).
 Put together: once the AI knows how the system works, it doesn't just generate rules instead of code — it helps you debug them, and helps you understand them. A design assistant, not just a coding assistant.
 
 <details markdown>
-<summary>&emsp;&emsp;&emsp;&emsp;The AI was trained on this material — can you trust its answers?</summary>
+<summary>&emsp;&emsp;&emsp;&emsp;<strong>The AI was trained on this material</strong> — can you trust its answers?</summary>
 
 <br>Don't take them on faith. Ask the same question a different way, or ask something not covered here — like where this architecture breaks down. If it just recites the same lines back, you've caught it. If it reasons, that's the test passing.
 

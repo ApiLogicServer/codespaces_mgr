@@ -1,0 +1,142 @@
+{
+    "models": [
+        {
+            "classname": "Customer",
+            "code": "class Customer(Base):\n    __tablename__ = 'customer'\n\n    Id = Column(Integer, primary_key=True)\n    Name = Column(String)\n    CreditLimit = Column(DECIMAL)\n    Balance = Column(DECIMAL, default=decimal.Decimal(0))",
+            "description": "Customer with balance and credit limit",
+            "name": "Customer"
+        },
+        {
+            "classname": "Order",
+            "code": "class Order(Base):\n    __tablename__ = 'order'\n\n    Id = Column(Integer, primary_key=True)\n    CustomerId = Column(ForeignKey('customer.Id'))\n    DateShipped = Column(DateTime)\n    AmountTotal = Column(DECIMAL, default=decimal.Decimal(0))\n    Notes = Column(String)",
+            "description": "Orders that belongs to a customer and includes total amount and shipment date",
+            "name": "Order"
+        },
+        {
+            "classname": "Item",
+            "code": "class Item(Base):\n    __tablename__ = 'item'\n\n    Id = Column(Integer, primary_key=True)\n    OrderId = Column(ForeignKey('order.Id'))\n    Quantity = Column(Integer)\n    UnitPrice = Column(DECIMAL)\n    Amount = Column(DECIMAL, default=decimal.Decimal(0))",
+            "description": "Items with quantity, unit price, and total amount",
+            "name": "Item"
+        },
+        {
+            "classname": "Product",
+            "code": "class Product(Base):\n    __tablename__ = 'product'\n\n    Id = Column(Integer, primary_key=True)\n    Name = Column(String)\n    UnitPrice = Column(DECIMAL)",
+            "description": "Products with name and unit price",
+            "name": "Product"
+        }
+    ],
+    "rules": [
+        {
+            "name": "CustomerBalanceCreditLimitConstraint",
+            "description": "Ensure customer balance does not exceed the credit limit",
+            "use_case": "Check Credit",
+            "entity": "Customer",
+            "code": "Rule.constraint(validate=Customer,\n                as_condition=lambda row: row.Balance <= row.CreditLimit,\n                error_msg=\"Customer balance ({row.Balance}) exceeds credit limit ({row.CreditLimit})\")"
+        },
+        {
+            "name": "CustomerBalanceSumOrders",
+            "description": "Customer balance is sum of their orders where date_shipped is null",
+            "use_case": "Check Credit",
+            "entity": "Customer",
+            "code": "Rule.sum(derive=Customer.Balance, as_sum_of=Order.AmountTotal, where=lambda row: row.DateShipped is None)"
+        },
+        {
+            "name": "OrderAmountTotalSumItems",
+            "description": "Order amount total is sum of item amounts",
+            "use_case": "Check Credit",
+            "entity": "Order",
+            "code": "Rule.sum(derive=Order.AmountTotal, as_sum_of=Item.Amount)"
+        },
+        {
+            "name": "ItemAmountProductQuantity",
+            "description": "Item amount is quantity multiplied by unit price",
+            "use_case": "Check Credit",
+            "entity": "Item",
+            "code": "Rule.formula(derive=Item.Amount, as_expression=lambda row: row.Quantity * row.UnitPrice)"
+        },
+        {
+            "name": "ItemUnitPriceCopyProduct",
+            "description": "Item unit price copied from Product unit price",
+            "use_case": "Check Credit",
+            "entity": "Item",
+            "code": "Rule.copy(derive=Item.UnitPrice, from_parent=Product.UnitPrice)"
+        },
+        {
+            "name": "OrderSendKafkaShipping",
+            "description": "Send order to Kafka topic 'order_shipping' if date_shipped is not None",
+            "use_case": "App Integration",
+            "entity": "Order",
+            "code": "Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka,\n                           if_condition=lambda row: row.DateShipped is not None,\n                           with_args={\"topic\": \"order_shipping\"})"
+        }
+    ],
+    "graphics": [],
+    "test_data": "Creating test data rows for Customer, Order, Item, and Product tables.",
+    "test_data_rows": [
+        {
+            "test_data_row_variable": "customer1",
+            "code": "customer1 = Customer(Id=1, Name=\"Alice\", CreditLimit=Decimal(1000), Balance=Decimal(300))"
+        },
+        {
+            "test_data_row_variable": "customer2",
+            "code": "customer2 = Customer(Id=2, Name=\"Bob\", CreditLimit=Decimal(1500), Balance=Decimal(200))"
+        },
+        {
+            "test_data_row_variable": "customer3",
+            "code": "customer3 = Customer(Id=3, Name=\"Carol\", CreditLimit=Decimal(1200), Balance=Decimal(150))"
+        },
+        {
+            "test_data_row_variable": "customer4",
+            "code": "customer4 = Customer(Id=4, Name=\"Dave\", CreditLimit=Decimal(800), Balance=Decimal(400))"
+        },
+        {
+            "test_data_row_variable": "order1",
+            "code": "order1 = Order(Id=1, CustomerId=1, DateShipped=None, AmountTotal=Decimal(300), Notes=\"First order\")"
+        },
+        {
+            "test_data_row_variable": "order2",
+            "code": "order2 = Order(Id=2, CustomerId=2, DateShipped=date(2023, 5, 20), AmountTotal=Decimal(200), Notes=\"Second order\")"
+        },
+        {
+            "test_data_row_variable": "order3",
+            "code": "order3 = Order(Id=3, CustomerId=3, DateShipped=None, AmountTotal=Decimal(150), Notes=\"Third order\")"
+        },
+        {
+            "test_data_row_variable": "order4",
+            "code": "order4 = Order(Id=4, CustomerId=4, DateShipped=date(2023, 6, 10), AmountTotal=Decimal(400), Notes=\"Fourth order\")"
+        },
+        {
+            "test_data_row_variable": "item1",
+            "code": "item1 = Item(Id=1, OrderId=1, Quantity=2, UnitPrice=Decimal(150), Amount=Decimal(300))"
+        },
+        {
+            "test_data_row_variable": "item2",
+            "code": "item2 = Item(Id=2, OrderId=2, Quantity=1, UnitPrice=Decimal(200), Amount=Decimal(200))"
+        },
+        {
+            "test_data_row_variable": "item3",
+            "code": "item3 = Item(Id=3, OrderId=3, Quantity=3, UnitPrice=Decimal(50), Amount=Decimal(150))"
+        },
+        {
+            "test_data_row_variable": "item4",
+            "code": "item4 = Item(Id=4, OrderId=4, Quantity=4, UnitPrice=Decimal(100), Amount=Decimal(400))"
+        },
+        {
+            "test_data_row_variable": "product1",
+            "code": "product1 = Product(Id=1, Name=\"Product A\", UnitPrice=Decimal(150))"
+        },
+        {
+            "test_data_row_variable": "product2",
+            "code": "product2 = Product(Id=2, Name=\"Product B\", UnitPrice=Decimal(200))"
+        },
+        {
+            "test_data_row_variable": "product3",
+            "code": "product3 = Product(Id=3, Name=\"Product C\", UnitPrice=Decimal(50))"
+        },
+        {
+            "test_data_row_variable": "product4",
+            "code": "product4 = Product(Id=4, Name=\"Product D\", UnitPrice=Decimal(100))"
+        }
+    ],
+    "test_data_sqlite": "",
+    "name": "CheckCreditAppIntegrationSystem"
+}
