@@ -372,18 +372,16 @@ Feature: Kafka Subscribe Order Integration - Inbound orders from sales channel
     And map Items.QuantityOrdered to Item.quantity
 ```
 
-Notice what that requirement does *not* say. Every Kafka subscriber this platform
-generates gets, automatically — not something you ask for:
+Notice that you can define **complex message/API formats by example** — drop a
+sample JSON file next to the requirement and reference it, instead of writing out
+a schema. For more, see
+[samples/requirements/Order-EAI/message_formats](samples/requirements/Order-EAI/message_formats).
 
-* **The 2-message pattern** — the raw payload is saved first (a transaction that
-  always commits), then parsed and persisted in a second transaction, so a bad
-  message never loses data mid-parse.
-* **Failures are never silent** — a rejected lookup or business rule leaves the
-  saved message queryable, with the failure reason recorded on it directly
-  (`error_text`), not buried in a server log.
-* **Existing business rules enforce themselves** — the same Check Credit logic
-  fires whether the write came from this Kafka consumer, the REST API, the
-  `OrderB2B` custom API, or the Admin App.
+Also notice what that requirement does *not* say. **Enterprise-grade reliability** —
+a 2-message save that never loses data mid-parse, a queryable `error_text` reason
+on every failure instead of a buried log line, and the same Check Credit rule
+enforced no matter which path wrote the row — comes with every Kafka subscriber
+this platform generates. You don't ask for it.
 
 </details>
 
@@ -393,6 +391,12 @@ generates gets, automatically — not something you ask for:
 <summary>&emsp;&emsp;↳ <strong>MCP</strong> (Model Context Protocol) — your API is agent-discoverable out of the box</summary>
 
 <br>Your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`). Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it. There's no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
+
+<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/basic_demo/mcp-ui.png?raw=true" alt="Admin App SysMcp form — a business user enters a natural-language request (list unpaid orders, email each customer a discount), no code written" width="560">
+
+Here, an end user makes a NL request to find some data, and send email.
+
+You can also use MCP in your IDE to issue queries in natural language.
 
 </details>
 
