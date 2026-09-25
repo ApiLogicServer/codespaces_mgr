@@ -30,6 +30,7 @@ Feature: B2B Order Integration
     Then map Account to Customer by name
     And map Items.Name to Product by name
     And map Items.QuantityOrdered to Item.quantity
+    And create the order with all Check Credit rules enforced
 ```
 
 ## 3. Kafka Subscribe — Inbound orders from sales channel
@@ -40,9 +41,13 @@ Feature: Kafka Subscribe Order Integration
   Scenario: Accept inbound orders from sales channel
     Given an inbound order message in JSON format (message_formats/order_b2b.json)
     When the message is received from Kafka topic order_b2b
-    Then map Account to Customer by name
+    Then use the 2-message pattern
+    And save the raw payload as a blob in the first transaction
+    And parse and persist the order in the second transaction
+    And map Account to Customer by name
     And map Items.Name to Product by name
     And map Items.QuantityOrdered to Item.quantity
+    And create the order with all Check Credit rules enforced
 ```
 
 

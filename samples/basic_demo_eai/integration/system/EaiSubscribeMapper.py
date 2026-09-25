@@ -93,7 +93,7 @@ def _coerce(text: str, col_name: str, model_class) -> object:
             return int(text)
         except (ValueError, TypeError):
             return None
-    if col_type in ("Numeric", "Float", "DECIMAL"):
+    if col_type in ("Numeric", "Float"):
         from decimal import Decimal
         try:
             return Decimal(text)

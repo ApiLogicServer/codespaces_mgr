@@ -1,42 +1,20 @@
-# API Logic Project - `venv` Setup
+# API Logic Project - `venv` Setup 
 
-This folder contains scripts to set up your Python environment after cloning a project from git.
+Once you use `ApiLogicServer` to create your project, you need to create the `venv` Python environment (unless you are using the Docker version of API Logic Server).
 
-> **Tip:** If you cloned this project into the GenAI-Logic Manager folder, you can run it
-> directly without any venv setup:
-> ```
-> genai-logic run
-> ```
+## Create the `venv'
 
-## Option 1 — Symlink to Manager venv (Mac/Linux, recommended)
+Proceed as described in the [API Logic Server Readme](https://github.com/valhuber/ApiLogicServer/blob/main/README.md#installation).  This contains the latest information.
 
-If your project is inside the Manager folder (i.e. `../venv` exists), create a symlink:
+You may find the command line scripts in this folder helpful to save typing.  
+  
+  * The `.ps1` version is for Windows PowerShell
+  * The `-linux` version has been tested for Ubuntu, and
+  * The `venv.sh` has been tested on the Mac.
 
-```bash
-sh venv_setup/venv.sh symlink
+## Verify the `venv'
+
+Optionally, you can check your Python environment by running:
 ```
-
-VS Code detects the symlink as a local venv and selects the correct Python interpreter
-automatically — no manual interpreter picker needed. Reload the VS Code window after running.
-
-## Option 2 — Create a local venv (all platforms)
-
-```bash
-# Mac/Linux
-sh venv_setup/venv.sh go
-
-# Linux
-sh venv_setup/venv-linux.sh go
-
-# Windows PowerShell
-.\venv_setup\venv.ps1 go
-```
-
-This creates a `venv/` inside the project and runs `pip install -r requirements.txt`.
-
-## Verify the `venv`
-
-Optionally, check your Python environment by running:
-```
-python venv_setup/py.py
+Python py.py
 ```

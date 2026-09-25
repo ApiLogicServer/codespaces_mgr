@@ -42,13 +42,11 @@ def kafka_consumer(safrs_api: safrs.SAFRSAPI = None):
     """
 
     if not Args.instance.kafka_consumer:
-        logger.info(f'Kafka mode: FALLBACK — KAFKA_SERVER not configured; running debug endpoint only')
+        logger.debug(f'Kafka Consumer not activated')
         return
 
     conf = Args.instance.kafka_consumer
-    broker = conf.get('bootstrap.servers', '?')
-    group  = conf.get('group.id', '?')
-    logger.info(f'Kafka mode: ACTIVE (broker={broker}, group={group})')
+    logger.debug(f'\nKafka Consumer configured, starting')
 
     INTERRUPT_EVENT = Event()
     bus = FlaskKafka(interrupt_event=INTERRUPT_EVENT, conf=conf, safrs_api=safrs_api)
