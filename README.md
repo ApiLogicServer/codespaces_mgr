@@ -228,9 +228,7 @@ That's not (only) a capability gap — it's what happens when dependencies are e
 
 It's plain Python — standard tooling applies. Security is opt-in, not default — bootstrap RBAC anytime with `genai-logic add-auth`.
 
-The save you just saw fail was enforced by exactly one of those 5 rules. Let's look at why that's not what you'd get from AI alone.
-
-![Governance by Architecture, Not Discipline](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/gov-by-arch.png?raw=true)
+The save you just saw fail was enforced by exactly one of those 5 rules.
 
 </details>
 
@@ -267,7 +265,7 @@ There was no `Letter` table in the model — the AI adds it, relates it to `Cust
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>4. Created and Enforced — One Architecture</strong> — Context Engineering in, a commit-time engine out, no bypass</summary>
+<summary>&emsp;&emsp;<strong>4. Governance Architecture</strong> — declare and run (Context Engineering, Rules engine)</summary>
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
@@ -324,21 +322,17 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 <details markdown>
 <summary>Pre-Built Enterprise Architecture — API, EAI, MCP, Rules, RBAC, Vibe UIs (via Context Engineering)</summary>
 
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;<strong>Beyond API and Logic</strong> — EAI, MCP, AI Rules, RBAC, Custom UIs</summary>
+
 <br>You've seen the API work, and you now know how the logic behind it holds up — declarative,
 auto-enforced, governable. Fair question: does that survive contact with a *real* system?
 Kafka messages, B2B partners, AI agents, role-based access, custom UIs — one credit-check
 rule on one table is a long way from an enterprise integration. It does — the same
 Context Engineering that knows a lookup wants a foreign key also knows what an enterprise
-system needs at its edges.
-
-&nbsp;
-
-<details markdown>
-<summary>&emsp;&emsp;<strong>It's enterprise-aware, not just logic-aware</strong> — EAI, MCP, AI Rules, RBAC, Custom UIs</summary>
-
-<br>Context Engineering's system knowledge isn't limited to rules — it already knows the integration points a real enterprise system needs, the same way it already knows a lookup wants an integer foreign key. [More on system vs. domain knowledge →](https://apilogicserver.github.io/Docs/Tech-AI-First/#two-kinds-of-knowledge-conflated)
-
-<br>
+system needs at its edges. [More on system vs. domain knowledge →](https://apilogicserver.github.io/Docs/Tech-AI-First/#two-kinds-of-knowledge-conflated)
 
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>Enterprise Integration (EAI)</strong> — B2B partner orders via Custom API or Kafka</summary>
@@ -415,13 +409,22 @@ On Placing Orders, Check Credit:
 <br>
 
 <details markdown>
-<summary>&emsp;&emsp;↳ <strong>Vibe Custom UIs</strong> — the API and logic are already built, generate the UI safely on top</summary>
+<summary>&emsp;&emsp;↳ <strong>Vibe Custom UIs</strong> — keep your vibe tool, point it at a governed backend</summary>
 
 <br>The API and business logic are already built and governed — that's the part that's hard to get right, and now you don't hand-write it. What's left is the UI, and that's exactly what vibe tools (Cursor, v0, etc.) are great at.
 
 Point yours at the generated API, and it renders against real, governed data — the same logic runs no matter what's calling it. One database, one API, any number of custom front ends: dashboards, tree views, maps, card layouts — all shown below, same backend, all generated in about 15 minutes with no hand-written JavaScript.
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/ui-vibe/nw/vibe-gallery.png?raw=true" alt="Gallery of vibe-generated UIs — dashboard, tree view, map, cards — all against one governed API" width="700">
+
+The card layout above, worked first try:
+
+```text
+Add an option on the Employee List page to show results as cards, and
+show the employee image in the card.
+```
+
+More prompts (tree view, map, landing page) and what each produced: [Admin-Vibe-Sample](https://apilogicserver.github.io/Docs/Admin-Vibe-Sample).
 
 Quick-start a React app from your (possibly customized) admin app:
 ```
@@ -470,7 +473,7 @@ for more NL → declaration examples.
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Governed Enterprise Systems, from Prompts</strong> — Executable Requirements, at enterprise class</summary>
+<summary>&emsp;&emsp;<strong>Governed Enterprise Sample Systems, from Prompts</strong> — Executable Requirements</summary>
 
 <br>Put that enterprise awareness to work, and here's what it builds. **Unburdened from logic, AI is free to do what it's great at** — reading any requirement format and translating intent, while rules turn that intent into real, governed systems. For example, these three: built from a plain prompt, actual regulation text, and Gherkin, by different teams writing the way they already write — not a new syntax to learn, and all three came out the same way: governed rules, no bypass. Click to see the prompt and the rules it produced:
 
