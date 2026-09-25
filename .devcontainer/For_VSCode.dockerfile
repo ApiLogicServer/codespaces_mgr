@@ -5,6 +5,7 @@
 #
 # https://apilogicserver.github.io/Docs/DevOps-Docker/
 #
+# image refresh nudge: release 17.04.07 (forces re-pull of apilogicserver/api_logic_server:latest)
 FROM apilogicserver/api_logic_server
 USER api_logic_server
 CMD ["bash"]
