@@ -208,7 +208,7 @@ That's not (only) a capability gap — it's what happens when dependencies are e
 &nbsp;
 
 <details markdown>
-<summary>Governed Systems You Can Read, Trust, and Maintain — Augment AI with Rules</summary>
+<summary>Governed Systems You Can Read, Trust, and Maintain — <strong>AI Driven Rules</strong></summary>
 
 &nbsp;
 
@@ -265,15 +265,17 @@ There was no `Letter` table in the model — the AI adds it, relates it to `Cust
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>4. Governance Architecture</strong> — declare and run (Context Engineering, Rules engine)</summary>
+<summary>&emsp;&emsp;<strong>4. AI Driven Rules</strong> — declare and run (Context Engineering, Rules engine)</summary>
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
 <br>Two funnels, converging on one engine, at the same commit point:
 
-**Design Funnel — how rules get created.** Any requirement format — NL, Gherkin, pseudocode, formulas — goes in. **Context Engineering** is what makes that safe with AI in the loop: it steers the AI toward the *right* rule type (sum vs. count vs. Allocate vs. Request Pattern) for what you actually asked for, instead of letting it default to the procedural code it's seen a million times in training. That's not a hypothetical risk — see **Not trustworthy (2)** above for what the same AI produces *without* it.
+**AI** — translates virtually any intent into rules. Any requirement format — NL, Gherkin, pseudocode, formulas — goes in. Use your existing approaches/methodologies — it drives them, repeatably.
 
-**Runtime Funnel — how rules get enforced.** All transaction sources — APIs, messages, MCP, agents, workflows, and whatever comes next — converge here. Rules aren't called from your code; they're wired into a single SQLAlchemy `before_flush` listener, loaded once at server start. Every write passes through that one listener before it commits — **reused for every path**. No bypass — there's no second door.
+**Driven** by Context Engineering — to create spreadsheet-like rules, not the procedural code with all the issues above. The result stays as concise as the requirement itself: 40x less than the equivalent code, since rules are path-independent expressions of *what*, not *how*.
+
+**Rules** — enforced at runtime by the rules engine. All transaction sources — APIs, messages, MCP, agents, workflows, and whatever comes next — converge here. Rules aren't called from your code; they're wired into a single SQLAlchemy `before_flush` listener, loaded once at server start. Every write passes through that one listener before it commits — **reused for every path**. No bypass — there's no second door.
 
 <details markdown>
 <summary>&emsp;&emsp;<em>Why this matters: rules are <strong>never called and never need ordering</strong> — worth reading</em></summary>
