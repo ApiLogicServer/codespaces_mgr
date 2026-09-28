@@ -271,7 +271,7 @@ There was no `Letter` table in the model — the AI adds it, relates it to `Cust
 
 <br>Two funnels, converging on one engine, at the same commit point:
 
-**AI** — translates virtually any intent (NL, Gherkin, pseudocode, formulas), as shown here. This means you can use your **existing approaches/methodologies**, which drives a repeatable process.
+**AI** — translates virtually any intent (NL, Gherkin, pseudocode, formulas), as shown here. This means you can use your **existing approaches/methodologies**, which drives a **repeatable process**.
 
 **Driven** by Context Engineering — to create **spreadsheet-like rules**, not the procedural code (with all the issues above). The result stays as concise as the requirement itself: 40x less than the equivalent code, since rules are **path-independent expressions** of *what*, not *how*.
 
