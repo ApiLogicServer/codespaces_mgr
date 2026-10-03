@@ -1,0 +1,121 @@
+Use SQLAlchemy to create a sqlite database named system/genai/temp/create_db_models.sqlite for the following requirements. These requirements are very important!
+Requirements:
+<Requirements>
+Create a system with customers, orders, items and products.
+
+Include a notes field for orders.
+
+Use case: Check Credit    
+    1. The Customer's balance is less than the credit limit
+    2. The Customer's balance is the sum of the Order amount_total where date_shipped is null
+    3. The Order's amount_total is the sum of the Item amount
+    4. The Item amount is the quantity * unit_price
+    5. The Item unit_price is copied from the Product unit_price
+
+Use case: App Integration
+    1. Send the Order to Kafka topic 'order_shipping' if the date_shipped is not None.
+.
+</Requirements>
+
+Hints: use autonum keys (for all tables - including for link/join/junction/intersection tables), allow nulls, foreign keys, no check constraints.
+
+Be sure to create classes, never tables.
+Class names are singular, and first letter is capitalized.
+
+If you create sum, count or formula Logic Bank rules, then you MUST create a corresponding column in the data model.
+
+Remember that SQLite DateTime type only accepts Python datetime and date objects as input, 
+this means you can not enter string attributes where a date or datetime object is expected.
+
+Don't install additional packages.
+Don't use the faker pip package.
+
+When creating SQLAlchemy data model classes, follow these guidelines carefully:
+* Use foreign key columns instead of relationship names for the data.  
+* Do not specify nullable unless explicitly specified.
+* Do not use unique unless explicitly specified.
+* Do not use Float unless explicitly specified.
+* Generate the classes ONLY.
+* Do NOT generate imports.
+* Do NOT generate connect statements.
+* Do NOT generate engines.
+
+Create 4 rows of test data for each table, and follow these guidelines carefully:
+* Create separate objects for each test data row, not in arrays. 
+* Be sure to initialize derived attributes for test data rows - including all sums and counts, but do not rely on Logic Bank,
+and do not generate db.execute statements.
+* Do not create arrays of test data.
+* Do not create a function to load test data.  
+* Do not print the test data. 
+* Use double quotes " for strings.
+* For test data, format dates as date(year, month, day).
+
+
+Create WGResult Graphics, with graphics elements for each prompts like 'graph sales by region'.
+    * do not create graphics elements unless explicitly requested.
+    * query results should always return exactly 2 columns.
+    * use 'sales by region' to create a WGResult Graphic.sqlalchemy_query for *each* such line
+    * Be sure to use class names, not table names
+    * Create joins for only explicitly defined foreign key relationships
+    * for example, using Northwind - important!  note the 2 right parens closing label("Total Sales"):
+        # SQLAlchemy query for Sales by Category
+        sales_by_category = (
+            session.query(
+                Category.CategoryName,
+                func.sum(OrderDetail.Quantity * OrderDetail.UnitPrice * (1 - OrderDetail.Discount)).label("TotalSales")
+            )
+            .join(Product, category.Id == Product.CategoryId)
+            .join(OrderDetail, Product.Id == OrderDetail.ProductId)
+            .join(Order, OrderDetail.OrderId == Order.Id)
+            .filter(Order.ShippedDate.isnot(None))  # Consider only shipped orders
+            .group_by(Category.CategoryName)
+            .order_by(func.sum(OrderDetail.Quantity * OrderDetail.UnitPrice * (1 - OrderDetail.Discount)).desc())
+        )
+
+
+<responseFormat>
+class Rule(BaseModel):
+    name: str
+    description: str
+    use_case: str # specified use case or requirement name (use 'General' if missing)
+    entity: str # the entity being constrained or derived
+    code: str # logicbank rule code
+    
+class Model(BaseModel):
+    classname: str
+    code: str # sqlalchemy model code
+    sqlite_create: str # sqlite create table statement
+    description: str
+    name: str
+
+class TestDataRow(BaseModel):
+    test_data_row_variable: str  # the Python test data row variable
+    code: str  # Python code to create a test data row instance
+
+class Graphic(BaseModel):
+    sqlalchemy_query: str  # sqlalchemy query using group by, returns result = { "result": [ ("name", "value")  ] }
+    sql_query: str  # sql query using group by, returns result = { "result": [ ("name", "value")  ] }
+    classes_used: str # comma-delimited list of classes used in sqlalchemy_query
+    class_x_axis: str # name of class for x axis
+    name: str  # suggested Python name for sqlalchemy_query - unique
+    prompt: str  # prompt used to create the graphic
+    title: str # expanded name
+    xAxis: str # caption for x axis
+    yAxis: str # caption for y axis
+    dashboard: bool  # whether appears on home page
+    graph_type: str  # Bar, Line, Pie
+    html_code: str # create a java script app to show a bar chart from sqlalchemy_query result
+
+class WGResult(BaseModel):  # must match system/genai/prompt_inserts/response_format.prompt
+    # response: str # result
+    models : List[Model] # list of sqlalchemy classes in the response
+    rules : List[Rule] # list rule declarations
+    graphics: List[Graphic] # list of Graphic objects
+    test_data: str
+    test_data_rows: List[TestDataRow]  # list of test data rows
+    test_data_sqlite: str # test data as sqlite INSERT statements
+    name: str  # suggest a short name for the project
+
+Format the response as a WGResult.
+
+</responseFormat>
