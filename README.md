@@ -59,7 +59,7 @@ You're already running in GitHub Codespaces — a cloud VS Code environment in y
 
 <br>
 
-> **Governance** — logic that's readable, enforced without bypass, and auditable — isn't a developer nicety; it's a [standing CIO concern](https://www.nascio.org/resource/state-cio-top-ten-policy-and-technology-priorities-for-2026/) — AI just took the #1 spot in NASCIO's 2026 survey of state CIOs, displacing cybersecurity. Whereas governance is often regarded as a **process** — reviews, signoffs, a committee — our **focus is automated governance**. Watch for it below: the same commit that fails in a moment is that property, live.
+> **Governance** — logic that's readable, enforced without bypass, and auditable — isn't a developer nicety; it's a [standing CIO concern](https://www.nascio.org/resource/state-cio-top-ten-policy-and-technology-priorities-for-2026/) — AI took the #1 spot in NASCIO's 2026 survey of state CIOs, and governance is the first concern NASCIO lists under it. Whereas governance is often regarded as a **process** — reviews, signoffs, a committee — our **focus is automated governance**. Watch for it below: the same commit that fails in a moment is that property, live.
 
 Say this to your AI assistant (allow several minutes):
 
@@ -105,6 +105,8 @@ Create basic_demo from samples/prompts/genai_demo.prompt
 CODESPACES-ONLY-END -->
 
 **See it running:** Press F5 using "API Logic Server Run (run project from manager)", and open the **Admin App**. Explore the **API via Swagger**, browse the data, and follow the relationships — all auto-generated from the data model.
+
+What you're running is a service: an API, an Admin App, and the rules engine, over your database. Callers use the API (or messages, or MCP); the rules fire inside the service, at commit, from Python files in your project.
 
 Now trigger it: open an **unshipped** Order for Alice, edit the Widget item:
 
@@ -167,7 +169,12 @@ Same 5 requirements from the Check Credit prompt in "The Ideal" above — handed
 <details markdown>
 <summary>&emsp;&emsp;<strong>Not trustworthy (1)</strong> — good spec generated 2 subtle bugs</summary>
 
-<br>Found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
+<br>The AI's code handled updates, but missed two re-parenting cases:
+
+- **Change an item's product, and the order wasn't re-priced** — the item kept its old price, and the error propagated to the order total and the customer balance.
+- **Move an order to another customer, and the old customer's balance stayed stale.**
+
+Found only by specifically testing what happens when a row is reparented to a new owner: [the A/B test](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md). Root cause: **path confusion** — procedural code must enumerate every change path (insert, update, delete, reparent) by hand, and it's easy to miss one.
 
 There's a structural problem underneath the bugs, too: **AI pattern-matches dependencies, it doesn't compute them** — so the odds of a miss go up as the system grows. [More detail →](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md#the-underlying-problem-dependency-graphs)
 
@@ -261,6 +268,8 @@ Customers should not be able to create new orders if they have unresolved past d
 
 There was no `Letter` table in the model — the AI adds it, relates it to `Customer`, and declares a `count` + a `constraint`. One sentence creates a schema change and two new rules — automatically integrated with the 5 already there. No need to open `check_credit.py` to find where this belongs, or trace the other rules to check for conflicts.
 
+To change a requirement later, edit its `requirements.md` and say "implement reqs". The AI diffs the new text against the existing rules and changes only what differs. The requirement, the rules, and the AI's assumptions are all files in your repo, so changes go through your normal review.
+
 **A lot just happened here — worth a closer look.**
 
 </details>
@@ -272,13 +281,17 @@ There was no `Letter` table in the model — the AI adds it, relates it to `Cust
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
-<br>Two funnels, converging on one engine, at the same commit point:
+<br>**AI Driven Rules are a new piece of infrastructure.** Think of a DBMS: the rules are the DDL, and the rules engine is the database server.
+
+Two funnels, converging on one engine, at the same commit point:
 
 **AI** translates intent, from virtually any format (NL, Gherkin, pseudocode, formulas), as shown in this diagram. This means you can use your **existing approaches/methodologies**, which drives a **repeatable process**.
 
-**Driven** by Context Engineering — translates AI intent into declarative **spreadsheet-like rules**, not the procedural code (with all the code-sprawl issues above). The result stays as concise as the requirement itself: **~40x less** than the equivalent code, since **rules are deterministic, path-independent expressions** of *what*, not *how*.
+**Driven** by Context Engineering — translates AI intent into declarative **spreadsheet-like rules**, not the procedural code (with all the code-sprawl issues above). The result stays as concise as the requirement itself: **~40x less** than the equivalent code in this example (consistent with production data from the predecessor system — see the Appendix), since **rules are deterministic, path-independent expressions** of *what*, not *how*.
 
 **Rules** — enforced at runtime by the rules engine. All transaction sources — APIs, messages, MCP, agents, workflows, and whatever comes next — converge here. Rules aren't called from your code; they're wired into a single SQLAlchemy `before_flush` listener, loaded once at server start. **All transaction sources** pass through that one listener at commit, where **rules govern for every path**. No bypass — there's no second door.
+
+**Not a RETE engine.** Classic rules engines are *called* with a bag of objects, pattern-match across them, and re-derive everything — built for decision logic. This one is purpose-built for transactions: it hooks the ORM, receives the actual change events (*Item inserted; Order.amount_total moved from X to Y*), and fires only the rules those changes affect, maintaining aggregates incrementally instead of recomputing them. [Why this matters →](https://apilogicserver.github.io/Docs/FAQ-RETE/)
 
 <br>
 
@@ -302,7 +315,7 @@ Functions don't behave like that. So why is that? **Traditional logic is procedu
 
 `Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total, where=lambda row: row.date_shipped is None)` looks like a function call — it isn't one. Grep this codebase for `check_credit(` — you won't find a call site. Nothing calls it. It runs because it's *declared*, not because something invokes it.
 
-**This is bigger than 40x less code.** With procedural code, seeing a function isn't enough — you still have to trace every call site to know whether it actually runs for the path you care about. With a rule, seeing it *is* the proof: Auto-invoked guarantees it fires everywhere, so reading the rule tells you it runs — **without the path analysis** you'd otherwise have to do yourself.
+**This is bigger than the ~40x less code.** With procedural code, seeing a function isn't enough — you still have to trace every call site to know whether it actually runs for the path you care about. With a rule, seeing it *is* the proof: Auto-invoked guarantees it fires everywhere, so reading the rule tells you it runs — **without the path analysis** you'd otherwise have to do yourself.
 
 If it helps: think of a **spreadsheet** — `B10 = SUM(B1:B9)` isn't called, it *reacts*. Rules react the same way to changes in what they depend on.
 
@@ -320,7 +333,7 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 But that same incompleteness is why **natural language requirements can't be the system of record.** An auditor needs something rigorous and complete to check against.
 
 **Rules *are* a suitable system of record — rigorous, complete — for auditing:**
-- **Readable** — 40x less than the procedural equivalent, critical at enterprise scale
+- **Readable** — ~40x less than the procedural equivalent in this example, critical at enterprise scale
 - **Trustworthy** — the engine guarantees it: an auditor isn't tracing execution paths, complex dependency chains, or worrying code did not get called at all. This is the exact chain AI's procedural code missed earlier — reparenting an Item silently left one side of the balance stale.
 
 </details>
@@ -406,11 +419,13 @@ The three reports above analyze the rules as declared — this one proves they r
 <details markdown>
 <summary>&emsp;&emsp;<strong>Governance at Scale</strong> — the architecture reliably produces rules</summary>
 
-<br>**Governance depends on rules** — they're what you can read, trust, and audit. But the **rules-vs-code discipline is hard to sustain** across teams: someone has to walk the floor, bird-dogging and catching the reversions, and when the bird-dog goes away, the procedural code sneaks back in.
+<br>**Governance depends on rules** — they're what you can read, trust, and audit. But the **manual rules-vs-code discipline is hard to sustain** across projects: someone has to walk the floor, bird-dogging and catching the reversions, and when the bird-dog goes away, the procedural code sneaks back in.
 
 **Here, the architecture produces the rules.** Whatever the requirement format, Context Engineering directs the AI to generate rules, not procedural code. No team has to remember to choose rules, or be policed into it. Rules are what comes out.
 
 **The evidence:** [a head-to-head test](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs) gave the same naturally procedural spec — the kind most likely to produce procedural code — to native AI and to this pipeline. Native AI built the insert path and silently dropped update and delete. The pipeline produced 5 governed rules covering every path. Same input, same AI — the difference was the architecture.
+
+**And it repeats:** we've run these three samples hundreds of times, and the output has always been rules. The Context Engineering is tuned not just on rule syntax but on the best patterns of rule use, and because the output is rules, anyone can read and check them.
 
 ![Governance by Architecture, Not Discipline](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/proc-decl-simple.png?raw=true)
 
@@ -585,7 +600,7 @@ On Placing Orders, Check Credit:
 
 <br>Put that enterprise awareness to work, and here's what it builds.
 
-Prompt-to-app tools build the screens. Here are three enterprise-class projects created **with governed business logic**, using each team's existing requirement methodology.
+Prompt-to-app tools build the screens. Here are three complete systems — the API, the Admin App, and the harder part, **business logic governed by rules** — created using each team's existing requirement methodology.
 
 **Fast, and better:** the results below replaced work reported in person-years, and delivered where the hand-built versions fell short: a working allocation, and audit failures caught.
 
