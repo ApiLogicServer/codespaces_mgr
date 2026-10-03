@@ -404,13 +404,13 @@ The three reports above analyze the rules as declared — this one proves they r
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Governance at Scale</strong> — across projects and the org, no bird-dogging (the pipeline itself produces rules)</summary>
+<summary>&emsp;&emsp;<strong>Governance at Scale</strong> — the architecture reliably produces rules</summary>
 
-<br>**Governance usually decays.** Rules only govern if the team keeps writing rules, and keeping a team on rules, not procedural code, has historically meant bird-dogging them: walking the floor, catching the reversions. Take the bird-dog away and the procedural code sneaks back in.
+<br>**Governance depends on rules** — they're what you can read, trust, and audit. But the **rules-vs-code discipline is hard to sustain** across teams: someone has to walk the floor, bird-dogging and catching the reversions, and when the bird-dog goes away, the procedural code sneaks back in.
 
-Here, the funnel itself produces rules. A hand-coded system needs a correct handler for every path on every table, so the discipline has to live in each team. Here, the pipeline supplies the paths. The second project doesn't depend on the first team's care, or on anyone learning a new methodology first.
+**Here, the architecture produces the rules.** Whatever the requirement format, Context Engineering directs the AI to generate rules, not procedural code. No team has to remember to choose rules, or be policed into it. Rules are what comes out.
 
-Give us whatever, you get rules — even the hardest case. [A head-to-head test](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs) fed the same naturally procedural spec to native AI and to this pipeline. Native AI built the insert path and silently dropped update and delete. The pipeline produced 5 governed rules covering every path. Same input, same AI — the difference was the architecture.
+**The evidence:** [a head-to-head test](https://apilogicserver.github.io/Docs/Tech-Standard-Reqs) gave the same naturally procedural spec — the kind most likely to produce procedural code — to native AI and to this pipeline. Native AI built the insert path and silently dropped update and delete. The pipeline produced 5 governed rules covering every path. Same input, same AI — the difference was the architecture.
 
 ![Governance by Architecture, Not Discipline](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/proc-decl-simple.png?raw=true)
 
@@ -583,12 +583,18 @@ On Placing Orders, Check Credit:
 <details markdown>
 <summary>&emsp;&emsp;<strong>Governed Enterprise Sample Systems, from Prompts</strong> — Executable Requirements</summary>
 
-<br>Put that enterprise awareness to work, and here's what it builds. **Unburdened from logic, AI is free to do what it's great at** — reading any requirement format and translating intent, while rules turn that intent into real, governed systems. For example, these three: built from a plain prompt, actual regulation text, and Gherkin, by different teams **writing the way they *already* write** — not a new syntax to learn, and all three came out the same way: **generated as governed rules**, no bypass. Click to see the prompt and the rules it produced:
+<br>Put that enterprise awareness to work, and here's what it builds.
+
+Prompt-to-app tools build the screens. Here are three enterprise-class projects created **with governed business logic**, using each team's existing requirement methodology.
+
+**Fast, and better:** the results below replaced work reported in person-years, and delivered where the hand-built versions fell short: a working allocation, and audit failures caught.
+
+Click to see the prompt and the rules it produced:
 
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>Budget allocation</strong> — complex cascading cost allocation, two levels deep</summary>
 
-<br>[The prompt](samples/prompts/allocation.prompt.md) ([↗](https://github.com/ApiLogicServer/allocate_dept_account_demo/blob/main/docs/requirements/prompt.md)) that built it:
+<br>Cascading cost allocation illustrates **complex business logic**. Built by hand, it was reportedly four developers over two years, and it didn't deliver. Now it's created from [this prompt](samples/prompts/allocation.prompt.md) ([↗](https://github.com/ApiLogicServer/allocate_dept_account_demo/blob/main/docs/requirements/prompt.md)) — the API, the Admin App, and the logic:
 
 ```text
 Departments own a series of General Ledger Accounts.
@@ -620,7 +626,7 @@ And the rules it produced:
 
 <img src="samples/allocate_dept_account_demo/docs/requirements/logic_diagrams/logic_diagram.svg" alt="Logic diagram: cascading budget allocation rule chain" width="480">
 
-The key takeaway: this is **complex business logic** — far beyond the illustrative demo.
+&nbsp;
 
 **Trust:** read [the resultant rules](samples/allocate_dept_account_demo/logic/logic_discovery/charge_distribution.py) ([↗](https://github.com/ApiLogicServer/allocate_dept_account_demo/blob/main/logic/logic_discovery/charge_distribution.py)) — they'll monitor every transaction.
 
@@ -631,7 +637,7 @@ The key takeaway: this is **complex business logic** — far beyond the illustra
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>Canadian CBSA duty calculation</strong> — rules distilled straight from the regulation text</summary>
 
-<br>Use **actual regulations** — [this prompt](samples/demo_customs_surtax/readme.md) ([↗](https://github.com/ApiLogicServer/demo_customs_surtax/blob/main/docs/requirements/prompt.md)) reads regulations straight off the web:
+<br>[This prompt](samples/demo_customs_surtax/readme.md) ([↗](https://github.com/ApiLogicServer/demo_customs_surtax/blob/main/docs/requirements/prompt.md)) illustrates **reading regulations directly from the web** — business language, not rules. One practitioner who tried it estimated it replaced a project of about a person-year:
 
 ```text
 Create a fully functional application and database
@@ -659,11 +665,11 @@ Producing these rules:
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>Low Value Import Shipments (CLVS)</strong> — screens dangerous goods, using internationally agreed rules</summary>
 
-<br>[Business description](samples/demo_customs_clvs/readme.md) ([↗](https://github.com/ApiLogicServer/demo_customs_clvs/blob/main/readme.md)) and [actual requirements](samples/demo_customs_clvs/docs/requirements/customs_demo/requirements.md) ([↗](https://github.com/ApiLogicServer/demo_customs_clvs/blob/main/docs/requirements/customs_demo/requirements.md)), expressed in **Gherkin format**, producing these rules:
+<br>The [business description](samples/demo_customs_clvs/readme.md) ([↗](https://github.com/ApiLogicServer/demo_customs_clvs/blob/main/readme.md)) and [actual requirements](samples/demo_customs_clvs/docs/requirements/customs_demo/requirements.md) ([↗](https://github.com/ApiLogicServer/demo_customs_clvs/blob/main/docs/requirements/customs_demo/requirements.md)) illustrate **Gherkin requirements, with audit-grade rules**:
 
-<img src="samples/demo_customs_clvs/docs/requirements/logic_diagrams/logic_diagram.svg" alt="Logic diagram: CLVS eligibility rule chain" width="480">
+![CLVS: Gherkin requirements to a governed shipment system](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/integration/customs_demo/summary.png?raw=true)
 
-Complex incoming messages need only sample [XML examples](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml) ([↗](https://github.com/ApiLogicServer/demo_customs_clvs/blob/main/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml)).
+This system subscribes to a broker feed of messages in complex XML formats; the transformation into business objects is **by example**, from [sample XML](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml) ([↗](https://github.com/ApiLogicServer/demo_customs_clvs/blob/main/docs/requirements/customs_demo/message_formats/demo-01-no-match.xml)).
 
 Rules make it **auditable** — logistics firm participation is *subject to audit*. Failure would mean hiring 100+ additional staff, an *8-figure exposure*. Auditors can [read the rules](samples/demo_customs_clvs/logic/logic_discovery/clvs_eligibility.py) [↗](https://github.com/ApiLogicServer/demo_customs_clvs/blob/main/logic/logic_discovery/clvs_eligibility.py), and trust they will be enforced - not sample and hope. ([Full writeup →](https://apilogicserver.github.io/Docs/Tech-Ent-AI))
 
