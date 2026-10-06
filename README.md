@@ -237,7 +237,7 @@ That's not (only) a capability gap — it's what happens when dependencies are e
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>What you just built</strong> — run it, debug it, change it</summary>
+<summary>&emsp;&emsp;<strong>What you just built</strong> — run it, debug it, change it (your IDE)</summary>
 
 <br>**Run it.** You've probably used AI to generate code before — so what's different here?
 
@@ -281,9 +281,7 @@ To change a requirement later, edit its `requirements.md` and say "implement req
 
 <img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/architecture/logic-architecture-exec.png?raw=true" alt="Design and Runtime funnels into one governed Rules Engine" height="380" width="380" align="right">
 
-<br>**AI Driven Rules are a new piece of infrastructure.** Think of a DBMS: the rules are the DDL, and the rules engine is the database server.
-
-Two funnels, converging on one engine, at the same commit point:
+<br>Two funnels, converging on one engine, at the same commit point:
 
 **AI** translates intent, from virtually any format (NL, Gherkin, pseudocode, formulas), as shown in this diagram. This means you can use your **existing approaches/methodologies**, which drives a **repeatable process**.
 
@@ -296,7 +294,7 @@ Two funnels, converging on one engine, at the same commit point:
 <br>
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Declarative rules are trustworthy</strong>, since they're automatically invoked and ordered</summary>
+<summary>&emsp;&emsp;↳ <strong>Declarative rules are trustworthy</strong>, since they're automatically invoked and ordered</summary>
 
 <br>The "Change it" example above — like maintenance generally — was remarkably simple, because **rules are declarative:**
 
@@ -326,7 +324,7 @@ Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/l
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Rules <em>are</em> the governance you can read and trust</strong> — because intent is only an incomplete sketch</summary>
+<summary>&emsp;&emsp;↳ <strong>Rules <em>are</em> the governance you can read and trust</strong> — because intent is only an incomplete sketch</summary>
 
 <br>**Natural language requirements are — and should be — a sketch, not complete.** (Otherwise, it would be code!) That's exactly what you want to hand to a capable collaborator: not every detail spelled out, just enough for them to run with it and do what you *meant*, not merely what you *said*. AI provides real value there — no artificial syntax to learn, just the gaps filled the way a good team member would fill them.
 
@@ -341,13 +339,31 @@ But that same incompleteness is why **natural language requirements can't be the
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;Some call this "governance by architecture, not discipline" — what that means</summary>
+<summary>&emsp;&emsp;↳ Some call this "governance by architecture, not discipline" — what that means</summary>
 
 <br>**Discipline** means every developer, on every change, has to remember the right pattern and every edge case — the burden lives in people, and it slips.
 
 **Architecture** means the software does it automatically — it's just how the system works, the same way a commit handler always runs. Nobody has to remember, because there's nothing to remember.
 
 Full case: [Governance by Architecture, Not Discipline](https://apilogicserver.github.io/Docs/Tech-Gov-By-Arch/).
+
+</details>
+
+</details>
+
+&nbsp;
+
+<details markdown>
+<summary>&emsp;&emsp;<strong>The missing governance layer</strong> — alongside your database, Kafka, and security</summary>
+
+<br>**AI Driven Rules are the missing governance layer for AI-written logic.** They sit alongside the infrastructure you already rely on — your database, Kafka, security — and make what AI creates enforceable on every transaction, from every source.
+
+<img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/manager/readme/Gov-Layer.png?raw=true" alt="AI Driven Rules sit between callers and the database, alongside security (Keycloak/RBAC) and messaging (Kafka); rules are written by AI and Context Engineering" width="640">
+
+<details markdown>
+<summary>&emsp;&emsp;↳ <strong>Think of a DBMS</strong> — the rules are the DDL, the rules engine is the database server</summary>
+
+<br>The rules are plain Python files in your project, under source control, the way DDL is a script you keep. The rules engine runs inside your service and enforces them at commit, the way a database server enforces its schema.
 
 </details>
 
@@ -596,7 +612,7 @@ On Placing Orders, Check Credit:
 &nbsp;
 
 <details markdown>
-<summary>&emsp;&emsp;<strong>Governed Enterprise Sample Systems, from Prompts</strong> — Executable Requirements</summary>
+<summary>&emsp;&emsp;<strong>Three real systems</strong> — built from prompts, governed by rules</summary>
 
 <br>Put that enterprise awareness to work, and here's what it builds.
 
