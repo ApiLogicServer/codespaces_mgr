@@ -59,26 +59,26 @@ You're already running in GitHub Codespaces — a cloud VS Code environment in y
 
 <br>
 
-**Everybody agrees on governance.** It's a [standing CIO concern](https://www.nascio.org/resource/state-cio-top-ten-policy-and-technology-priorities-for-2026/) — AI took the #1 spot in NASCIO's 2026 survey of state CIOs, and governance is the first concern NASCIO lists under it.
+**Widespread agreement on governance.** It's a [standing CIO concern](https://www.nascio.org/resource/state-cio-top-ten-policy-and-technology-priorities-for-2026/) — AI took the #1 spot in NASCIO's 2026 survey of state CIOs, and governance is the first concern NASCIO lists under it.
 
-Far better than **procedures** — reviews, signoffs, a committee — **software** can enforce your business policy, with logic that's **readable**, **enforced without bypass**, and **auditable**.
+Far better than **procedures** — reviews, signoffs, a committee — ***software*** can enforce your business policy, with logic that's **readable**, **enforced without bypass**, and **auditable**.
 
-And governance requires something you can check: **complete and readable**.
+And governance requires something you can check: **complete, readable and trustworthy**.
 
 - **Requirements** are readable, but incomplete.
-- **Code** is complete, but ~40x more in this example, with ordering and dependencies, so you can't read it.
-- **The rules** the AI generates are both.
+- **Code** is complete, but ~40x more in this example, with complex ordering and dependencies, so you can't trust what you are reading.
+- **The rules** the AI generates are complete, readable and trustworthy.
 
 Watch for it below: the save that fails in a moment is governance, live.
 
-Say this to your AI assistant (allow several minutes):
+Paste these **requirements** into your AI assistant (allow several minutes):
 
 ```
 Create basic_demo from samples/dbs/basic_demo.sqlite.
 
 On Placing Orders, Check Credit:    
     1. The Customer's balance is less than the credit limit
-    2. The Customer's balance is the sum of the Order amount_total where date_shipped is null
+    2. The Customer's balance is the sum of the unshipped Order amount_total
     3. The Order's amount_total is the sum of the Item amount
     4. The Item amount is the quantity * unit_price
     5. The Item unit_price is copied from the Product unit_price
@@ -94,6 +94,19 @@ Use case: App Integration
 > ```
 > Same prompt, same logic, same rules — [check_credit.py](samples/basic_demo_existing_db/logic/logic_discovery/place_order/check_credit.py) is real, already there. Press F5 and you're looking at a working, governed project in seconds, no AI call required.
 CODESPACES-ONLY-END -->
+
+<details markdown>
+<summary>The AI turns those <strong>requirements</strong> into five <strong>rules</strong>, one for each — click to see them in your IDE</summary>
+
+<br><img src="https://github.com/ApiLogicServer/Docs/blob/main/docs/images/manager/readme/check_credit.png?raw=true" alt="VS Code showing check_credit.py: the five requirements as intent at the top, and the five matching declarative rules below" width="640">
+
+The requirements are the docstring; the rules are the five lines of `declare_logic()`, one per requirement. The file is [check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py).
+
+*Note:* the screenshot words requirement 2 as "…where date_shipped is null"; the prompt above says "…the unshipped Order amount_total". Both produce the same rule: your wording doesn't have to match ours.
+
+</details>
+
+&nbsp;
 
 <details markdown>
 <summary>Starting from a new database instead?</summary>
