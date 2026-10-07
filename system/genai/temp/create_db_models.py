@@ -1,95 +1,117 @@
-from sqlalchemy.sql import func  # end imports from api_logic_server_cli/fragments/create_db_models_prefix.py
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Numeric, CheckConstraint
+# using resolved_model self.resolved_model FIXME
+# created from response, to create create_db_models.sqlite, with test data
+#    that is used to create project
+# should run without error in manager 
+#    if not, check for decimal, indent, or import issues
+
+import decimal
+import logging
+import sqlalchemy
+from sqlalchemy.sql import func 
+from decimal import Decimal
+from logic_bank.logic_bank import Rule
+from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, Date, DateTime, Numeric, Boolean, Text, DECIMAL
+from sqlalchemy.types import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped
+from datetime import date   
 from datetime import datetime
+from typing import List
 
-# Initialize the base
-Base = declarative_base()
 
-# Define the models
+logging.getLogger('sqlalchemy.engine.Engine').disabled = True  # remove for additional logging
+
+Base = declarative_base()  # from system/genai/create_db_models_inserts/create_db_models_prefix.py
+
+
+from sqlalchemy.dialects.sqlite import *
+
 class Customer(Base):
-    __tablename__ = 'customers'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    balance = Column(Numeric, default=0)
-    credit_limit = Column(Numeric, nullable=False)
+    """description: Represents a customer of the system. Includes balance and credit limit."""
+    __tablename__ = 'customer'
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    Name = Column(String)
+    CreditLimit = Column(DECIMAL)
+    Balance = Column(DECIMAL)
 
 class Order(Base):
-    __tablename__ = 'orders'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    customer_id = Column(Integer, ForeignKey('customers.id'), nullable=False)
-    date_shipped = Column(DateTime, nullable=True)
-    amount_total = Column(Numeric, default=0)
-    notes = Column(String, nullable=True)
-
-class Product(Base):
-    __tablename__ = 'products'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    unit_price = Column(Numeric, nullable=False)
+    """description: Represents an order made by a customer. Includes the total amount and a notes field."""
+    __tablename__ = 'order'
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    CustomerId = Column(Integer, ForeignKey('customer.Id'))
+    DateShipped = Column(DateTime)
+    Notes = Column(String)
+    AmountTotal = Column(DECIMAL)
 
 class Item(Base):
-    __tablename__ = 'items'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    order_id = Column(Integer, ForeignKey('orders.id'), nullable=False)
-    product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
-    quantity = Column(Integer, nullable=False)
-    unit_price = Column(Numeric, nullable=False)
-    amount = Column(Numeric, default=0)
+    """description: Represents items included in an order. Stores quantity, unit price, and total amount."""
+    __tablename__ = 'item'
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    OrderId = Column(Integer, ForeignKey('order.Id'))
+    ProductId = Column(Integer, ForeignKey('product.Id'))
+    Quantity = Column(Integer)
+    UnitPrice = Column(DECIMAL)
+    Amount = Column(DECIMAL)
 
-# Create an engine to the SQLite database
-engine = create_engine('sqlite:///system/genai/temp/create_db_models.sqlite')
+class Product(Base):
+    """description: Represents products that can be ordered. Stores the unit price."""
+    __tablename__ = 'product'
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    Name = Column(String)
+    UnitPrice = Column(DECIMAL)
 
-# Create all tables
-Base.metadata.create_all(engine)
 
-# Create a configured "Session" class
-Session = sessionmaker(bind=engine)
+# end of model classes
 
-# Create a Session
-session = Session()
 
-# Add some test data
-# Customers
-customer1 = Customer(name="John Doe", balance=100, credit_limit=500)
-customer2 = Customer(name="Jane Smith", balance=150, credit_limit=300)
-session.add(customer1)
-session.add(customer2)
-session.commit()
-
-# Products
-product1 = Product(name="Product A", unit_price=10)
-product2 = Product(name="Product B", unit_price=20)
-session.add(product1)
-session.add(product2)
-session.commit()
-
-# Orders
-order1 = Order(customer_id=customer1.id, date_shipped=None, amount_total=0, notes="First order")
-order2 = Order(customer_id=customer2.id, date_shipped=None, amount_total=0, notes="Second order")
-session.add(order1)
-session.add(order2)
-session.commit()
-
-# Items
-item1 = Item(order_id=order1.id, product_id=product1.id, quantity=3, unit_price=product1.unit_price, amount=3 * product1.unit_price)
-item2 = Item(order_id=order1.id, product_id=product2.id, quantity=2, unit_price=product2.unit_price, amount=2 * product2.unit_price)
-item3 = Item(order_id=order2.id, product_id=product1.id, quantity=5, unit_price=product1.unit_price, amount=5 * product1.unit_price)
-session.add(item1)
-session.add(item2)
-session.add(item3)
-session.commit()
-
-# Update order amounts
-order1.amount_total = item1.amount + item2.amount
-order2.amount_total = item3.amount
-session.commit()
-
-# Update customer balances
-customer1.balance = session.query(Order).filter(Order.customer_id == customer1.id, Order.date_shipped == None).with_entities(func.sum(Order.amount_total)).scalar()
-customer2.balance = session.query(Order).filter(Order.customer_id == customer2.id, Order.date_shipped == None).with_entities(func.sum(Order.amount_total)).scalar()
-session.commit()
-
-# Close the session
-session.close()
+try:
+    
+    
+    # ALS/GenAI: Create an SQLite database
+    import os
+    mgr_db_loc = True
+    if mgr_db_loc:
+        print(f'creating in manager: sqlite:///system/genai/temp/create_db_models.sqlite')
+        engine = create_engine('sqlite:///system/genai/temp/create_db_models.sqlite')
+    else:
+        current_file_path = os.path.dirname(__file__)
+        print(f'creating at current_file_path: {current_file_path}')
+        engine = create_engine(f'sqlite:///{current_file_path}/create_db_models.sqlite')
+    Base.metadata.create_all(engine)
+    
+    
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    
+    # ALS/GenAI: Prepare for sample data
+    
+    
+    session.commit()
+    customer1 = Customer(Name="John Doe", CreditLimit=Decimal('1000.00'), Balance=Decimal('0.00'))
+    customer2 = Customer(Name="Jane Smith", CreditLimit=Decimal('1500.00'), Balance=Decimal('0.00'))
+    customer3 = Customer(Name="Alice Johnson", CreditLimit=Decimal('1200.00'), Balance=Decimal('0.00'))
+    customer4 = Customer(Name="Bob Brown", CreditLimit=Decimal('2000.00'), Balance=Decimal('0.00'))
+    order1 = Order(CustomerId=1, DateShipped=date(2023, 5, 21), Notes="Urgent", AmountTotal=Decimal('250.00'))
+    order2 = Order(CustomerId=2, DateShipped=None, Notes="Deliver to office", AmountTotal=Decimal('500.00'))
+    order3 = Order(CustomerId=3, DateShipped=None, Notes="Gift", AmountTotal=Decimal('300.00'))
+    order4 = Order(CustomerId=4, DateShipped=date(2023, 6, 11), Notes="Return customer", AmountTotal=Decimal('450.00'))
+    item1 = Item(OrderId=1, ProductId=1, Quantity=2, UnitPrice=Decimal('75.00'), Amount=Decimal('150.00'))
+    item2 = Item(OrderId=2, ProductId=2, Quantity=5, UnitPrice=Decimal('50.00'), Amount=Decimal('250.00'))
+    item3 = Item(OrderId=3, ProductId=3, Quantity=3, UnitPrice=Decimal('40.00'), Amount=Decimal('120.00'))
+    item4 = Item(OrderId=4, ProductId=4, Quantity=4, UnitPrice=Decimal('65.00'), Amount=Decimal('260.00'))
+    product1 = Product(Name="Widget A", UnitPrice=Decimal('75.00'))
+    product2 = Product(Name="Widget B", UnitPrice=Decimal('50.00'))
+    product3 = Product(Name="Widget C", UnitPrice=Decimal('40.00'))
+    product4 = Product(Name="Widget D", UnitPrice=Decimal('65.00'))
+    
+    
+    
+    session.add_all([customer1, customer2, customer3, customer4, order1, order2, order3, order4, item1, item2, item3, item4, product1, product2, product3, product4])
+    session.commit()
+    # end of test data
+    
+    
+except Exception as exc:
+    print(f'Test Data Error: {exc}')

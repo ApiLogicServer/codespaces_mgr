@@ -193,7 +193,7 @@ Table Supplier {
     Ref: EmployeeTerritory.(EmployeeId) > Employee.(Id)
     Ref: EmployeeTerritory.(TerritoryId) > Territory.(Id)
     Ref: Order.(CloneFromOrder) > Order.(Id)
-    Ref: Order.(Country, City) > Location.(country, country)
+    Ref: Order.(City, Country) > Location.(country, country)
     Ref: Order.(CustomerId) > Customer.(Id)
     Ref: Order.(EmployeeId) > Employee.(Id)
     Ref: OrderDetail.(OrderId) > Order.(Id)

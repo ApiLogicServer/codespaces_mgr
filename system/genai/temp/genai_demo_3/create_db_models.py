@@ -29,38 +29,38 @@ Base = declarative_base()  # from system/genai/create_db_models_inserts/create_d
 from sqlalchemy.dialects.sqlite import *
 
 class Customer(Base):
-    """description: Customer class with balance and credit limit."""
+    """description: Represents a customer of the system. Includes balance and credit limit."""
     __tablename__ = 'customer'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String)
-    balance = Column(DECIMAL)
-    credit_limit = Column(DECIMAL)
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    Name = Column(String)
+    CreditLimit = Column(DECIMAL)
+    Balance = Column(DECIMAL)
 
 class Order(Base):
-    """description: Order class with note field and relationship to Customer."""
+    """description: Represents an order made by a customer. Includes the total amount and a notes field."""
     __tablename__ = 'order'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    customer_id = Column(Integer, ForeignKey('customer.id'))
-    notes = Column(String)
-    amount_total = Column(DECIMAL)
-    date_shipped = Column(DateTime)
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    CustomerId = Column(Integer, ForeignKey('customer.Id'))
+    DateShipped = Column(DateTime)
+    Notes = Column(String)
+    AmountTotal = Column(DECIMAL)
 
 class Item(Base):
-    """description: Item class referencing Order and Product, with calculated amount."""
+    """description: Represents items included in an order. Stores quantity, unit price, and total amount."""
     __tablename__ = 'item'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    order_id = Column(Integer, ForeignKey('order.id'))
-    product_id = Column(Integer, ForeignKey('product.id'))
-    quantity = Column(Integer)
-    unit_price = Column(DECIMAL)
-    amount = Column(DECIMAL)
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    OrderId = Column(Integer, ForeignKey('order.Id'))
+    ProductId = Column(Integer, ForeignKey('product.Id'))
+    Quantity = Column(Integer)
+    UnitPrice = Column(DECIMAL)
+    Amount = Column(DECIMAL)
 
 class Product(Base):
-    """description: Product class with unit price."""
+    """description: Represents products that can be ordered. Stores the unit price."""
     __tablename__ = 'product'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String)
-    unit_price = Column(DECIMAL)
+    Id = Column(Integer, primary_key=True, autoincrement=True)
+    Name = Column(String)
+    UnitPrice = Column(DECIMAL)
 
 
 # end of model classes
@@ -89,22 +89,22 @@ try:
     
     
     session.commit()
-    customer1 = Customer(name="Alice", balance=0, credit_limit=10000)
-    customer2 = Customer(name="Bob", balance=2500, credit_limit=5000)
-    customer3 = Customer(name="Charlie", balance=4500, credit_limit=10000)
-    customer4 = Customer(name="Diana", balance=0, credit_limit=3000)
-    order1 = Order(customer_id=1, notes="Urgent Delivery", amount_total=0, date_shipped=None)
-    order2 = Order(customer_id=2, notes="Standard", amount_total=0, date_shipped=date(2023, 7, 1))
-    order3 = Order(customer_id=3, notes="Priority", amount_total=0, date_shipped=None)
-    order4 = Order(customer_id=1, notes="Gift", amount_total=0, date_shipped=date(2023, 9, 15))
-    item1 = Item(order_id=1, product_id=1, quantity=2, unit_price=50, amount=100)
-    item2 = Item(order_id=2, product_id=2, quantity=3, unit_price=30, amount=90)
-    item3 = Item(order_id=3, product_id=3, quantity=1, unit_price=70, amount=70)
-    item4 = Item(order_id=4, product_id=1, quantity=4, unit_price=50, amount=200)
-    product1 = Product(name="Product A", unit_price=50)
-    product2 = Product(name="Product B", unit_price=30)
-    product3 = Product(name="Product C", unit_price=70)
-    product4 = Product(name="Product D", unit_price=100)
+    customer1 = Customer(Name="John Doe", CreditLimit=Decimal('1000.00'), Balance=Decimal('0.00'))
+    customer2 = Customer(Name="Jane Smith", CreditLimit=Decimal('1500.00'), Balance=Decimal('0.00'))
+    customer3 = Customer(Name="Alice Johnson", CreditLimit=Decimal('1200.00'), Balance=Decimal('0.00'))
+    customer4 = Customer(Name="Bob Brown", CreditLimit=Decimal('2000.00'), Balance=Decimal('0.00'))
+    order1 = Order(CustomerId=1, DateShipped=date(2023, 5, 21), Notes="Urgent", AmountTotal=Decimal('250.00'))
+    order2 = Order(CustomerId=2, DateShipped=None, Notes="Deliver to office", AmountTotal=Decimal('500.00'))
+    order3 = Order(CustomerId=3, DateShipped=None, Notes="Gift", AmountTotal=Decimal('300.00'))
+    order4 = Order(CustomerId=4, DateShipped=date(2023, 6, 11), Notes="Return customer", AmountTotal=Decimal('450.00'))
+    item1 = Item(OrderId=1, ProductId=1, Quantity=2, UnitPrice=Decimal('75.00'), Amount=Decimal('150.00'))
+    item2 = Item(OrderId=2, ProductId=2, Quantity=5, UnitPrice=Decimal('50.00'), Amount=Decimal('250.00'))
+    item3 = Item(OrderId=3, ProductId=3, Quantity=3, UnitPrice=Decimal('40.00'), Amount=Decimal('120.00'))
+    item4 = Item(OrderId=4, ProductId=4, Quantity=4, UnitPrice=Decimal('65.00'), Amount=Decimal('260.00'))
+    product1 = Product(Name="Widget A", UnitPrice=Decimal('75.00'))
+    product2 = Product(Name="Widget B", UnitPrice=Decimal('50.00'))
+    product3 = Product(Name="Widget C", UnitPrice=Decimal('40.00'))
+    product4 = Product(Name="Widget D", UnitPrice=Decimal('65.00'))
     
     
     
