@@ -1,0 +1,191 @@
+"graphics": []
+"models":
+- "classname": |-
+    Customer
+  "code": |
+    class Customer(Base):
+        __tablename__ = 'customer'
+
+        id = Column(Integer, primary_key=True)
+        name = Column(String)
+        credit_limit = Column(Decimal, nullable=False)
+        balance = Column(Decimal, default=0)
+  "description": |-
+    Customer data model with a balance column derived from unpaid orders.
+  "name": |-
+    Customer
+- "classname": |-
+    Order
+  "code": |
+    class Order(Base):
+        __tablename__ = 'order'
+
+        id = Column(Integer, primary_key=True)
+        customer_id = Column(Integer, ForeignKey('customer.id'))
+        date_shipped = Column(DateTime)
+        notes = Column(String)
+        amount_total = Column(Decimal, default=0)  # Derived from items
+  "description": |-
+    Order data model with a note and total amount derived from items.
+  "name": |-
+    Order
+- "classname": |-
+    Item
+  "code": |
+    class Item(Base):
+        __tablename__ = 'item'
+
+        id = Column(Integer, primary_key=True)
+        order_id = Column(Integer, ForeignKey('order.id'))
+        product_id = Column(Integer, ForeignKey('product.id'))
+        quantity = Column(Integer)
+        unit_price = Column(Decimal)
+        amount = Column(Decimal)  # Derived from quantity and unit price
+  "description": |-
+    Item data model with unit price copied from product and amount derived.
+  "name": |-
+    Item
+- "classname": |-
+    Product
+  "code": |
+    class Product(Base):
+        __tablename__ = 'product'
+
+        id = Column(Integer, primary_key=True)
+        name = Column(String)
+        unit_price = Column(Decimal)
+  "description": |-
+    Product data model holding basic product information.
+  "name": |-
+    Product
+"name": |-
+  OrderManagementSystem
+"rules":
+- "code": |-
+    Rule.constraint(validate=Customer, as_condition=lambda row: row.balance <= row.credit_limit, error_msg='Customer balance ({row.balance}) exceeds credit limit ({row.credit_limit})')
+  "description": |-
+    Customer's balance must be less than credit_limit
+  "entity": |-
+    Customer
+  "name": |-
+    ConstraintCustomerBalanceCreditLimit
+  "use_case": |-
+    Check Credit
+- "code": |-
+    Rule.sum(derive=Customer.balance, as_sum_of=Order.amount_total, where=lambda row: row.date_shipped is None)
+  "description": |-
+    Sum of Order amount_total where date_shipped is null.
+  "entity": |-
+    Customer
+  "name": |-
+    SumCustomerBalance
+  "use_case": |-
+    Check Credit
+- "code": |-
+    Rule.sum(derive=Order.amount_total, as_sum_of=Item.amount)
+  "description": |-
+    Order's amount_total is derived as sum of Item amount.
+  "entity": |-
+    Order
+  "name": |-
+    SumOrderAmountTotal
+  "use_case": |-
+    Check Credit
+- "code": |-
+    Rule.formula(derive=Item.amount, as_expression=lambda row: row.quantity * row.unit_price)
+  "description": |-
+    Item amount is quantity * unit_price
+  "entity": |-
+    Item
+  "name": |-
+    FormulaItemAmount
+  "use_case": |-
+    Check Credit
+- "code": |-
+    Rule.copy(derive=Item.unit_price, from_parent=Product.unit_price)
+  "description": |-
+    Item unit_price is copied from Product unit_price
+  "entity": |-
+    Item
+  "name": |-
+    CopyItemUnitPrice
+  "use_case": |-
+    Check Credit
+- "code": |-
+    Rule.after_flush_row_event(on_class=Order, calling=kafka_producer.send_row_to_kafka, if_condition=lambda row: row.date_shipped is not None, with_args={'topic': 'order_shipping'})
+  "description": |-
+    Send Order to Kafka when date_shipped is not None.
+  "entity": |-
+    Order
+  "name": |-
+    SendOrderToKafka
+  "use_case": |-
+    App Integration
+"test_data": |-
+  Create instances of test data rows for Customers, Orders, Items, and Products.
+"test_data_rows":
+- "code": |-
+    customer1 = Customer(name='Acme Corp', credit_limit=Decimal('10000.00'), balance=Decimal('5000.00'))
+  "test_data_row_variable": |-
+    customer1
+- "code": |-
+    customer2 = Customer(name='Beta Corp', credit_limit=Decimal('15000.00'), balance=Decimal('3000.00'))
+  "test_data_row_variable": |-
+    customer2
+- "code": |-
+    customer3 = Customer(name='Gamma Inc', credit_limit=Decimal('12000.00'), balance=Decimal('6200.00'))
+  "test_data_row_variable": |-
+    customer3
+- "code": |-
+    customer4 = Customer(name='Delta LLC', credit_limit=Decimal('20000.00'), balance=Decimal('1000.00'))
+  "test_data_row_variable": |-
+    customer4
+- "code": |-
+    order1 = Order(customer_id=1, date_shipped=None, notes='Urgent shipment', amount_total=Decimal('2500.00'))
+  "test_data_row_variable": |-
+    order1
+- "code": |-
+    order2 = Order(customer_id=2, date_shipped=date(2023, 2, 15), notes='Handle with care', amount_total=Decimal('800.00'))
+  "test_data_row_variable": |-
+    order2
+- "code": |-
+    order3 = Order(customer_id=3, date_shipped=None, notes='Deliver by next week', amount_total=Decimal('420.00'))
+  "test_data_row_variable": |-
+    order3
+- "code": |-
+    order4 = Order(customer_id=4, date_shipped=date(2023, 3, 1), notes='Gift wrapping included', amount_total=Decimal('500.00'))
+  "test_data_row_variable": |-
+    order4
+- "code": |-
+    item1 = Item(order_id=1, product_id=1, quantity=5, unit_price=Decimal('500.00'), amount=Decimal('2500.00'))
+  "test_data_row_variable": |-
+    item1
+- "code": |-
+    item2 = Item(order_id=2, product_id=2, quantity=10, unit_price=Decimal('80.00'), amount=Decimal('800.00'))
+  "test_data_row_variable": |-
+    item2
+- "code": |-
+    item3 = Item(order_id=3, product_id=1, quantity=3, unit_price=Decimal('140.00'), amount=Decimal('420.00'))
+  "test_data_row_variable": |-
+    item3
+- "code": |-
+    item4 = Item(order_id=4, product_id=3, quantity=2, unit_price=Decimal('250.00'), amount=Decimal('500.00'))
+  "test_data_row_variable": |-
+    item4
+- "code": |-
+    product1 = Product(name='Widget A', unit_price=Decimal('500.00'))
+  "test_data_row_variable": |-
+    product1
+- "code": |-
+    product2 = Product(name='Gadget B', unit_price=Decimal('80.00'))
+  "test_data_row_variable": |-
+    product2
+- "code": |-
+    product3 = Product(name='Thing C', unit_price=Decimal('250.00'))
+  "test_data_row_variable": |-
+    product3
+- "code": |-
+    product4 = Product(name='Device D', unit_price=Decimal('300.00'))
+  "test_data_row_variable": |-
+    product4
+"test_data_sqlite": ""

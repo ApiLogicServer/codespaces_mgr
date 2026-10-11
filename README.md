@@ -27,11 +27,13 @@ codespaces_patch: |
 
 For IT teams that want the speed and simplicity of AI, with enterprise-class governance:
 
-GenAI-Logic turns your requirements into database transaction systems, **governed by no-bypass rules** you can read, trust and maintain.
+GenAI-Logic turns your requirements into database transaction systems. The AI generates **rules, not code**: no-bypass rules you can read, trust and maintain.
 
-Better models might write better code, but governance doesn't depend on the model. Requirements are readable but incomplete; code is complete but too big to read, review or audit. Rules are both: short enough to read, complete enough to run.
+**Rules** are **readable**: complete, and concise. AI codegen alone leaves you only requirements (incomplete) and code (bloated), however good the model.
 
-It reads whatever form your requirements are already in — **plain English, Gherkin, actual regulation text** — or, you can request an **interview** to discover the requirements.
+Governance is often **reactive**: procedures that catch problems after the fact. Here it is **proactive**: governing rules are the policy you read, enforced on every transaction.
+
+Whatever comes in, **governing rules come out** — project after project. It reads your requirements in whatever form they already exist — **plain English, Gherkin, actual regulation text** — or you can request an **interview** to discover them.
 
 And it **fits what you already use**: your methodology, standard tools, and shared artifacts, **fostering collaboration** between Business Users and Developers.
 
@@ -60,6 +62,7 @@ You're already running in GitHub Codespaces — a cloud VS Code environment in y
 
 <details markdown>
 <summary>The Ideal — executable business prompts, held to an enterprise standard</summary>
+<h3 id="the-ideal" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0">The Ideal</h3>
 
 <br>
 
@@ -73,7 +76,7 @@ Everyone who's had AI build a system hits the same wall afterward: *what have I 
 
 That's governance by architecture, not process: logic everyone can read, and trust that the engine enforces.
 
-Many assume AI will eventually get good enough that the prompt becomes the system of record, and code is just compiler output nobody reads. We hope so — but even then, governance still needs something you can read and check. Spreadsheet-like rules are that thing, regardless of which model wrote them.
+Many assume AI will eventually get good enough that the prompt becomes the system of record, and code is just compiler output nobody reads. We hope so — but even then, **governance still needs something you can read and check.** Spreadsheet-like rules are that thing, regardless of which model wrote them.
 
 Watch it live below: the save that fails in a moment is governance in action.
 
@@ -172,6 +175,7 @@ Key take-aways:
 
 <details markdown>
 <summary>AI Alone Writes Code That's Hard to Read or Trust — Here's What We Found</summary>
+<h3 id="ai-alone" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0">AI Alone</h3>
 
 <br>AI is genuinely good at UI, data mapping, boilerplate, etc — we see impressive results. **Business logic is the exception.**
 
@@ -263,6 +267,7 @@ That's not (only) a capability gap — it's what happens when dependencies are e
 
 <details markdown>
 <summary><strong>Rules</strong> You Can Read, Trust, and Maintain — <strong>Governance by Architecture</strong></summary>
+<h3 id="rules-you-can-read" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0">Rules You Can Read</h3>
 
 &nbsp;
 
@@ -345,6 +350,8 @@ Functions don't behave like that. So why is that? **Traditional logic is procedu
 
 **This is bigger than the ~40x less code.** With procedural code, seeing a function isn't enough — you still have to trace every call site to know whether it actually runs for the path you care about. With a rule, seeing it *is* the proof: Auto-invoked guarantees it fires everywhere, so reading the rule tells you it runs — **without the path analysis** you'd otherwise have to do yourself.
 
+**Reading a rule tells you it runs, and that everything that depends on it is chained and re-derived — without tracing call sites or dependency chains. In code, that tracing is exactly where the bugs are.** The reparenting bugs found earlier were this: reparenting silently left one side of the balance stale.
+
 If it helps: think of a **spreadsheet** — `B10 = SUM(B1:B9)` isn't called, it *reacts*. Rules react the same way to changes in what they depend on.
 
 Full writeup: [declarative/procedural comparison](samples/basic_demo_logic_gov/logic/procedural/declarative-vs-procedural-comparison.md).
@@ -399,14 +406,14 @@ They sit alongside the infrastructure you already rely on — your database, Kaf
 <br>
 
 <details markdown>
-<summary>&emsp;&emsp;↳ <strong>Read the rules first</strong> — complete, rigorous, readable, trustworthy</summary>
+<summary>&emsp;&emsp;↳ <strong>Read the rules first</strong> — readable (complete and concise) and trustworthy</summary>
 
 <br>When a system is generated, the first question is whether it's right, or close. **Business logic is the focus**; the API and Admin App are mechanical.
 
-**Rules** are complete and rigorous. They are **readable** (~40x more concise in this example), and you can **trust** what you read, without concern about where they are called, whether they are ordered correctly, or how dependencies are handled. The alternatives don't give you that:
+**Rules** are **readable**: complete, and concise (~40x more concise than the code, in this example). And you can **trust** what you read: the rules are **deterministic**, and the engine calls them, orders them and **handles their dependencies**, so there is nothing to trace. The alternatives don't give you that:
 
-- **Requirements are readable, but incomplete.** They leave decisions unmade, so they can't tell you what the system does.
-- **Code is hard to read and hard to trust.** There's far more of it, and you have to trace where it's called, whether it's ordered correctly, and whether dependencies are handled.
+- **Requirements are easy to read, but incomplete — and a little vague.** They leave decisions unmade and open to interpretation, so they can't tell you what the system does.
+- **Code is bloated, and hard to trust.** There's far more of it, and you have to trace where it's called, whether it's ordered correctly, and whether dependencies are handled.
 
 <img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/check_credit.png" alt="5 declarative rules for check_credit — the same 5 requirements, readable in seconds" width="640">
 
@@ -495,6 +502,7 @@ Full case: [Governance at Scale](https://apilogicserver.github.io/Docs/Tech-XGR/
 
 <details markdown>
 <summary>Enterprise-Class Results — enabled by a pre-built enterprise architecture (click to see real projects)</summary>
+<h3 id="enterprise-class-results" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0">Enterprise-Class Results</h3>
 
 &nbsp;
 
@@ -748,6 +756,7 @@ Rules make it **auditable** — logistics firm participation is *subject to audi
 
 <details markdown>
 <summary>Business Users and Developers, Collaborating — one governed artifact, a Friendly IDE, just enough guidance</summary>
+<h3 id="business-users-and-developers" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0">Business Users and Developers</h3>
 
 &nbsp;
 
@@ -809,6 +818,7 @@ The result: **BU/IT collaboration** instead of finger-pointing over whose fault 
 
 <details markdown>
 <summary>Governance by Architecture — rules for design, runtime, review and maintenance</summary>
+<h3 id="governance-by-architecture-toc" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0">Governance by Architecture</h3>
 
 <br>**Discipline** means someone has to remember: write the rule correctly, for every path, and keep doing it as the system grows and deadlines press. The burden lives in people — and it slips.
 
@@ -860,6 +870,7 @@ Full case: [Governance by Architecture, Not Discipline](https://apilogicserver.g
 
 <details markdown>
 <summary>Go deeper — beyond credit-check: security, customization, integration, logic debugging</summary>
+<h3 id="go-deeper" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0">Go deeper</h3>
 
 &nbsp;
 
