@@ -30,7 +30,7 @@ This app illustrates using IntegrationServices for B2B push-style integrations w
 
 &nbsp;
 
-![demp_kafka](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/integration/demo_kafka.png?raw=true)
+![demp_kafka](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/integration/demo_kafka.png)
 
 The **demo_kafka API Logic Server** provides APIs *and logic*:
 
@@ -289,7 +289,7 @@ Just as you can customize apis, you can complement rule-based logic using Python
 
 3. `send_order_to_shipping` uses the `OrderShipping` class, which maps our SQLAlchemy order row to a dict (`row_to_dict`).
 
-![overview](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/integration/integration.png?raw=true)
+![overview](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/integration/integration.png)
 
 
 &nbsp;
@@ -356,7 +356,7 @@ We provide the `order_shipping` handler in `integration/kafka/kafka_consumer.py`
 
 2. Provide the topic handler code, leveraging the mapper noted above.  It is called by `Flaskkafka` per the method annotations.
 
-![process in shipping](https://github.com/ApiLogicServer/Docs/blob/main/docs/images/integration/kafka-consumer.jpg?raw=true)
+![process in shipping](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/integration/kafka-consumer.jpg)
 
 &nbsp;
 
