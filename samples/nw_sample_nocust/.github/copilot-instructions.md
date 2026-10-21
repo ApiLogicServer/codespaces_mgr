@@ -1,4 +1,26 @@
 ---
+version: 3.50 - 10/20/26 - New triggers "run the tests" and "run the behave report" (also "run the behave
+tests"): the assistant now starts the server if needed, runs behave_run.py --outfile=logs/behave.log, stops a
+server it started, and (separately) runs requirements_traceability_report.py run. Previously the CE said "DO NOT run tests
+automatically" (testing.md) and had no trigger for the report, so the documented workflow ended with the user
+copying commands. Creating tests ("create tests from rules") still only writes files and suggests; running is
+now an explicit, separate request. See docs/training/testing.md "Running Tests and the Report".
+version: 3.49 - 10/19/26 - Logic Diagram trigger: "create logic diagram for each requirement" (also "create
+logic diagrams" / "create rule diagrams") now maps to a new `--each` mode of logic_diagram_gv.py (v1.4) -
+one scoped diagram per logic file (use case) in one run, skipping system/ files and files with no rules.
+Previously only the single combined diagram or one hand-named scoped diagram existed, and nothing looped.
+Also corrected STEP 3's output paths (scoped output is docs/requirements/<req>/logic_diagrams/, not
+docs/requirements/logic_diagram_<req>.svg) and documented that the <requirement> argument is a substring of the
+logic file path, not a requirement number or Feature name.
+version: 3.48 - 10/19/26 - Docstring-on-every-action-function rule generalized. The CE already required a
+docstring on `calling=` functions and on the four event types (docs/training/logic_bank_api.md); it did not
+name Allocate callbacks, Kafka publish/subscribe handlers, mappers or API services, and its own examples
+(eai_subscribe.md _publish_xyz, allocate.md allocators, RequestObjectPattern.md handlers) had none - and
+examples get copied more than rules. Motivation: the Behave Logic Report / logic diagram describe each
+action by its docstring's first line, so an undocumented handler shows up as a bare function name. Changes:
+one general rule with a `<Object> <kind>: <what and why>` format and a kind table; docstrings added to the
+example functions above; health_check.md v1.9 widens the missing-docstring demerit to match. Lambdas and
+trivial private helpers stay exempt.
 version: 3.47 - 9/27/26 - STEP 8 step 4 ("Absence of an Event" check): closed a loophole where
 an AI could correctly identify the missing-write-path ambiguity, narrate a plausible assumption
 to resolve it, and file that assumption as a 🟡 FYI instead of the required 🔴 BLOCKING finding.
@@ -595,11 +617,36 @@ STEP 3: Offer to fix each ⚠️ finding
 
 ---
 
+## 🧪 Run Tests / Behave Report
+
+**ACTIVATION TRIGGERS:**
+- "run the tests" / "run the behave tests" / "run behave"
+- "run the report" / "run the behave report" / "generate the behave report" / "behave logic report" / "requirements traceability report"
+- "run the tests and the report" (do both, in order)
+
+**MANDATORY SEQUENCE:**
+
+```
+STEP 1: Read docs/training/testing.md section "Running Tests and the Report" (silently)
+STEP 2: Follow it exactly - it covers starting/stopping the server, the --outfile flag,
+        and reporting results. "run the tests" and "run the behave report" are separate
+        requests; do the report only if asked (or offer it after the tests).
+```
+
+**❌ FORBIDDEN:** running `behave_run.py` without `--outfile=logs/behave.log` (the log stays empty and the
+report has no test results); leaving a server running that you started; declaring tests passed without
+reading the pass/fail counts.
+
+---
+
 ## 📊 Logic Diagram
 
 **ACTIVATION TRIGGERS:**
 - "create logic diagram"
 - "create logic diagram from <requirement>"
+- "create logic diagram for each requirement" / "create logic diagrams" / "create rule diagrams" /
+  "diagram each requirement" / "one diagram per use case"  → **one diagram per logic file (use case)**,
+  use `--each` (below)
 - "show logic diagram"
 - "generate logic diagram"
 - Any similar phrase requesting a visual of the rule chain
@@ -619,12 +666,25 @@ STEP 2: Run from Manager root:
         python system/ApiLogicServer-Internal-Dev/logic_diagram_gv.py <project_name> <requirement>
         # e.g.: python system/ApiLogicServer-Internal-Dev/logic_diagram_gv.py basic_demo check_credit
 
-        # Or use the per-project shortcut (from Manager root):
-        python <project_name>/docs/training/logic_diagrams/generate_logic_diagram.py [<requirement>]
+        # One diagram per logic file (use case) — for "for each requirement" / "create logic diagrams":
+        python system/ApiLogicServer-Internal-Dev/logic_diagram_gv.py <project_name> --each
 
-STEP 3: Tell user to open: <project_name>/docs/requirements/logic_diagram[_<requirement>].svg
-        (drag into browser, or VSCode SVG Preview extension)
+        # Or use the per-project shortcut (from Manager root):
+        python <project_name>/docs/training/logic_diagrams/generate_logic_diagram.py [<requirement> | --each]
+
+STEP 3: Tell user where the diagram(s) are (drag into browser, or VSCode SVG Preview extension):
+        Full:    <project_name>/docs/requirements/logic_diagrams/logic_diagram.svg
+        Scoped:  <project_name>/docs/requirements/<requirement>/logic_diagrams/logic_diagram_<requirement>.svg
+        --each:  one scoped diagram per logic file, in the Scoped location above. List each one written,
+                 and any file skipped for having no rules (the run reports both).
 ```
+
+**What "each requirement" means here:** one diagram per **logic file** under `logic/logic_discovery/`
+(files are named for their use case, e.g. `check_credit.py`). `system/` files are skipped. The
+`<requirement>` argument is matched as a case-insensitive **substring of the logic file path** — it
+matches file or directory names (`check_credit`, `place_order`), **not** requirement numbers like §3 or
+`Feature:` names. If the user names a requirement by number or title, map it to the logic file that
+implements it (the file's module docstring carries the requirement text) and pass that file's name.
 
 **Reading the diagram:**
 - Tables show only columns involved in logic
@@ -638,6 +698,7 @@ STEP 3: Tell user to open: <project_name>/docs/requirements/logic_diagram[_<requ
 ```bash
 python docs/training/logic_diagrams/generate_logic_diagram.py              # full
 python docs/training/logic_diagrams/generate_logic_diagram.py check_credit # scoped
+python docs/training/logic_diagrams/generate_logic_diagram.py --each       # one per logic file (use case)
 ```
 
 ---
@@ -1857,7 +1918,7 @@ python api_logic_server_run.py
 
 **Server Management Best Practices:**
 - Before making structural changes (models, logic files), STOP the running server to avoid file locking issues
-- To stop server: `pkill -f "python api_logic_server_run.py"` or use Ctrl+C if running in foreground
+- To stop server: `pkill -f "api_logic_server_run.py"` or use Ctrl+C if running in foreground
 - USER ACTION: After making changes, user restarts server (e.g., `python api_logic_server_run.py &`)
 - Monitor startup output for errors, especially after database/model changes
 - If server fails to start after model changes, check that alembic migrations have been applied
@@ -2002,7 +2063,7 @@ STEP 2.5: Check for EAI Consume pattern:
         5b. SERVER RESTART HYGIENE — mandatory before every `&`-backgrounded start:
           ❌ FORBIDDEN: starting a new `python api_logic_server_run.py &` without first
                        confirming no prior instance is still alive
-          ✅ REQUIRED: `pkill -f "python api_logic_server_run.py"` (or equivalent), then
+          ✅ REQUIRED: `pkill -f "api_logic_server_run.py"` (or equivalent), then
                        confirm the port is free (`lsof -i :5656` returns nothing) before
                        the next start
           REAL FAILURE CASE: a debug-loop iteration backgrounded a new server with `&`
@@ -2546,10 +2607,10 @@ def step_impl(context, customer_name, quantity, product_name):
 python behave_run.py --outfile=logs/behave.log
 
 # 2. Generate report (reads behave.log + scenario_logic_logs/*.log)
-python behave_logic_report.py run
+python requirements_traceability_report.py run
 
 # 3. View report
-open reports/Behave\ Logic\ Report.md
+open reports/Requirements\ Traceability\ Report.md
 ```
 
 **WHAT THE REPORT SHOWS**:
@@ -2611,7 +2672,7 @@ ls -lh logs/behave.log  # Should be several KB, not 0 bytes
 ls logs/scenario_logic_logs/ | head -10
 
 # Count detail sections in report (should equal number of scenarios)
-grep -c "<details markdown>" reports/Behave\ Logic\ Report.md
+grep -c "<details markdown>" reports/Requirements\ Traceability\ Report.md
 
 # View a specific scenario's log directly
 cat logs/scenario_logic_logs/Delete_Item_Reduces_Order.log
