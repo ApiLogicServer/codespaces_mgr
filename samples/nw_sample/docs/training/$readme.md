@@ -18,4 +18,4 @@ the project itself, not just from this source file. Also recorded in that projec
 `docs/requirements/project_creation_report.md`.
 
 ---
-Overlaid from `/Users/val/dev/ApiLogicServer/ApiLogicServer-dev/build_and_test/genai-logic/system/project_context_engineering` (genai-logic 17.05.04) at project creation, October 21, 2026 12:16:18.
+Overlaid from `/Users/val/dev/genai-logic/ApiLogicServer-dev/build_and_test/genai-logic/system/project_context_engineering` (genai-logic 17.05.06) at project creation, October 23, 2026 09:09:57.
