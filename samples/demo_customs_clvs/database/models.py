@@ -10,8 +10,8 @@ from sqlalchemy.ext.declarative import declarative_base
 # Alter this file per your database maintenance policy
 #    See https://apilogicserver.github.io/Docs/Project-Rebuild/#rebuilding
 #
-# Created:  August 11, 2026 18:06:15
-# Database: sqlite:////Users/val/dev/ApiLogicServer/ApiLogicServer-dev/build_and_test/genai-logic/demo_customs_clvs/database/db.sqlite
+# Created:  November 01, 2026 17:24:39
+# Database: sqlite:////Users/val/dev/genai-logic/ApiLogicServer-dev/build_and_test/genai-logic/demo_customs_clvs/database/db.sqlite
 # Dialect:  sqlite
 #
 # mypy: ignore-errors
@@ -120,6 +120,7 @@ class ShipmentXml(Base):  # type: ignore
     received_at = Column(DateTime)
     payload = Column(Text, nullable=False)
     is_processed = Column(Boolean, default=False)
+    error_text = Column(Text)
 
     # parent relationships (access parent)
 
@@ -136,7 +137,8 @@ class SysConfig(Base):  # type: ignore
     discount_rate = Column(Float, server_default=text("0.05"))
     tax_rate = Column(Float, server_default=text("0.10"))
     notes = Column(Text)
-    clvs_lvs_threshold_cad = Column(Numeric(15, 2), server_default=text("3300.00"))
+    clvs_threshold_cad = Column(Numeric(15, 2), server_default=text("3300"))
+    clvs_courier_service_type_cd = Column(String(2), server_default=text("'04'"))
 
     # parent relationships (access parent)
 
@@ -219,6 +221,7 @@ class CustomsOffice(Base):  # type: ignore
     type = Column(Text, nullable=False)
     clvs_release = Column(Integer, server_default=text("0"), nullable=False)
     sufferance_warehouse = Column(Integer, server_default=text("0"), nullable=False)
+    location_cd = Column(String(5))
 
     # parent relationships (access parent)
     customs_region : Mapped["CustomsRegion"] = relationship(back_populates=("CustomsOfficeList"))
@@ -371,24 +374,25 @@ class Shipment(Base):  # type: ignore
     portofentry = Column(String(6))
     warehousecode = Column(String(6))
     surface_intl_shipment_nbr = Column(Numeric)
-    clvs_reason = Column(Text, server_default=text("''"))
-    clvs_eligible = Column(Integer, server_default=text("0"))
-    prohibited_commodity_count = Column(Integer, server_default=text("0"))
-    controlled_item_count = Column(Integer, server_default=text("0"))
-    customs_office_id = Column(ForeignKey('customs_office.id'))
     sys_config_id = Column(ForeignKey('sys_config.id'), server_default=text("1"))
-    clvs_lvs_threshold_cad = Column(Numeric(15, 2), server_default=text("3300.00"))
-    authorized_clvs_courier = Column(Integer, server_default=text("1"))
+    clvs_threshold_cad = Column(Numeric(15, 2))
+    clvs_courier_service_type_cd = Column(String(2))
+    customs_office_id = Column(ForeignKey('customs_office.id'))
+    office_clvs_release = Column(Integer)
+    controlled_item_count = Column(Integer, server_default=text("0"))
+    prohibited_commodity_count = Column(Integer, server_default=text("0"))
+    clvs_reason = Column(Text)
+    clvs_eligible = Column(Integer)
 
     # parent relationships (access parent)
     customs_office : Mapped["CustomsOffice"] = relationship(back_populates=("ShipmentList"))
     sys_config : Mapped["SysConfig"] = relationship(back_populates=("ShipmentList"))
 
     # child relationships (access children)
-    PieceList : Mapped[List["Piece"]] = relationship(back_populates="shipment", cascade="all, delete")
-    ShipmentCommodityList : Mapped[List["ShipmentCommodity"]] = relationship(back_populates="shipment", passive_deletes='all')
-    SpecialHandlingList : Mapped[List["SpecialHandling"]] = relationship(back_populates="shipment", cascade="all, delete")
-    ShipmentPartyList : Mapped[List["ShipmentParty"]] = relationship(back_populates="shipment", cascade="all, delete")
+    PieceList : Mapped[List["Piece"]] = relationship(back_populates="shipment")
+    ShipmentCommodityList : Mapped[List["ShipmentCommodity"]] = relationship(back_populates="shipment")
+    SpecialHandlingList : Mapped[List["SpecialHandling"]] = relationship(back_populates="shipment")
+    ShipmentPartyList : Mapped[List["ShipmentParty"]] = relationship(back_populates="shipment")
 
 
 
@@ -547,6 +551,11 @@ class ShipmentParty(Base):  # type: ignore
     fax_nbr = Column(String(15))
     pref_cont_mthd_cd = Column(String(2))
     additional_contact_flg = Column(String(1), server_default=text("'N'"))
+    address_1 = Column(String(70))
+    address_2 = Column(String(70))
+    address_3 = Column(String(70))
+    oid_nbr = Column(Integer)
+    oid_type_cd = Column(String(1))
 
     # parent relationships (access parent)
     piece : Mapped["Piece"] = relationship(back_populates=("ShipmentPartyList"))

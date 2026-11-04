@@ -4,7 +4,10 @@ The following is a reproducible step-by-step prompt sequence to recreate this pr
 Each step is a copy-pasteable prompt with a verification checkpoint before proceeding.
 
 
-### Step 1 — Subscribe to Kafka and persist shipments
+## 1. Subscribe to Kafka and persist shipments
+
+Feature: Subscribe to Kafka and persist shipments
+
 
 ```
 Read `docs/training/eai_subscribe.md`, then:
@@ -35,11 +38,6 @@ curl 'http://localhost:5656/consume_debug/isdc?file=docs/requirements/customs_de
 ```
 Response should show `"success": true` with `awb_nbr`, `pieces`, `parties`, `commodities`. Check Admin UI — a ShipmentXml row and a Shipment row with children should appear.
 
-Then run the automated test gate (server must be running on port 5656):
-```bash
-bash docs/requirements/customs_demo/test_gate.sh
-```
-
 Behavioral acceptance checks (must pass):
 - Repeat the same Step 2 call twice using the same XML payload.
 - Domain graph counts remain stable on replay (Shipment/Piece/ShipmentParty/ShipmentCommodity do not increase).
@@ -48,7 +46,10 @@ Behavioral acceptance checks (must pass):
 
 ---
 
-### Step 2 — Importer matching
+## 2. Importer matching
+
+Feature: Importer matching
+
 
 ```
 Logic discovery: Shipment matching (Phase 2).
@@ -71,7 +72,10 @@ ShipmentParty writes atomically with the parent Shipment.
 
 ---
 
-### Step 3 - CVLS Eligibility
+## 3. CVLS Eligibility
+
+Feature: CVLS Eligibility
+
 
 ```
 Scenario: Shipment at or below the LVS threshold is eligible
@@ -85,7 +89,8 @@ Scenario: Shipment at or below the LVS threshold is eligible
   And set the clvs_reason as a comma delimited list of short all reasons why failed (or blank)
   ```
 
-### Step 4 — Live Kafka end-to-end test
+## 4. Live Kafka end-to-end test
+
 
 **Required: set Kafka env vars in `config/default.env`:**
 ```
@@ -122,8 +127,3 @@ Release gate (required):
 > **`test/send_isdc.py` is generated automatically by Step 2** — `eai_subscribe.md` artifact #9.
 
 **Verify:** Check Admin UI — ShipmentXml row, Shipment with children, and ShipmentParty with `shipment_party_type_cd="I"` should all appear without any curl.
-
-Then run the automated test gate with Kafka enabled:
-```bash
-KAFKA_PHASE_REQUIRED=true bash docs/requirements/customs_demo/test_gate.sh
-```

@@ -1,11 +1,13 @@
 about:
-  date: August 11, 2026 18:01:21
+  date: November 01, 2026 17:22:14
   merged:
-    at: August 11, 2026 18:06:15
-    new_attributes: 'Shipment.customs_office_id Shipment.sys_config_id Shipment.clvs_reason
-      Shipment.clvs_eligible Shipment.prohibited_commodity_count Shipment.controlled_item_count
-      Shipment.authorized_clvs_courier Shipment.clvs_lvs_threshold_cad SysConfig.clvs_lvs_threshold_cad
-      ShipmentCommodity.is_prohibited '
+    at: November 01, 2026 17:24:39
+    new_attributes: 'CustomsOffice.location_cd Shipment.customs_office_id Shipment.sys_config_id
+      Shipment.office_clvs_release Shipment.controlled_item_count Shipment.prohibited_commodity_count
+      Shipment.clvs_reason Shipment.clvs_eligible Shipment.clvs_threshold_cad Shipment.clvs_courier_service_type_cd
+      SysConfig.clvs_threshold_cad SysConfig.clvs_courier_service_type_cd ShipmentCommodity.is_prohibited
+      ShipmentParty.address_1 ShipmentParty.address_2 ShipmentParty.address_3 ShipmentParty.oid_nbr
+      ShipmentParty.oid_type_cd '
     new_resources: 'ShipmentXml '
     new_tab_groups: 'CustomsOffice.ShipmentList Shipment.customs_office Shipment.sys_config
       SysConfig.ShipmentList '
@@ -102,6 +104,7 @@ resources:
     - name: sufferance_warehouse
       required: true
     - name: id
+    - name: location_cd
     tab_groups:
     - direction: toone
       fks:
@@ -374,12 +377,13 @@ resources:
     - name: iid_classify_cd
     - name: customs_office_id
     - name: sys_config_id
+    - name: office_clvs_release
+    - name: controlled_item_count
+    - name: prohibited_commodity_count
     - name: clvs_reason
     - name: clvs_eligible
-    - name: prohibited_commodity_count
-    - name: controlled_item_count
-    - name: authorized_clvs_courier
-    - name: clvs_lvs_threshold_cad
+    - name: clvs_threshold_cad
+    - name: clvs_courier_service_type_cd
     tab_groups:
     - direction: tomany
       fks:
@@ -503,6 +507,11 @@ resources:
     - name: shipment_type_cd
     - name: piece_shpmt_type_cd
     - name: pref_cont_mthd_cd
+    - name: address_1
+    - name: address_2
+    - name: address_3
+    - name: oid_nbr
+    - name: oid_type_cd
     tab_groups:
     - direction: toone
       fks:
@@ -524,6 +533,7 @@ resources:
       sort: true
     - name: received_at
       type: DATETIME
+    - name: error_text
     - name: payload
       required: true
     - name: is_processed
@@ -561,7 +571,8 @@ resources:
     - name: tax_rate
     - name: notes
     - name: id
-    - name: clvs_lvs_threshold_cad
+    - name: clvs_threshold_cad
+    - name: clvs_courier_service_type_cd
     tab_groups:
     - direction: tomany
       fks:

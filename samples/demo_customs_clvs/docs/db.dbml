@@ -56,6 +56,7 @@ Table CustomsOffice {
     Type TEXT 
     clvs_release INTEGER 
     sufferance_warehouse INTEGER 
+    location_cd VARCHAR(5) 
     }
 
 Table CustomsRegion {
@@ -254,14 +255,15 @@ Table Shipment {
     portofentry VARCHAR(6) 
     warehousecode VARCHAR(6) 
     surface_intl_shipment_nbr NUMERIC 
+    sys_config_id INTEGER 
+    clvs_threshold_cad NUMERIC(15, 2) 
+    clvs_courier_service_type_cd VARCHAR(2) 
+    customs_office_id INTEGER 
+    office_clvs_release INTEGER 
+    controlled_item_count INTEGER 
+    prohibited_commodity_count INTEGER 
     clvs_reason TEXT 
     clvs_eligible INTEGER 
-    prohibited_commodity_count INTEGER 
-    controlled_item_count INTEGER 
-    customs_office_id INTEGER 
-    sys_config_id INTEGER 
-    clvs_lvs_threshold_cad NUMERIC(15, 2) 
-    authorized_clvs_courier INTEGER 
     }
 
 Table SysConfig {
@@ -270,7 +272,8 @@ Table SysConfig {
     discount_rate FLOAT 
     tax_rate FLOAT 
     notes TEXT 
-    clvs_lvs_threshold_cad NUMERIC(15, 2) 
+    clvs_threshold_cad NUMERIC(15, 2) 
+    clvs_courier_service_type_cd VARCHAR(2) 
     }
 
 Table ShipmentCommodity {
@@ -337,6 +340,11 @@ Table ShipmentParty {
     fax_nbr VARCHAR(15) 
     pref_cont_mthd_cd VARCHAR(2) 
     additional_contact_flg VARCHAR(1) 
+    address_1 VARCHAR(70) 
+    address_2 VARCHAR(70) 
+    address_3 VARCHAR(70) 
+    oid_nbr INTEGER 
+    oid_type_cd VARCHAR(1) 
     }
 
 Table ShipmentXml {
@@ -344,6 +352,7 @@ Table ShipmentXml {
     received_at DATETIME 
     payload TEXT 
     is_processed BOOLEAN 
+    error_text TEXT 
     }
 
 Table SpecialHandling {

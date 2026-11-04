@@ -134,7 +134,8 @@
                 "city",
                 "Type",
                 "clvs_release",
-                "sufferance_warehouse"
+                "sufferance_warehouse",
+                "location_cd"
             ],
             "filterable": [
                 "id",
@@ -145,7 +146,8 @@
                 "city",
                 "Type",
                 "clvs_release",
-                "sufferance_warehouse"
+                "sufferance_warehouse",
+                "location_cd"
             ]
         },
         {
@@ -425,14 +427,15 @@
                 "portofentry",
                 "warehousecode",
                 "surface_intl_shipment_nbr",
-                "clvs_reason",
-                "clvs_eligible",
-                "prohibited_commodity_count",
-                "controlled_item_count",
-                "customs_office_id",
                 "sys_config_id",
-                "clvs_lvs_threshold_cad",
-                "authorized_clvs_courier"
+                "clvs_threshold_cad",
+                "clvs_courier_service_type_cd",
+                "customs_office_id",
+                "office_clvs_release",
+                "controlled_item_count",
+                "prohibited_commodity_count",
+                "clvs_reason",
+                "clvs_eligible"
             ],
             "filterable": [
                 "local_shipment_oid_nbr",
@@ -574,14 +577,15 @@
                 "portofentry",
                 "warehousecode",
                 "surface_intl_shipment_nbr",
-                "clvs_reason",
-                "clvs_eligible",
-                "prohibited_commodity_count",
-                "controlled_item_count",
-                "customs_office_id",
                 "sys_config_id",
-                "clvs_lvs_threshold_cad",
-                "authorized_clvs_courier"
+                "clvs_threshold_cad",
+                "clvs_courier_service_type_cd",
+                "customs_office_id",
+                "office_clvs_release",
+                "controlled_item_count",
+                "prohibited_commodity_count",
+                "clvs_reason",
+                "clvs_eligible"
             ]
         },
         {
@@ -599,7 +603,8 @@
                 "discount_rate",
                 "tax_rate",
                 "notes",
-                "clvs_lvs_threshold_cad"
+                "clvs_threshold_cad",
+                "clvs_courier_service_type_cd"
             ],
             "filterable": [
                 "id",
@@ -607,7 +612,8 @@
                 "discount_rate",
                 "tax_rate",
                 "notes",
-                "clvs_lvs_threshold_cad"
+                "clvs_threshold_cad",
+                "clvs_courier_service_type_cd"
             ]
         },
         {
@@ -721,7 +727,12 @@
                 "cfia_account_nbr",
                 "fax_nbr",
                 "pref_cont_mthd_cd",
-                "additional_contact_flg"
+                "additional_contact_flg",
+                "address_1",
+                "address_2",
+                "address_3",
+                "oid_nbr",
+                "oid_type_cd"
             ],
             "filterable": [
                 "shipment_party_oid_nbr",
@@ -755,7 +766,12 @@
                 "cfia_account_nbr",
                 "fax_nbr",
                 "pref_cont_mthd_cd",
-                "additional_contact_flg"
+                "additional_contact_flg",
+                "address_1",
+                "address_2",
+                "address_3",
+                "oid_nbr",
+                "oid_type_cd"
             ]
         },
         {
@@ -771,13 +787,15 @@
                 "id",
                 "received_at",
                 "payload",
-                "is_processed"
+                "is_processed",
+                "error_text"
             ],
             "filterable": [
                 "id",
                 "received_at",
                 "payload",
-                "is_processed"
+                "is_processed",
+                "error_text"
             ]
         },
         {
