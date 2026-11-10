@@ -211,6 +211,7 @@ def check_broken_links(target: Path) -> list:
     if not readme.exists():
         return broken
     text = readme.read_text(errors="ignore")
+    text = re.sub(r"<!--.*?-->", "", text, flags=re.S)  # authoring notes in comments show example links (e.g. images/...) - not real links
     for link in MD_LINK_RE.findall(text):
         if link in ACCEPTED_BROKEN_LINKS:
             continue
@@ -261,6 +262,15 @@ def main():
 
     if not (target / ".git").exists():
         print(f"ERROR: {target} does not look like a git checkout (no .git) — refusing.")
+        sys.exit(1)
+
+    # Guard: samples ship as samples.zip in the built package and `genai-logic start` expands them
+    # into the Manager. Every samples/** glob below returns nothing, silently, if that never happened
+    # (the result would be a cs-mgr with no samples and unpatched settings).
+    samples_dir = SRC_ROOT / "samples"
+    if not (samples_dir / "basic_demo_sample").is_dir():    # also catches a half-extracted tree
+        print(f"ERROR: {samples_dir} is missing or incomplete (no basic_demo_sample) — refusing.\n"
+              f"       Run `genai-logic start --clean` in the local Manager to expand samples, then re-run.")
         sys.exit(1)
 
     if push or release:

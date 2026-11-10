@@ -63,6 +63,7 @@ def server_log(request, jsonify):
     * test/api_logic_server_behave/logs
     """
     import os
+    import re
     import datetime
     from pathlib import Path
     import logging
@@ -81,13 +82,14 @@ def server_log(request, jsonify):
                 # print(f'do not delete stderr')
             else:
                 logger.removeHandler(each_handler)
+                each_handler.close()  # release the file: Windows cannot os.remove() an open file (WinError 32)
         fmt = '%(asctime)s | %(levelname)8s | %(filename)s:%(lineno)d | %(message)s'
         formatter = logging.Formatter(fmt)
         formatter = logging.Formatter('%(message)s - %(asctime)s - %(name)s - %(levelname)s')
 
         # Determine log path/file name; create log_dir if necessary
         now = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-        log_name = f'{str(name).replace(" ", "_")}'  # {now}'
+        log_name = re.sub(r'[^\w.-]', '_', str(name)).lstrip('.')  # a file name only: no path separators (CWE-22)
         if len(log_name) >= 26:
             log_name = log_name[0:25]
 
@@ -107,7 +109,7 @@ def server_log(request, jsonify):
 
         # Create file handler for logging to a file (log all five levels)
         # print(f'create file handler for logging: {log_file}')
-        logger.file_handler = logging.FileHandler(log_file)
+        logger.file_handler = logging.FileHandler(log_file, encoding='utf-8')
         logger.file_handler.setLevel(logging.DEBUG)
         logger.file_handler.setFormatter(formatter)
         logger.addHandler(logger.file_handler)

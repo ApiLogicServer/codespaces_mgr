@@ -16,11 +16,17 @@ demo_eai: Sample-Basic-EAI
 demo_vibe: Sample-Basic-Demo-Vibe
 demo_copilot_mcp_discovery: Sample-ai-mcp
 basic_demo: Sample-Basic-Demo
+basic_demo_rfi: Sample-Basic-Demo-RFI
 codespaces_patch: |
   create_codespaces_mgr.py injects a Codespaces-only browser note immediately after
   the "## 🚀 First Time Here?" heading (sentinel: do not rename that heading without
   updating the matching logic in create_codespaces_mgr.py). The note warns Safari users to
   switch to Chrome/Edge. This avoids forking the README for Codespaces.
+image_links: |
+  Use markdown ![alt](images/...) with a doc-relative path, so images show in the editor preview and on
+  the mkdocs site; copy_md() makes them absolute for the Manager copy (only lines starting with "![").
+  A raw <img> tag is NOT rewritten by mkdocs (404s on the site) - use one only when you need align=,
+  with an absolute raw.githubusercontent.com URL (see the right-aligned diagram in "Trustworthy and Auditable").
 -->
 
 # Welcome to GenAI-Logic
@@ -109,7 +115,9 @@ CODESPACES-ONLY-END -->
 <details markdown>
 <summary>The AI turns those <strong>requirements</strong> into five <strong>rules</strong>, one for each — click to see them in your IDE</summary>
 
-<br><img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/check_credit.png" alt="VS Code showing check_credit.py: the five requirements as intent at the top, and the five matching declarative rules below" width="640">
+<br>
+
+![VS Code showing check_credit.py: the five requirements as intent at the top, and the five matching declarative rules below](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/check_credit.png)
 
 The requirements are the docstring; the rules are the five lines of `declare_logic()`, one per requirement. The file is [check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py).
 
@@ -187,12 +195,12 @@ Left unguided, any AI assistant — including the one that just built basic_demo
 <summary>&emsp;&emsp;<strong>Not readable</strong> — you can't govern what you can't read (5 vs ~200 lines)</summary>
 
 <br>**~200 lines** of procedural code — ***hard to read, intent unclear*:**
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/credit_service.png" alt="~200 lines of procedural credit-check code, for the same 5 requirements 5 declarative rules cover" width="640">
+![~200 lines of procedural credit-check code, for the same 5 requirements 5 declarative rules cover](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/credit_service.png)
 
 Same 5 requirements from the Check Credit prompt in "The Ideal" above — handed to AI with no guidance, it generated this: [procedural/credit_service.py](samples/basic_demo_logic_gov/logic/procedural/credit_service.py) — **~200 lines**. Open it and judge for yourself.
 
 **5 declarative rules — *readable* at a glance:**
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/check_credit.png" alt="5 declarative rules for check_credit — the same 5 requirements, readable in seconds" width="640">
+![5 declarative rules for check_credit — the same 5 requirements, readable in seconds](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/check_credit.png)
 
 [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py) — same 5 requirements, same AI.
 
@@ -394,7 +402,7 @@ They sit alongside the infrastructure you already rely on — your database, Kaf
 
 **Think of a DBMS** — the rules are the DDL, the rules engine is the database server. The rules are plain Python files in your project, under source control, the way DDL is a script you keep. The rules engine runs inside your service and enforces them at commit, the way a database server enforces its schema.
 
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/Gov-Layer.png" alt="AI Driven Rules sit between callers and the database, alongside security (Keycloak/RBAC) and messaging (Kafka); rules are written by AI and Context Engineering" width="640">
+![AI Driven Rules sit between callers and the database, alongside security (Keycloak/RBAC) and messaging (Kafka); rules are written by AI and Context Engineering](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/Gov-Layer.png)
 
 &nbsp;
 
@@ -423,7 +431,7 @@ The alternatives don't give you that:
 - **Requirements are easy to read, but incomplete — and a little vague.** They leave decisions unmade and open to interpretation, so they can't tell you what the system does.
 - **Code is bloated, complicated, and hard to trust.** There's far more of it, and you have to trace where it's called, whether it's ordered correctly, and whether dependencies are handled.
 
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/check_credit.png" alt="5 declarative rules for check_credit — the same 5 requirements, readable in seconds" width="640">
+![5 declarative rules for check_credit — the same 5 requirements, readable in seconds](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/check_credit.png)
 
 [logic_discovery/place_order/check_credit.py](samples/basic_demo_logic_gov/logic/logic_discovery/place_order/check_credit.py): five requirements, five rules. What they can't show you is what the requirement left unsaid and the AI had to assume. That's next.
 
@@ -434,7 +442,9 @@ The alternatives don't give you that:
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>AI Alerts</strong> — proactive human-in-the-loop, every AI assumption</summary>
 
-<br><img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/ad-lib-report.png" alt="Ad-libs report: a Review Required entry naming a blocking ambiguity, with candidate resolutions" width="640">
+<br>
+
+![Ad-libs report: a Review Required entry naming a blocking ambiguity, with candidate resolutions](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/ad-lib-report.png)
 
 Every requirement leaves things unsaid — the AI can and should resolve that ambiguity. But that carries the responsibility to provide a **proactive** heads-up so you can confirm the decision; that's shown in the report above.
 
@@ -460,7 +470,9 @@ A compliance reviewer can check the implementation in minutes, not by reading co
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>Health Check</strong> — logic analysis / usage / utilization</summary>
 
-<br><img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/proj-gov-report.png" alt="Health check report: coverage, integrity, and red-flag scores for a project's rules" width="640">
+<br>
+
+![Health check report: coverage, integrity, and red-flag scores for a project's rules](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/proj-gov-report.png)
 
 Ongoing hygiene, not just at creation: run any time to confirm the codebase still holds up as the project evolves — rule adoption, dependency-tracking integrity, missing docstrings, across the whole project. [Full report](samples/basic_demo_logic_gov/docs/requirements/health_check.md).
 
@@ -471,7 +483,9 @@ Ongoing hygiene, not just at creation: run any time to confirm the codebase stil
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>Test Creation</strong> — requirements traceability (from rules analysis)</summary>
 
-<br><img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/hehave-test.png" alt="Behave Logic Report: a test scenario traced to the rules it exercised and the logic log proving they fired" width="640">
+<br>
+
+![Behave Logic Report: a test scenario traced to the rules it exercised and the logic log proving they fired](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/readme/hehave-test.png)
 
 The three reports above analyze the rules as declared — this one proves they ran. Behave tests trace straight back to the requirement that drove them — and the report shows which declarative rules fired for each scenario, with before/after values, not just pass/fail. Requirement → test → rule → execution log, in one place. [Full report](samples/basic_demo_logic_gov/test/api_logic_server_behave/reports/Behave%20Logic%20Report.md).
 
@@ -528,7 +542,7 @@ patterns. [More on system vs. domain knowledge →](https://apilogicserver.githu
 
 <br>The demo above showed ***Publish** the Order to Kafka topic*. For the **subscribe** side, see [samples/basic_demo_eai/readme.md](samples/basic_demo_eai/readme.md): B2B orders from partner systems, via a Custom API or Kafka subscriber, including *lookups* so partners send `"Account": "Alice"` (not internal IDs). One project handles both directions — no separate system to stand up:
 
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/integration/demo-eai.png" alt="basic_demo_eai: B2B Partner and Broker both feed one governed order system, which publishes order_shipping" width="560">
+![basic_demo_eai: B2B Partner and Broker both feed one governed order system, which publishes order_shipping](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/integration/demo-eai.png)
 
 Below is the portion of the requirement for subscribing:
 
@@ -563,9 +577,9 @@ this platform generates. You don't ask for it.
 <details markdown>
 <summary>&emsp;&emsp;↳ <strong>MCP</strong> (Model Context Protocol) — your API is agent-discoverable out of the box</summary>
 
-<br>Your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`). Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it. There's no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md](samples/basic_demo_ai_rules-supplier/readme_ai_mcp.md)
+<br>Your API is **MCP-discoverable** out of the box (`/.well-known/mcp.json`). Copilot, Claude, or ChatGPT can find the schema and answer natural-language queries against it. There's no discovery layer for you to write — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/basic_demo/mcp-ui.png" alt="Admin App SysMcp form — a business user enters a natural-language request (list unpaid orders, email each customer a discount), no code written" width="560">
+![Admin App SysMcp form — a business user enters a natural-language request (list unpaid orders, email each customer a discount), no code written](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/basic_demo/mcp-ui.png)
 
 Here, an end user makes a NL request to find some data, and send email — **the same governing rules enforce it**, whether the request came from MCP, the API, or a form. No new door, no new bypass.
 
@@ -582,7 +596,7 @@ You can also use MCP in your IDE to issue queries in natural language.
 
 Point yours at the generated API, and it renders against real, governed data — the same logic runs no matter what's calling it. One database, one API, any number of custom front ends: dashboards, tree views, maps, card layouts — all shown below, same backend, all generated in about 15 minutes with no hand-written JavaScript.
 
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/ui-vibe/nw/vibe-gallery.png" alt="Gallery of vibe-generated UIs — dashboard, tree view, map, cards — all against one governed API" width="700">
+![Gallery of vibe-generated UIs — dashboard, tree view, map, cards — all against one governed API](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/ui-vibe/nw/vibe-gallery.png)
 
 The card layout above, worked first try:
 
@@ -642,7 +656,7 @@ for more NL → declaration examples.
 
 <br>Rules that call AI for genuinely judgment-call decisions (e.g. picking a supplier under disrupted shipping lanes). Such AI "proposals" are **governed by the deterministic rules** to ensure results conform to business policy, with a full audit trail of every AI request and response — see [samples/basic_demo_ai_rules-supplier/readme.md](samples/basic_demo_ai_rules-supplier/readme.md)
 
-<img src="https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/sample-ai/copilot/AI-Rules-Audit.png" alt="Audit trail of an AI Rule's request and response, shown in the Admin App" width="560">
+![Audit trail of an AI Rule's request and response, shown in the Admin App](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/sample-ai/copilot/AI-Rules-Audit.png)
 
 The rule below is one line (`__Use AI__ to Set...`) inside an otherwise ordinary logic declaration — deterministic and AI rules aren't two systems, they're the same DSL:
 
@@ -965,8 +979,8 @@ Each of these builds a complete system from a single prompt or command — 💬 
 
 | Use Case | 💬 Say to your AI, or › run | What You'll Learn |
 |----------|---------|-------------------|
-| **[Allocation with AI Rules](samples/allocate_dept_account_demo/docs/requirements/logic_flow_allocate_dept_account_demo.md)** <br> demo_allo_dept_gl | 💬 create demo_allo_dept_gl from samples/prompts/allocation.prompt.md <br> *or* <br> › genai-logic create --project_name=demo_allo_dept_gl --db_url=sqlite:///samples/dbs/starter.sqlite | - [Cascade Allocation (Costs to Depts/GL)](https://apilogicserver.github.io/Docs/Sample_Allo_Dept_GL_readme) <br> - AI Rules for fuzzy match to project |
-| **[Customs CLVS](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/requirements.md)** <br> demo_customs_clvs | 💬 paste [samples/requirements/customs_demo_clvs/create_script.txt](samples/requirements/customs_demo_clvs/create_script.txt)<br>(no Docker/Podman running? It says so up front and continues, with Kafka simulated) | - Governed Business Systems<br> - EAI (using XML), Gherkin requirements<br> - **Verify:** live Kafka check, tests, and a requirements traceability report<br> - **Review:** the AI's ad-libs list the judgment calls it made |
+| **[Allocation with AI Rules](samples/allocate_dept_account_demo/docs/requirements/logic_flow_allocate_dept_account_demo.md)** <br> demo_allo_dept_gl | 💬 create demo_allo_dept_gl from samples/prompts/allocation.prompt.md | - [Cascade Allocation (Costs to Depts/GL)](https://apilogicserver.github.io/Docs/Sample_Allo_Dept_GL_readme) <br> - AI Rules for fuzzy match to project |
+| **[Customs CLVS](samples/requirements/customs_demo_clvs/docs/requirements/customs_demo/requirements.md)** <br> demo_customs_clvs | 💬 paste [samples/requirements/customs_demo_clvs/create_script.txt](samples/requirements/customs_demo_clvs/create_script.txt)<br><br>(no Docker/Podman running? It says so up front and continues, with Kafka simulated) | - Governed Business Systems<br> - EAI (using XML), Gherkin requirements<br> - **Verify:** live Kafka check, tests, and a requirements traceability report<br> - **Review:** the AI's ad-libs list the judgment calls it made |
 | **[Customs Surtax](samples/prompts/customs_cbsa.prompt.md)** <br> demo_customs_surtax | 💬 create project demo_customs_surtax from samples/prompts/customs_cbsa.prompt.md | - New Business System from Regulations |
 
 &nbsp;
@@ -983,10 +997,10 @@ Each of these builds a complete system from a single prompt or command — 💬 
 | Use Case | 💬 Say to your AI, or › run | What You'll Learn |
 |----------|---------|-------------------|
 | **[EAI: Enterprise App Integration](samples/basic_demo_eai/readme.md)** <br>demo_eai | 💬 paste [samples/requirements/demo_eai/create_script.txt](samples/requirements/demo_eai/create_script.txt)<br>(each step explained: [annotated version](samples/requirements/demo_eai/create_script_annotated.txt))<br><br>**Skip Docker/Podman?** Paste [create_script_no_container.txt](samples/requirements/demo_eai/create_script_no_container.txt) instead (the main script also falls back to this by itself when none is running)<br><br>Or, 💬 say `run a level 1 diagnostic` | **Study this one — the full tour, in one paste:** requirements → running system → tests → traceability report.<br>- **Requirements in, system out:** Check Credit rules, a B2B Custom API, Kafka subscribe and publish, row-level security<br>- **Verify:** tests and a requirements traceability report, generated from the rules<br>- **Review:** the AI's ad-libs list the judgment calls it made<br>- Optional: Keycloak, logic diagrams, live Kafka (Docker or Podman) |
-| **[AI Rules](samples/basic_demo_ai_rules-supplier/readme.md)**<br> demo_ai_rules_supplier | › genai-logic create --project_name=demo_ai_rules_supplier --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - Use AI Rules (req pattern) to choose Optimal Supplier, per world conditions |
-| **[Governed MCP Server](https://apilogicserver.github.io/Docs/Sample-Basic-Demo-MCP-Send-Email)** <br>demo_mcp_send_email | 💬 `implement reqs samples/prompts/demo_mcp_send_email`<br><br>Or › `genai-logic create --project_name=demo_mcp_send_email --db_url=sqlite:///samples/dbs/basic_demo.sqlite` | Executable Requirements (fast path) or manual steps<br>- Bus Users compose new service to send email to overdue customers, subject to email opt-out rules<br>- Create custom API with NL<br>- Create an email service (req pattern) |
+| **[AI Rules](samples/basic_demo_ai_rules-supplier/readme.md)**<br> demo_ai_rules_supplier | 💬 paste [samples/requirements/demo_ai_rules_supplier/create_script.txt](samples/requirements/demo_ai_rules_supplier/create_script.txt) | - Use AI Rules (req pattern) to choose Optimal Supplier, per world conditions |
+| **[Governed MCP Server](https://apilogicserver.github.io/Docs/Sample-Basic-Demo-MCP-Send-Email)** <br>demo_mcp_send_email | 💬 `implement reqs samples/prompts/demo_mcp_send_email` | Executable Requirements (fast path) or manual steps<br>- Bus Users compose new service to send email to overdue customers, subject to email opt-out rules<br>- Create custom API with NL<br>- Create an email service (req pattern) |
 | **[Vibe Dev Backend](https://apilogicserver.github.io/Docs/Sample-Basic-Demo-Vibe)** <br> demo_vibe | › genai-logic create --project_name=demo_vibe --db_url=sqlite:///samples/dbs/basic_demo.sqlite | - UI elements, eg, Cards, Maps, Trees... |
-| **[Requirements From Interview](https://apilogicserver.github.io/Docs/Exec-Reqmts/)** <br> basic_demo_rfi | 💬 paste [samples/prompts/basic_demo_rfi.prompt](samples/prompts/basic_demo_rfi.prompt) | - Most of this prompt is fully specified (AI builds those parts directly, no questions asked)<br>- And requests interview ("Also, interview me to work out this general intent: ...")... AI interviews you on that part only, confirms before building<br>- [Real transcript included](samples/requirements/RFI/RFI-transcript.md) |
+| **[Requirements From Interview](https://apilogicserver.github.io/Docs/Sample-Basic-Demo-RFI/)** <br> basic_demo_rfi | 💬 paste [samples/prompts/basic_demo_rfi.prompt](samples/prompts/basic_demo_rfi.prompt) | - Most of this prompt is fully specified (AI builds those parts directly, no questions asked)<br>- And requests interview ("Also, interview me to work out this general intent: ...")... AI interviews you on that part only, confirms before building<br>- [Real transcript included](samples/reqmts_from_interview/basic_demo_rfi/docs/requirements/transacript_reconstructed.md) |
 | **[Business Users](https://www.genai-logic.com/#h.69d2voz8q5r1)** <br> webgenai | See `webgenai/` in this Manager | - Create systems from browser, with logic, sample data and derived attributes |
 
 &nbsp;
