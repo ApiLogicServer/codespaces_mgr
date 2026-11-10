@@ -43,6 +43,8 @@ Whatever comes in, **governing rules come out** — project after project. It re
 
 And it **fits what you already use**: your methodology, standard tools, and shared artifacts, **fostering collaboration** between Business Users and Developers.
 
+**Evaluating this as an architect?** Start with the [Architecture Brief](https://apilogicserver.github.io/Docs/Tech-Architects/).
+
 This is the start page for the [GenAI-Logic Manager](https://apilogicserver.github.io/Docs/Manager) — where you manage projects, notes and resources. It's also your learning hub.
 <!-- CODESPACES-ONLY-START
 (see [codespaces setup here](system/ApiLogicServer-Internal-Dev/setup.gif))
