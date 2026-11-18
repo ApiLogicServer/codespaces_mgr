@@ -1,4 +1,7 @@
 ---
+version: 3.69 - 11/13/26 - Requirements Traceability Report (generator 2.15+): each "Logic diagram" fold now shows the numbered rules beside the diagram (the same list as logic_flow_<req>.md), so the numbers on the diagram arrows can be matched to rules. The list is read from logic_flow_<req>.md, which `logic_diagram_gv.py --each` writes with the SVG; without it the fold shows the diagram alone.
+version: 3.68 - 11/10/26 - "Migrate AI Rules": two gaps found by migrating samples/allocate_dept_account_demo by hand. (1) The sequence assumed `integration/ai/llm_client.py` exists; older projects lack it, so STEP 2b copies it from the installed package first. (2) Detection now also looks for other key variable names (`OPENAI_API_KEY`, `os.environ`/`os.getenv` reads of a key) and STEP 4 / the summary must tell the user that the old variable is no longer read; failures the old handler swallowed are now logged.
+version: 3.67 - 11/10/26 - Vendor-neutral LLM calls. New `integration/ai/llm_client.py` in every project (urllib, no SDK, OpenAI-compatible protocol; OpenAI, Claude, Gemini, Ollama by environment variables). probabilistic_logic.md / probabilistic_template.py now use it instead of `from openai import OpenAI` (3.3 / 3.1), with LLMNotAvailable / LLMError -> deterministic fallback. New section "Migrate AI rules to the LLM client". The retired `genai-*` commands (genai, genai-utils, genai-logic, genai-graphics, genai-add-app, genai-iterate) are no longer referenced; `genai-add-mcp-client` stays. Claude and Gemini are reached through their OpenAI-compatibility endpoints and are UNVERIFIED until run with real keys.
 version: 3.66 - 11/10/26 - CE file renamed `.github/.copilot-instructions.md` -> `.github/copilot-instructions.md` (GitHub Copilot standard name; CLAUDE.md/GEMINI.md already pointed at it). Updated every reference, including the activation protocol's STEP 1 read path. The old spelling stays accepted as an activation phrase.
 version: 3.65 - 11/7/26 - Admin UI `show_when` for subtypes (STI) is now written on the "implement reqs" path too, not only in Method 4 (the old rule said: existing project, only on explicit request). Precautionary: a rebuilt demo_emp_types did write the entries (11, into admin-merge.yaml, pending the admin.yaml swap) even under the old rule, so this codifies what the run did; it was first misdiagnosed here as missing because only admin.yaml was checked. Where to look for show_when after a rebuild: admin-merge.yaml until the user approves the swap. Executable Requirements STEP 6 gets the matching checklist item.
 version: 3.64 - 11/7/26 - System Creation Services: two mechanical closing scans, run as commands against the finished project. (1) Step 8b, the subtype (STI) scan: `show_when` entries in admin.yaml, a null-exclusion constraint for every subtype-specific column, a TEXT yes/no classification axis (not `is_x` 0/1), and "only X may have Y" as a Rule.count plus a parent constraint. (2) A Before-you're-done bullet: no `sys_config_id` FK on a domain table (read constants with SysConfig.current). A blind demo_emp_types build (Sonnet 5.5, Nov 2026) read the STI section and the SysConfig guidance and still shipped none of them (0 show_when entries vs 11 in the reference build, only 1 of 7 null-exclusion constraints, `is_military` 0/1, a sys_config_id FK plus an early event to default it); the guidance was correct but sat in prose ~400 lines before the point of use, with no closing check. Same fix pattern as 3.38/3.39: a checklist at the end. implement_requirements.md gains a money-column convention (NUMERIC(15,2) and Decimal, not REAL).
@@ -697,6 +700,60 @@ simulated run when a broker was answering.
 
 ---
 
+## 🔁 Migrate AI Rules to the LLM Client
+
+**ACTIVATION TRIGGERS:**
+- "migrate AI rules", "migrate AI rules to the LLM client"
+- "switch AI calls to Ollama" / "use Claude / Gemini for AI rules"
+- "remove openai", "stop using openai"
+
+**WHAT IT IS:** AI-rule handlers generated before Nov 2026 call OpenAI directly (`from openai import OpenAI`, key in
+`APILOGICSERVER_CHATGPT_APIKEY`). They keep working while the `openai` package is installed. This section moves a
+handler to `integration/ai/llm_client.py` (no SDK; OpenAI, Claude, Gemini, Ollama by environment variables). Nothing
+forces a migration; do it when the user asks.
+
+**MANDATORY SEQUENCE:**
+
+```
+STEP 1: Detect. Search the project (not samples/) for: `import openai`, `from openai import`, `OpenAI(`,
+        `APILOGICSERVER_CHATGPT_APIKEY`, `OPENAI_API_KEY`, any `os.environ` / `os.getenv` read of an API key,
+        `chat.completions.create`. List the files and functions found, and for each the key variable it reads,
+        and confirm with the user before changing anything.
+STEP 2: Read docs/training/probabilistic_logic.md, section "LLM calls: always use integration/ai/llm_client.py",
+        and docs/training/probabilistic_template.py (the target shape). If the project's docs/training copies
+        are older and do not have that section, read the installed package's copies instead
+        (`<package>/prototypes/base/docs/training/`; the Manager CE explains how to find the package).
+STEP 2b: If `integration/ai/llm_client.py` does not exist (projects created before Nov 2026), copy it from the
+        installed package, `<package>/prototypes/base/integration/ai/llm_client.py`, into the project and say you did.
+        It is a single file with no dependencies; do not write your own client.
+STEP 3: Edit ONLY the call block in each handler (diff-style; never regenerate the file):
+        - add:    from integration.ai.llm_client import chat_json, LLMError, LLMNotAvailable
+        - replace the api_key check + OpenAI(...) + chat.completions.create + fence-stripping + json.loads
+          with one chat_json(system=..., user=prompt) inside try/except LLMNotAvailable / LLMError
+        - keep: the prompt text, the candidate building, id validation, the minimum-cost fallback,
+          the audit columns (request, reason, fallback_used, ...), docstrings, early-event wiring
+        - make sure the prompt says "JSON"
+        - fallback reasons now say "no LLM configured" (not "no API key")
+        - where the old code caught every exception and fell back silently, keep the fallback but log the cause
+          (`logic_row.log(...)`): a swallowed failure is how a broken LLM call goes unnoticed
+        If the handler was hand-edited and does not match the template, show the diff and ask.
+STEP 4: Configure (do not print any key): APILOGICSERVER_LLM_BASE_URL / _MODEL / _API_KEY. A user who already
+        has APILOGICSERVER_CHATGPT_APIKEY set needs no change for OpenAI. A handler that read any OTHER variable
+        (for example OPENAI_API_KEY) no longer finds its key: tell the user to set APILOGICSERVER_LLM_API_KEY,
+        or the handler will use its fallback. Also tell the user the model is now the configured one, not the
+        model that was hard-coded in the handler.
+STEP 5: Verify. Restart the server; run the project's behave tests if present; confirm the minimum-cost
+        fallback still works with no LLM configured (unset the key and the base URL). Do NOT make a live
+        LLM call unless the user says to. The user reads the diff.
+STEP 6: Other places that import openai (e.g. integration/mcp/mcp_client_executor.py): list them, say they are
+        not migrated by this section, and leave them.
+```
+
+**❌ FORBIDDEN:** regenerating a handler from scratch; changing audit columns or the fallback behavior; adding an
+`openai` / `anthropic` SDK import; storing a key in a file that is committed.
+
+---
+
 ## 🧱 Create Tests
 
 **ACTIVATION TRIGGERS:**
@@ -1321,7 +1378,7 @@ changelog:
 
 3. **Automatic Business Logic**: All APIs (standard and custom) automatically inherit LogicBank rules without additional code.
 
-4. **CLI Commands**: Use `genai-logic --help` to see all available commands. When CLI commands exist for a task (e.g., `add-auth`, `genai-add-mcp-client`, `genai-add-app`), ALWAYS use them instead of manual configuration - they handle all setup correctly.
+4. **CLI Commands**: Use `genai-logic --help` to see all available commands. When CLI commands exist for a task (e.g., `add-auth`, `genai-add-mcp-client`), ALWAYS use them instead of manual configuration - they handle all setup correctly.
 
 > **📋 Testing:** For comprehensive testing conventions, patterns, and examples, see `docs/training/testing.md` (555 lines - I'll read this before we create any tests)
 
@@ -1341,7 +1398,7 @@ changelog:
 ### MCP Client (Included)
 - **Client Executor**: `integration/mcp/mcp_client_executor.py`
 - **Natural Language**: Process queries like "List customers with credit_limit > 1000"
-- **LLM Integration**: Uses OpenAI GPT-4 to translate natural language → API calls
+- **LLM Integration**: Uses an LLM, through `integration/ai/llm_client.py` (OpenAI, Claude, Gemini, Ollama by environment variables; see `docs/training/probabilistic_logic.md`), to translate natural language → API calls
 - **Example Usage**:
   ```bash
   cd basic_demo
@@ -3004,13 +3061,7 @@ Then, `npm install` and `npm start`.
 
 Temporary restriction: security must be disabled.
 
-**Fallback (only if no AI assistant is available in this environment):** the
-CLI generator calls OpenAI directly, one API call per resource file:
-```bash
-genai-logic genai-add-app --app-name=my-app-name --vibe
-```
-Requires an OpenAI key in `.env`. Produces the same output shape as the
-default method — prefer the default whenever you're running as the assistant.
+**There is no CLI fallback:** the old `genai-logic genai-add-app` command (ChatGPT, one API call per resource) was retired. Generate the app yourself as described above.
 
 **IMPORTANT**: When working with React apps, ALWAYS read `docs/training` first. This file contains critical data access provider configuration that was built when the project was created. The data provider handles JSON:API communication and record context - ignore this at your peril.
 

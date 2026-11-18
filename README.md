@@ -1,5 +1,5 @@
 <!--
-title: Welcome - see end for instructions to hide this
+title: Welcome to GenAI-Logic
 Description: Instant mcp-enabled microservices, standard projects, declarative business logic
 Source: docs/Manager-readme
 version info: 17.03.08 (07/22/2026)
@@ -45,6 +45,8 @@ And it **fits what you already use**: your methodology, standard tools, and shar
 
 **Evaluating this as an architect?** Start with the [Architecture Brief](https://apilogicserver.github.io/Docs/Tech-Architects/).
 
+**Evaluating this for DevOps?** Set up and test your container runtime ([Podman or Docker](#containers-podman-or-docker)), then follow the [DevOps Quick Start](https://apilogicserver.github.io/Docs/DevOps-Quick-Start/).
+
 This is the start page for the [GenAI-Logic Manager](https://apilogicserver.github.io/Docs/Manager) — where you manage projects, notes and resources. It's also your learning hub.
 <!-- CODESPACES-ONLY-START
 (see [codespaces setup here](system/ApiLogicServer-Internal-Dev/setup.gif))
@@ -80,7 +82,7 @@ You're already running in GitHub Codespaces — a cloud VS Code environment in y
 
 **How do we get the speed and simplicity of AI — with the governance enterprises require?**
 
-Everyone who's had AI build a system hits the same wall afterward: *what have I actually got?* The developer can't be sure what it does when something changes. QA doesn't know what to test. The business can't say what policy it's really enforcing — and the auditor can't certify what nobody can read. Requirements are, and should be, incomplete. Code is complete but unreadable at scale.
+Everyone who's had AI build a system hits the same wall afterward: *what have I actually got?* The *requirements* are incomplete, and AI fills the gaps with **guesses you never see**. The *code* is complete, but **hard to read and trust** at scale. You can't govern what you can't see, or what you can't read.
 
 **The missing artifact is spreadsheet-like rules.** *Balance = sum of unshipped orders. Balance must not exceed credit limit.* One line per requirement, readable by anyone who's ever read a spreadsheet. And like a spreadsheet, they *react*: change anything, every dependent value recalculates — automatically, on every path, nothing to forget. That's why they're trustworthy, not just readable.
 
@@ -1158,21 +1160,150 @@ ApiLogicServer create --project-name=samples/nw_sample_nocust --db-url=nw
 
 &nbsp;
 
-### Hiding Front Matter
+### Containers: Podman or Docker
 
 <details markdown>
 
-<summary>Hiding Front Matter </summary>
+<summary>Postgres, Keycloak and Kafka: Podman or Docker</summary>
 
-To hide the YAML or JSON front matter (the metadata block at the top of your markdown files) in the built-in VS Code markdown preview, you can adjust your editor settings:
+<br>Some samples use containers: Postgres (5432), Keycloak (8080), Kafka (9092). Use either runtime: step 1 sets `CONTAINER_CLI` to `docker` or `podman`, and every command below uses `$CONTAINER_CLI`. Neither is required for the basic demos: scripts that need a container say so up front and fall back.
 
-1. Open the Settings panel using Ctrl + , (Windows/Linux) or Cmd + , (macOS).
-2. Search for the following term: `markdown.previewFrontMatter`.
-3. Change the dropdown value from show to `hide`.
+**1. Install and start the runtime**
 
-The preview will now automatically strip the front matter from the rendered view.
+* **Podman (Mac):** `brew install podman`, then `podman machine init` (once) and `podman machine start`. Install with Homebrew: the dmg alone left the command line incomplete. See [Podman setup](https://apilogicserver.github.io/Docs/DevOps-Podman/).
+* **Docker:** install and start Docker Desktop.
 
-![hide-front-matter](https://raw.githubusercontent.com/ApiLogicServer/Docs/main/docs/images/manager/hide-front-matter.png)
+Then tell the shell which one you use (every command below uses it; a new terminal needs it again, unless you add it to your profile as shown after the block):
+
+```bash
+# or: export CONTAINER_CLI=podman
+export CONTAINER_CLI=docker
+```
+
+To avoid repeating this in every terminal, put one line in your shell profile (`~/.zshrc`, or `~/.bashrc`); it picks Docker if it is running, else Podman:
+
+```bash
+export CONTAINER_CLI=$(docker info >/dev/null 2>&1 && echo docker || echo podman)
+```
+
+It is exported so scripts (for example a project's `devops/docker-image/build_image.sh`) use the same runtime.
+
+(zsh only: also run `setopt interactive_comments` once, and add it to the same profile.  Without it, zsh prints `command not found: #` for comment lines in pasted blocks, which is harmless as long as the comments stand on their own line.)
+
+**1b. Test it** (pulls the standard image on first use, about 1 GB; prints the Python and GenAI-Logic versions):
+
+```bash
+$CONTAINER_CLI run --rm apilogicserver/api_logic_server python3 --version
+$CONTAINER_CLI run --rm apilogicserver/api_logic_server genai-logic welcome
+```
+
+**2. Postgres**
+
+```bash
+$CONTAINER_CLI run -d --restart always --name postgresql-container -p 5432:5432 -e POSTGRES_PASSWORD=p docker.io/apilogicserver/postgres:latest
+```
+
+The [Database-Docker](https://apilogicserver.github.io/Docs/Database-Docker/) page lists this and the MySQL and SQL Server images. It uses `docker`; use `$CONTAINER_CLI`. Its commands add `--net dev-network`, which is not needed here: the server runs on your machine and reaches each container through its published port (`localhost:5432`). It is needed only when API Logic Server itself runs in a container and connects by container name (`postgresql-container`). In that case, create the network once (`$CONTAINER_CLI network create dev-network`) and attach the database container: `$CONTAINER_CLI network connect dev-network postgresql-container`.
+
+**3. Keycloak**
+
+Keycloak imports its realm files from a folder you mount. Keep that folder outside the Manager, so a Manager refresh does not remove it (a container records the folder's absolute path when it is created):
+
+```bash
+V=$HOME/container-volumes
+mkdir -p $V/keycloak/import
+cp -n system/ApiLogicServer-Internal-Dev/container-volumes-template/keycloak/import/*.json $V/keycloak/import/
+$CONTAINER_CLI run -d --restart always --name keycloak -p 8080:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=password \
+  -v $V/keycloak/import:/opt/keycloak/data/import quay.io/keycloak/keycloak:23.0.6 \
+  start-dev --import-realm --proxy=edge --hostname-strict=false --hostname-strict-https=false
+```
+
+Verify: `curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8080/realms/kcals` returns `200`. Admin console: http://localhost:8080 (admin / password). More: [Security-Keycloak](https://apilogicserver.github.io/Docs/Security-Keycloak/).
+
+**4. Kafka**
+
+One broker, `broker1`, serves every project on the machine. Live Kafka is optional: without it the server runs in fallback mode, and `/consume_debug/<topic>` exercises the same consumer code with a curl.
+
+```bash
+V=$HOME/container-volumes
+mkdir -p $V/kafka/data
+$CONTAINER_CLI run -d --restart always --name broker1 -p 9092:9092 -p 9093:9093 \
+  -e KAFKA_NODE_ID=1 -e KAFKA_PROCESS_ROLES=broker,controller -e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER \
+  -e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 -e KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT \
+  -e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT \
+  -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 \
+  -e CLUSTER_ID=r4zt_wrqTRuT7W2NJsB_GA -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 \
+  -e KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1 -e KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1 \
+  -v $V/kafka/data:/integration/kafka/volume docker.io/apache/kafka:3.7.0
+```
+
+Verify: `$CONTAINER_CLI exec broker1 /opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list` connects (an empty list is fine). Read a topic: `$CONTAINER_CLI exec broker1 /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic order_b2b --from-beginning --group fresh-group-1` (any topic name works; use a new group number to re-read).
+
+Each project's `integration/kafka/dockercompose_start_kafka.yml` starts the same broker with `compose`. Podman then needs a compose provider (`brew install docker-compose`, then `{"cliPluginsExtraDirs":["/opt/homebrew/lib/docker/cli-plugins"]}` in `~/.docker/config.json`); the `$CONTAINER_CLI run` above avoids that. To have Podman's VM start at login instead of `podman machine start` after each reboot: `brew install --cask podman-desktop`.
+
+Then, in the project: set `KAFKA_SERVER` and reset topics, as in its `integration/kafka/kafka_readme.md`. Stop the broker with `$CONTAINER_CLI stop broker1`.
+
+**5. Verify the containers end to end**
+
+The checks above show each container is up. This shows they work with a project: Keycloak logs you in, Kafka carries a message in and out. It uses `samples/basic_demo_eai`, which is already wired to all three (Keycloak realm `kcals`, broker `localhost:9092`). Start the server in one terminal, from the Manager folder, and leave it running:
+
+```bash
+cd samples/basic_demo_eai
+source ../../venv/bin/activate
+mkdir -p logs
+python api_logic_server_run.py
+```
+
+Wait for `Kafka mode: ACTIVE` in the output (about 10 seconds). The server never commits Kafka offsets, so every start re-reads the messages still on the topics. The last command below empties them, so the next start has nothing to replay. Then, in a second terminal, run the rest from the Manager folder (paths below are qualified; a new terminal does not have `CONTAINER_CLI` unless you added it to your profile, so the block sets it). It adds one order and one message row to the sample's database; nothing else changes. Stop the server with Ctrl+C when you are done.
+
+```bash
+# or: podman, and skip this line if it is set in your profile
+export CONTAINER_CLI=docker
+
+# Postgres: lists the databases
+$CONTAINER_CLI exec postgresql-container psql -U postgres -c '\l'
+
+# Kafka in: empty the queue, then send the sample order message through the broker
+curl -X POST http://localhost:5656/consume_debug/order_b2b/reset
+curl "http://localhost:5656/consume_debug/order_b2b?file=docs/requirements/demo_eai/message_formats/order_b2b.json"
+# wait about 5 seconds, then see that it landed
+sqlite3 samples/basic_demo_eai/database/db.sqlite "select id, is_processed from order_b2b_message order by id desc limit 1; select id, amount_total, notes from 'order' order by id desc limit 1;"
+
+# Keycloak: log in, then read who issued the token
+TOKEN=$(curl -s -X POST http://localhost:5656/api/auth/login -H 'Content-Type: application/json' -d '{"username":"admin","password":"p"}' | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+python3 -c "import sys,json,base64;p=sys.argv[1].split('.')[1];p+='='*(-len(p)%4);print(json.loads(base64.urlsafe_b64decode(p))['iss'])" "$TOKEN"
+
+# Kafka out: ship that order, the newest one, then check the log
+ORDER_ID=$(sqlite3 samples/basic_demo_eai/database/db.sqlite "select max(id) from 'order'")
+curl -X PATCH http://localhost:5656/api/Order/$ORDER_ID/ -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/vnd.api+json' -d "{\"data\":{\"type\":\"Order\",\"id\":\"$ORDER_ID\",\"attributes\":{\"date_shipped\":\"2026-11-15\"}}}"
+grep "delivered to topic" samples/basic_demo_eai/logs/als.log
+
+# Clean up: empty the queue again, so the next server start replays nothing, because a replay would create duplicate orders
+curl -X POST http://localhost:5656/consume_debug/order_b2b/reset
+```
+
+| Check | Pass looks like |
+|---|---|
+| Postgres | A table of databases prints |
+| Kafka in | The `consume_debug` reply says `"mode":"live"` and `"published":true`; the sqlite output shows `is_processed` = `1` and a new order with amount `390` and notes `Kafka order from sales` |
+| Keycloak | The issuer is `http://localhost:8080/realms/kcals` |
+| Kafka out | The `PATCH` answers `200`; the log shows `delivered to topic 'order_shipping'` |
+
+If `"mode"` says `simulated` the broker did not answer: check `$CONTAINER_CLI ps` and that `KAFKA_SERVER` is set in `config/default.env`. The Keycloak line only applies to a project set up with Keycloak (a SQL-auth project shows a different issuer). Reading the log, not the topic, makes the Kafka-out check independent of messages left by earlier runs.
+
+**6. After a reboot**
+
+The commands above use `--restart always`, so the containers come back by themselves once Podman's VM is up. On a Mac that is the only step, and Podman Desktop (`brew install --cask podman-desktop`) does it at login:
+
+```bash
+podman machine start
+# postgresql-container, keycloak, broker1 should be Up
+$CONTAINER_CLI ps
+```
+
+A container created without `--restart always` stays stopped: start it with `$CONTAINER_CLI start broker1` (or `keycloak`, `postgresql-container`), or recreate it with the flag.
+
+**Framework developers:** the dev install creates `ApiLogicServer-dev/container-volumes/` for these mounts, and BLT checks the containers before it builds. See `system/ApiLogicServer-Internal-Dev/internals-readme.md`.
 
 </details>
 

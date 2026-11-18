@@ -39,7 +39,7 @@ if($IDE -eq "") {
 }
 ls
 Write-Output " "
-$Ready= Read-Host -Prompt "Verify ApiLogicServer-dev does not exist, and [Enter] install *dev* version of ApiLogicServer for $1> "
+$Ready= Read-Host -Prompt "Verify $((Get-Location).Path)\ApiLogicServer-dev does not exist, and [Enter] install *dev* version of ApiLogicServer for $IDE> "
 Set-PSDebug -Trace 0
 
 if (Test-Path -Path "ApiLogicServer-dev") {
@@ -49,6 +49,7 @@ if (Test-Path -Path "ApiLogicServer-dev") {
     Exit 1
 }
 
+$mgrRoot = (Get-Location).Path   # Manager root: holds system/ApiLogicServer-Internal-Dev/container-volumes-template
 mkdir ApiLogicServer-dev
 cd ApiLogicServer-dev
 mkdir servers    # good place to create ApiLogicProjects
@@ -58,40 +59,26 @@ mkdir org_git  # git clones from org ApiLogicServer here
 # persistent home for any docker/podman bind-mount volumes (Kafka data, etc.) that
 # must survive Manager workspace rebuilds - nothing under build_and_test/ is safe for
 # this, since a clean Manager rebuild (or a fresh BLT-created workspace) wipes it.
-mkdir podman
-@"
-# podman/
+# copy the template (gold: system/ApiLogicServer-Internal-Dev/container-volumes-template)
+mkdir container-volumes
+$volumesTemplate = Join-Path $mgrRoot "system/ApiLogicServer-Internal-Dev/container-volumes-template"
+if (Test-Path -Path $volumesTemplate) {
+    Copy-Item -Path (Join-Path $volumesTemplate "*") -Destination container-volumes -Recurse -Force
+} else {
+    Write-Output "(container-volumes-template not found under $mgrRoot - container-volumes/ left empty)"
+}
 
-Persistent host directory for docker/podman bind-mount volumes that need to
-survive a Manager workspace rebuild (e.g. ``genai-logic create-manager --clean``,
-or a fresh ``build_and_test``/``clean`` BLT output).
-
-Sibling of ``org_git/``, ``build_and_test/``, ``servers/`` - nothing here is
-touched by BLT or Manager rebuilds.
-
-Not tied to any one sample or technology - only use it when a sample's own
-compose file default (typically project-relative, e.g. ``./.volumes/...``)
-would otherwise be wiped by a workspace rebuild. Point that compose file's
-``volumes:`` entry here instead, e.g.:
-
-  volumes:
-    - `${HOME}/dev/genai-logic/ApiLogicServer-dev/podman/kafka/data:/integration/kafka/volume
-
-Organize by service as needed:
-
-  podman/kafka/data
-  podman/<other-service>/...
-
-This only matters for this internal dev checkout - general end-user Manager
-workspaces aren't repeatedly rebuilt, so their sample compose files keep the
-simpler, self-contained project-relative default.
-"@ | Out-File -FilePath podman/readme.md -Encoding utf8
+# provenance: readme for the dev env, dated now (gold: system/ApiLogicServer-Internal-Dev/readme-ApiLogicServer-dev.md)
+$readmeTemplate = Join-Path $mgrRoot "system/ApiLogicServer-Internal-Dev/readme-ApiLogicServer-dev.md"
+if (Test-Path -Path $readmeTemplate) {
+    (Get-Content -Raw $readmeTemplate).Replace("{{CREATED_DATE}}", (Get-Date -Format "MM/dd/yyyy")).Replace("{{INSTALL_SCRIPT}}", (Join-Path $mgrRoot "system/ApiLogicServer-Internal-Dev/install-ApiLogicServer-dev.ps1")) | Set-Content -NoNewline readme-dev.md
+}
 
 cd org_git
 
 if ($clonedocs -eq $true) {
     Write-Output "\n Docs setup (slow) "
-    git clone https://github.com/ApiLogicServer/Docs.git
+    git clone -c core.longpaths=true https://github.com/ApiLogicServer/Docs.git
     cd Docs
     python -m venv venv
     venv\Scripts\activate
@@ -102,7 +89,22 @@ if ($clonedocs -eq $true) {
 }
 
 
-git clone https://github.com/ApiLogicServer/ApiLogicServer-src.git
+# core.longpaths: Windows MAX_PATH is 260; some -src sample paths exceed it in a deep Manager folder, and git
+# (unlike the OS's LongPathsEnabled) fails the checkout without it. No effect on mac/linux.
+git clone -c core.longpaths=true https://github.com/ApiLogicServer/ApiLogicServer-src.git
+git clone -c core.longpaths=true https://github.com/valhuber/LogicBank
+
+# provenance: record what this dev env was built from (fills {{CLONE_SHAS}} in ..\readme-dev.md)
+if (Test-Path -Path ..\readme-dev.md) {
+    $dist = Get-ChildItem (Join-Path $mgrRoot "venv\Lib\site-packages") -Directory -Filter "apilogicserver-*.dist-info" -ErrorAction SilentlyContinue | Select-Object -First 1
+    $mgrVer = if ($dist) { $dist.Name -replace '^apilogicserver-','' -replace '\.dist-info$','' } else { "unknown" }
+    $lines = @("- Manager ApiLogicServer: $mgrVer")
+    foreach ($r in "Docs","ApiLogicServer-src","LogicBank") {
+        if (Test-Path -Path $r) { $lines += "- ${r}: $(git -C $r rev-parse --short HEAD) ($(git -C $r branch --show-current))" }
+    }
+    (Get-Content -Raw ..\readme-dev.md).Replace("{{CLONE_SHAS}}", ($lines -join "`n")) | Set-Content -NoNewline ..\readme-dev.md
+}
+
 cd ApiLogicServer-src
 ls
 # $Ready= Read-Host -Prompt "Should be at -src - ready to copy sra build $1> "
@@ -134,7 +136,7 @@ if ($IDE -eq "vscode") {
 Write-Output ""
 Write-Output "IDEs are preconfigured with run/launch commands to create and run the sample"
 Write-Output ""
-Write-Output "If a sample uses docker/podman (e.g. Kafka), see podman/readme.md - it's a"
+Write-Output "If a sample uses docker/podman (Kafka, Keycloak), see container-volumes/readme.md - it's a"
 Write-Output "rebuild-safe place for volumes that must survive a Manager/BLT rebuild"
 Write-Output ""
 exit 0

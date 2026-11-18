@@ -46,12 +46,13 @@ if [ $# -eq 0 ]
   else
     ls
     echo " "
-    read -p "Verify ApiLogicServer-dev does not exist, and [Enter] install *dev* version of ApiLogicServer for $1> "
+    read -p "Verify $(pwd)/ApiLogicServer-dev does not exist, and [Enter] install *dev* version of ApiLogicServer for $1> "
     if [ -d "ApiLogicServer-dev" ] 
     then
         echo "\nReally, ApiLogicServer-dev must not exist\n" 
         exit 1
     fi
+    mgr_root=$(pwd)   # Manager root: holds system/ApiLogicServer-Internal-Dev/container-volumes-template
     set -x
     mkdir ApiLogicServer-dev
     cd ApiLogicServer-dev
@@ -62,34 +63,20 @@ if [ $# -eq 0 ]
     # persistent home for any docker/podman bind-mount volumes (Kafka data, etc.) that
     # must survive Manager workspace rebuilds - nothing under build_and_test/ is safe for
     # this, since a clean Manager rebuild (or a fresh BLT-created workspace) wipes it.
-    mkdir podman
-    cat > podman/readme.md << 'EOF'
-# podman/
+    # copy the template (gold: system/ApiLogicServer-Internal-Dev/container-volumes-template)
+    mkdir container-volumes
+    if [ -d "$mgr_root/system/ApiLogicServer-Internal-Dev/container-volumes-template" ]
+    then
+        cp -R "$mgr_root/system/ApiLogicServer-Internal-Dev/container-volumes-template/." container-volumes/
+    else
+        echo "(container-volumes-template not found under $mgr_root - container-volumes/ left empty)"
+    fi
 
-Persistent host directory for docker/podman bind-mount volumes that need to
-survive a Manager workspace rebuild (e.g. `genai-logic create-manager --clean`,
-or a fresh `build_and_test`/`clean` BLT output).
-
-Sibling of `org_git/`, `build_and_test/`, `servers/` - nothing here is touched
-by BLT or Manager rebuilds.
-
-Not tied to any one sample or technology - only use it when a sample's own
-compose file default (typically project-relative, e.g. `./.volumes/...`) would
-otherwise be wiped by a workspace rebuild. Point that compose file's
-`volumes:` entry here instead, e.g.:
-
-  volumes:
-    - ${HOME}/dev/genai-logic/ApiLogicServer-dev/podman/kafka/data:/integration/kafka/volume
-
-Organize by service as needed:
-
-  podman/kafka/data
-  podman/<other-service>/...
-
-This only matters for this internal dev checkout - general end-user Manager
-workspaces aren't repeatedly rebuilt, so their sample compose files keep the
-simpler, self-contained project-relative default.
-EOF
+    # provenance: readme for the dev env, dated now (gold: system/ApiLogicServer-Internal-Dev/readme-ApiLogicServer-dev.md)
+    if [ -f "$mgr_root/system/ApiLogicServer-Internal-Dev/readme-ApiLogicServer-dev.md" ]
+    then
+        sed -e "s|{{CREATED_DATE}}|$(date +%m/%d/%Y)|" -e "s|{{INSTALL_SCRIPT}}|$mgr_root/system/ApiLogicServer-Internal-Dev/install-ApiLogicServer-dev.sh|" "$mgr_root/system/ApiLogicServer-Internal-Dev/readme-ApiLogicServer-dev.md" > readme-dev.md
+    fi
 
     cd org_git
 
@@ -111,6 +98,22 @@ EOF
     
     git clone https://github.com/ApiLogicServer/ApiLogicServer-src.git
     git clone https://github.com/valhuber/LogicBank
+
+    # provenance: record what this dev env was built from (fills {{CLONE_SHAS}} in ../readme-dev.md)
+    if [ -f ../readme-dev.md ]
+    then
+        mgr_ver=$(ls "$mgr_root/venv/lib/python3.13/site-packages" 2>/dev/null | grep -i '^apilogicserver-.*dist-info' | sed -e 's/^[Aa]pi[Ll]ogic[Ss]erver-//' -e 's/\.dist-info$//')
+        {
+          echo "- Manager ApiLogicServer: ${mgr_ver:-unknown}"
+          for r in Docs ApiLogicServer-src LogicBank
+          do
+            [ -d "$r" ] && echo "- $r: $(git -C $r rev-parse --short HEAD) ($(git -C $r branch --show-current))"
+          done
+        } > ../clone_shas.tmp
+        awk '/\{\{CLONE_SHAS\}\}/ { while ((getline line < "../clone_shas.tmp") > 0) print line; next } { print }' ../readme-dev.md > ../readme-dev.md.new
+        mv ../readme-dev.md.new ../readme-dev.md
+        rm ../clone_shas.tmp
+    fi
     
     cd ApiLogicServer-src
     echo "\ncopying $sra --> ApiLogicServer"
@@ -149,7 +152,7 @@ EOF
     echo ""
     echo "ApiLogicServer/react-admin contains shell burn-and-rebuild-react-admin"
     echo ""
-    echo "If a sample uses docker/podman (e.g. Kafka), see podman/readme.md - it's a"
+    echo "If a sample uses docker/podman (Kafka, Keycloak), see container-volumes/readme.md - it's a"
     echo "rebuild-safe place for volumes that must survive a Manager/BLT rebuild"
     echo ""
     exit 0
